@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "tsc  && node ./dist/index.js",
-    "start:dev": "tsc-watch --onSuccess \"node dist/index\"",
+    "start:dev": "tsc-watch -p tsconfig-build.json --onSuccess \"node ./dist/index.js\"",
     "test": "echo \"Error: no test specified\" && exit 1",
     "schema:freah" :"npx mikro-orm schema:fresh -r"
   },
