@@ -1,15 +1,13 @@
 import {
     Entity,
-    PrimaryKey,
     Property,
-
 }
 from "@mikro-orm/core";
 import { BaseEntity } from "./baseEntity";
-import { stringify } from "uuid";
 
 @Entity()
 export class Item extends BaseEntity {
+
     @Property()
     itemName: string;
 
@@ -22,12 +20,20 @@ export class Item extends BaseEntity {
     @Property()
     itemWeight: number;
 
-    constructor({ itemName, itemDescription, itemPrice, itemWeight }: CreateItemDTO) {
+    @Property()
+    itemBrand: string;
+
+    @Property()
+    itemCategory: string;
+
+    constructor({ itemName, itemDescription, itemPrice, itemWeight, itemBrand, itemCategory }: CreateItemDTO) {
         super();
         this.itemName = itemName;
         this.itemDescription = itemDescription;
         this.itemPrice = itemPrice;
         this.itemWeight = itemWeight;
+        this.itemBrand = itemBrand;
+        this.itemCategory = itemCategory;
     };
 }
 
@@ -36,6 +42,8 @@ export type CreateItemDTO = {
     itemDescription: string;
     itemPrice: number;
     itemWeight: number;
+    itemBrand: string;
+    itemCategory: string;
 };
 
 export type ItemDTO = {
@@ -44,6 +52,8 @@ export type ItemDTO = {
     itemDescription: string;
     itemPrice: number;
     itemWeight: number;
+    itemBrand: string;
+    itemCategory: string;
     createdAt: Date;
     updatedAt: Date;
 };

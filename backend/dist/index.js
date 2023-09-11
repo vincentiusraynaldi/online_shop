@@ -34,7 +34,8 @@ const initializeServer = () => __awaiter(void 0, void 0, void 0, function* () {
     });
 });
 exports.initializeServer = initializeServer;
-app.listen(3000, () => {
-    console.log('Server running on port 3000');
-});
+// app.listen(3000, () => {
+//     console.log('Server running on port 3000');
+//     }
+// );
 (0, exports.initializeServer)();
