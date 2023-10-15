@@ -11,13 +11,55 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.itemRouter = void 0;
 const express_1 = require("express");
+const __1 = require("../");
+const entities_1 = require("../entities");
 const router = (0, express_1.Router)({ mergeParams: true });
 router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    // const items = await DI.itemRepository.findAll();
-    // res.send(items);
-    res.send('masuk item router');
+    const items = yield __1.DI.itemRepository.findAll();
+    res.send(items);
 }));
-router.get('/masuk', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    res.send('masuk item router');
+router.post('/newItem', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const validatedData = yield entities_1.CreateItemSchema.validate(req.body).catch((err) => { res.status(400).send({ error: err.errors }); });
+        if (!validatedData)
+            return;
+        const CreateItemDTO = Object.assign({}, validatedData);
+        const existingItem = yield __1.DI.itemRepository.findOne({
+            itemName: CreateItemDTO.itemName
+        });
+        if (existingItem)
+            return res.status(400).send({ message: 'Item already exists' });
+        const newItem = new entities_1.Item(CreateItemDTO);
+        yield __1.DI.itemRepository.persistAndFlush(newItem);
+        return res.status(201).json(newItem);
+    }
+    catch (e) {
+        return res.status(400).send({ message: e.message });
+    }
+}));
+router.put('/edit/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const existingItem = yield __1.DI.itemRepository.findOne({ id: req.params.id });
+        if (!existingItem)
+            return res.status(404).send({ message: 'Item not found' });
+        Object.assign(existingItem, req.body);
+        yield __1.DI.itemRepository.flush();
+        return res.status(200).json(existingItem);
+    }
+    catch (e) {
+        return res.status(400).send({ message: e.message });
+    }
+}));
+router.get('/id/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const item = yield __1.DI.itemRepository.findOne(req.params.id);
+    res.send(req.params.id);
+}));
+router.get('/name/:name', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const item = yield __1.DI.itemRepository.findOne(req.params.name);
+    res.send(item);
+}));
+router.get('/category/:category', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const items = yield __1.DI.itemRepository.find(req.params.category);
+    res.send(items);
 }));
 exports.itemRouter = router;

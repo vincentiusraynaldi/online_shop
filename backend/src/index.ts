@@ -1,8 +1,9 @@
 import express from 'express';
 import cors from 'cors';
 import http from "http";
-import { Item } from "./entities/item";
+import { Item, User } from "./entities/";
 import { itemRouter } from './routes/itemRouter';
+import { userRouter } from './routes/userRouter';
 import {
     EntityManager,
     EntityRepository,
@@ -19,6 +20,7 @@ export const DI = {} as {
     orm: MikroORM;
     em: EntityManager;
     itemRepository: EntityRepository<Item>;
+    userRepository: EntityRepository<User>;
 }
 
 export const initializeServer = async () => {
@@ -30,18 +32,12 @@ export const initializeServer = async () => {
     app.use((req, res, next) => RequestContext.create(DI.orm.em, next));
     
     app.use("/item", itemRouter);
-    // app.use("/user", userRouter);
+    app.use("/user", userRouter);
 
     DI.server = app.listen(3000, () => {
         console.log('Server running on port 3000');
         }
     );
 }
-
-
-// app.listen(3000, () => {
-//     console.log('Server running on port 3000');
-//     }
-// );
 
 initializeServer();

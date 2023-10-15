@@ -4,6 +4,7 @@ import {
 }
 from "@mikro-orm/core";
 import { BaseEntity } from "./baseEntity";
+import { object, string, number } from "yup";
 
 @Entity()
 export class Item extends BaseEntity {
@@ -14,7 +15,7 @@ export class Item extends BaseEntity {
     @Property()
     itemDescription: string;
 
-    @Property()
+    @Property({type: 'decimal', scale: 2})
     itemPrice: number;
 
     @Property()
@@ -26,7 +27,18 @@ export class Item extends BaseEntity {
     @Property()
     itemCategory: string;
 
-    constructor({ itemName, itemDescription, itemPrice, itemWeight, itemBrand, itemCategory }: CreateItemDTO) {
+    // @Property()
+    // itemImage: string[] | void ;
+
+    constructor({ 
+        itemName,
+        itemDescription,
+        itemPrice,
+        itemWeight,
+        itemBrand,
+        itemCategory,
+        // itemImage
+     }: CreateItemDTO) {
         super();
         this.itemName = itemName;
         this.itemDescription = itemDescription;
@@ -34,6 +46,7 @@ export class Item extends BaseEntity {
         this.itemWeight = itemWeight;
         this.itemBrand = itemBrand;
         this.itemCategory = itemCategory;
+        // this.itemImage = itemImage;
     };
 }
 
@@ -44,6 +57,7 @@ export type CreateItemDTO = {
     itemWeight: number;
     itemBrand: string;
     itemCategory: string;
+    // itemImage: string[];
 };
 
 export type ItemDTO = {
@@ -54,6 +68,17 @@ export type ItemDTO = {
     itemWeight: number;
     itemBrand: string;
     itemCategory: string;
+    // itemImage: string[];
     createdAt: Date;
     updatedAt: Date;
 };
+
+export const CreateItemSchema = object({
+    itemName: string().required(),
+    itemDescription: string().required(),
+    itemPrice: number().required().positive(),
+    itemWeight: number().required().positive().integer(),
+    itemBrand: string().required(),
+    itemCategory: string().required(),
+    // itemImage: string().required().min(0),
+}) 

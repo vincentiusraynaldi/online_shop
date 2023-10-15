@@ -9,11 +9,16 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Item = void 0;
+exports.CreateItemSchema = exports.Item = void 0;
 const core_1 = require("@mikro-orm/core");
 const baseEntity_1 = require("./baseEntity");
+const yup_1 = require("yup");
 let Item = class Item extends baseEntity_1.BaseEntity {
-    constructor({ itemName, itemDescription, itemPrice, itemWeight, itemBrand, itemCategory }) {
+    // @Property()
+    // itemImage: string[] | void ;
+    constructor({ itemName, itemDescription, itemPrice, itemWeight, itemBrand, itemCategory,
+    // itemImage
+     }) {
         super();
         this.itemName = itemName;
         this.itemDescription = itemDescription;
@@ -21,6 +26,7 @@ let Item = class Item extends baseEntity_1.BaseEntity {
         this.itemWeight = itemWeight;
         this.itemBrand = itemBrand;
         this.itemCategory = itemCategory;
+        // this.itemImage = itemImage;
     }
     ;
 };
@@ -34,7 +40,7 @@ __decorate([
     __metadata("design:type", String)
 ], Item.prototype, "itemDescription", void 0);
 __decorate([
-    (0, core_1.Property)(),
+    (0, core_1.Property)({ type: 'decimal', scale: 2 }),
     __metadata("design:type", Number)
 ], Item.prototype, "itemPrice", void 0);
 __decorate([
@@ -53,3 +59,12 @@ exports.Item = Item = __decorate([
     (0, core_1.Entity)(),
     __metadata("design:paramtypes", [Object])
 ], Item);
+exports.CreateItemSchema = (0, yup_1.object)({
+    itemName: (0, yup_1.string)().required(),
+    itemDescription: (0, yup_1.string)().required(),
+    itemPrice: (0, yup_1.number)().required().positive(),
+    itemWeight: (0, yup_1.number)().required().positive().integer(),
+    itemBrand: (0, yup_1.string)().required(),
+    itemCategory: (0, yup_1.string)().required(),
+    // itemImage: string().required().min(0),
+});
