@@ -11,7 +11,8 @@ dotenv.config({ path: path.join(__dirname, '../../.env') });
 
 const BCRYPT_SALT = 10;
 
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = process.env.token;
+console.log("jwt secret: ", JWT_SECRET);
 
 const JWT_OPTIONS: SignOptions = {
     expiresIn: '1h', // 1 hour or 3600 seconds
@@ -40,6 +41,7 @@ const comparePasswordwithHash = async (password: string, hash: string) =>
 };
 
 const generateToken = (payload: JwtPayload) => {
+    console.log(JWT_SECRET);
     if (JWT_SECRET) {
         return jwt.sign(payload, JWT_SECRET, JWT_OPTIONS);
     } else {

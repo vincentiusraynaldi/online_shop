@@ -26,7 +26,9 @@ router.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, functio
         }
         const RegisterUserDTO = Object.assign(Object.assign({}, validatedData), { email: validatedData.email.toLowerCase(), password: yield auth_middleware_1.Auth.hashPassword(validatedData.password) });
         //check if email already exist
-        const existingUser = yield __1.DI.userRepository.findOne(validatedData.email);
+        const existingUser = yield __1.DI.userRepository.findOne({
+            email: req.body.email.toLowerCase()
+        });
         if (existingUser) {
             return res.status(400).json({ error: "Email already in use" });
         }
@@ -83,4 +85,48 @@ router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* 
         return res.status(400).json({ message: e.message });
     }
 }));
+// edit profile
+router.put("/edit/:id", auth_middleware_1.Auth.verifyAccess, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    try {
+        const id = req.params.id;
+        const exitstingUser = yield __1.DI.userRepository.findOne(id);
+        if (!exitstingUser) {
+            return res.status(404).json({ error: "User not found" });
+        }
+        if (((_a = req.user) === null || _a === void 0 ? void 0 : _a.email) === (exitstingUser === null || exitstingUser === void 0 ? void 0 : exitstingUser.email)) {
+            req.body.password = yield auth_middleware_1.Auth.hashPassword(req.body.password);
+            Object.assign(exitstingUser, req.body);
+            yield __1.DI.userRepository.flush();
+            return res.status(200).json(exitstingUser);
+        }
+        else {
+            return res.status(401).json({ error: "Unauthorized" });
+        }
+    }
+    catch (e) {
+        return res.status(400).json({ message: e.message });
+    }
+}));
+//get user profile
+router.get("/profile/:id", auth_middleware_1.Auth.verifyAccess, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _b;
+    try {
+        const id = req.params.id;
+        const exitstingUser = yield __1.DI.userRepository.findOne(id);
+        if (!exitstingUser) {
+            return res.status(404).json({ error: "User not found" });
+        }
+        if (((_b = req.user) === null || _b === void 0 ? void 0 : _b.email) === (exitstingUser === null || exitstingUser === void 0 ? void 0 : exitstingUser.email)) {
+            return res.status(200).json(exitstingUser);
+        }
+        else {
+            return res.status(401).json({ error: "Unauthorized" });
+        }
+    }
+    catch (e) {
+        return res.status(400).json({ message: e.message });
+    }
+}));
+//logout user
 exports.userRouter = router;

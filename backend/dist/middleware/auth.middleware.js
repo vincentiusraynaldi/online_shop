@@ -20,7 +20,8 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const path_1 = __importDefault(require("path"));
 dotenv_1.default.config({ path: path_1.default.join(__dirname, '../../.env') });
 const BCRYPT_SALT = 10;
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = process.env.token;
+console.log("jwt secret: ", JWT_SECRET);
 const JWT_OPTIONS = {
     expiresIn: '1h',
     algorithm: 'HS256',
@@ -36,6 +37,7 @@ const comparePasswordwithHash = (password, hash) => __awaiter(void 0, void 0, vo
     }
 });
 const generateToken = (payload) => {
+    console.log(JWT_SECRET);
     if (JWT_SECRET) {
         return jsonwebtoken_1.default.sign(payload, JWT_SECRET, JWT_OPTIONS);
     }

@@ -31,12 +31,14 @@ router.post("/register", async (req, res) => {
         }
 
         //check if email already exist
-        const existingUser = await DI.userRepository.findOne(validatedData.email);
+        const existingUser = await DI.userRepository.findOne({
+            email: req.body.email.toLowerCase()
+        });
         if (existingUser)
         {
             return res.status(400).json({ error: "Email already in use"})
         }
-    
+        
         const newUser = new User(RegisterUserDTO);
         await DI.userRepository.persistAndFlush(newUser);
 
@@ -45,7 +47,7 @@ router.post("/register", async (req, res) => {
             lastName: newUser.lastName,
             email: newUser.email,
             address: newUser.address,
-         });
+            });
     } catch (e: any) {
         return res.status(400).json({ message: e.message });
     }
@@ -91,12 +93,13 @@ router.post('/login', async (req, res) => {
         firstName: existingUser.firstName,
         lastName: existingUser.lastName,
     });
+    
     if (token) {
         return res.status(200).json({ accessToken: token, id: existingUser.id });
     } else {
         return res.status(500).json({ error: "Internal Server Error"});
     }
-    }catch(e){
+    }catch(e: any){
         return res.status(400).json({ message: e.message });
     }
 });
@@ -111,6 +114,7 @@ router.put("/edit/:id", Auth.verifyAccess, async (req, res) => {
         }
         
         if(req.user?.email === exitstingUser?.email){
+            req.body.password = await Auth.hashPassword(req.body.password);
             Object.assign(exitstingUser, req.body);
             await DI.userRepository.flush();
             return res.status(200).json( exitstingUser );
@@ -123,9 +127,26 @@ router.put("/edit/:id", Auth.verifyAccess, async (req, res) => {
 });
 
 //get user profile
+router.get("/profile/:id", Auth.verifyAccess, async (req, res) => {
+    try {
+        const id = req.params.id;
+        const exitstingUser = await DI.userRepository.findOne(id);
+        if (!exitstingUser) {
+            return res.status(404).json({ error: "User not found" });
+        }
+        
+        if(req.user?.email === exitstingUser?.email){
+            return res.status(200).json( exitstingUser );
+        } else {
+            return res.status(401).json({ error: "Unauthorized" });
+        }
+    } catch (e: any) {
+        return res.status(400).json({ message: e.message });
+    }
+});
 
 //logout user
 
-//delete user
+
 
 export const userRouter = router;
