@@ -14,10 +14,12 @@ const express_1 = require("express");
 const __1 = require("../");
 const entities_1 = require("../entities");
 const router = (0, express_1.Router)({ mergeParams: true });
+//get all item
 router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const items = yield __1.DI.itemRepository.findAll();
     res.send(items);
 }));
+//add an item
 router.post('/newItem', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const validatedData = yield entities_1.CreateItemSchema.validate(req.body).catch((err) => { res.status(400).send({ error: err.errors }); });
@@ -37,6 +39,7 @@ router.post('/newItem', (req, res) => __awaiter(void 0, void 0, void 0, function
         return res.status(400).send({ message: e.message });
     }
 }));
+//edit item
 router.put('/edit/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const existingItem = yield __1.DI.itemRepository.findOne({ id: req.params.id });
@@ -50,16 +53,20 @@ router.put('/edit/:id', (req, res) => __awaiter(void 0, void 0, void 0, function
         return res.status(400).send({ message: e.message });
     }
 }));
+//get item by id
 router.get('/id/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const item = yield __1.DI.itemRepository.findOne(req.params.id);
-    res.send(req.params.id);
-}));
-router.get('/name/:name', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const item = yield __1.DI.itemRepository.findOne(req.params.name);
+    const item = yield __1.DI.itemRepository.findOne({ id: req.params.id });
     res.send(item);
 }));
+// get items by name
+router.get('/name/:name', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const searchPattern = new RegExp(req.params.name, 'i'); // 'i' for case-insensitive search
+    const items = yield __1.DI.itemRepository.find({ itemName: searchPattern });
+    res.send(items);
+}));
+//get item by category
 router.get('/category/:category', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const items = yield __1.DI.itemRepository.find(req.params.category);
+    const items = yield __1.DI.itemRepository.find({ itemCategory: req.params.category });
     res.send(items);
 }));
 exports.itemRouter = router;

@@ -9,11 +9,13 @@ Item
 
 const router = Router({ mergeParams: true });
 
+//get all item
 router.get('/', async (req, res) => {
     const items = await DI.itemRepository.findAll();
     res.send(items);
 });
 
+//add an item
 router.post('/newItem', async (req, res) => {
     try{
         const validatedData = await CreateItemSchema.validate(req.body).catch(
@@ -40,6 +42,7 @@ router.post('/newItem', async (req, res) => {
     }
 });
 
+//edit item
 router.put('/edit/:id', async (req, res) => {
     try{
         const existingItem = await DI.itemRepository.findOne({ id: req.params.id });
@@ -53,18 +56,24 @@ router.put('/edit/:id', async (req, res) => {
     }
 });
 
-router.get('/id/:id', async (req, res) => {
-    const item = await DI.itemRepository.findOne(req.params.id);
-    res.send(req.params.id);
-});
 
-router.get('/name/:name', async (req, res) => {
-    const item = await DI.itemRepository.findOne( req.params.name );
+//get item by id
+router.get('/id/:id', async (req, res) => {
+    const item = await DI.itemRepository.findOne({ id: req.params.id });
     res.send(item);
 });
 
+// get items by name
+router.get('/name/:name', async (req, res) => {
+    const searchPattern = new RegExp(req.params.name, 'i'); // 'i' for case-insensitive search
+    const items = await DI.itemRepository.find({ itemName:  searchPattern });
+    res.send(items);
+});
+
+
+//get item by category
 router.get('/category/:category', async (req, res) => {
-    const items = await DI.itemRepository.find( req.params.category );
+    const items = await DI.itemRepository.find({ itemCategory: req.params.category });
     res.send(items);
 });
 
