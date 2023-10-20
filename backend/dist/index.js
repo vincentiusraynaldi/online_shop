@@ -16,8 +16,7 @@ exports.initializeServer = exports.initializeORM = exports.DI = void 0;
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const entities_1 = require("./entities");
-const itemRouter_1 = require("./routes/itemRouter");
-const userRouter_1 = require("./routes/userRouter");
+const routes_1 = require("./routes");
 const core_1 = require("@mikro-orm/core");
 const auth_middleware_1 = require("./middleware/auth.middleware");
 const app = (0, express_1.default)();
@@ -35,8 +34,8 @@ const initializeServer = () => __awaiter(void 0, void 0, void 0, function* () {
     app.use(express_1.default.json());
     app.use((req, res, next) => core_1.RequestContext.create(exports.DI.orm.em, next));
     app.use(auth_middleware_1.Auth.prepareAuthentication);
-    app.use("/item", itemRouter_1.itemRouter);
-    app.use("/user", userRouter_1.userRouter);
+    app.use("/item", routes_1.itemRouter);
+    app.use("/user", routes_1.userRouter);
     exports.DI.server = app.listen(3000, () => {
         console.log('Server running on port 3000');
     });

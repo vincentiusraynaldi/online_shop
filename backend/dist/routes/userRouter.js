@@ -129,4 +129,10 @@ router.get("/profile/:id", auth_middleware_1.Auth.verifyAccess, (req, res) => __
     }
 }));
 //logout user
+// !!
+// !! cart routes !!
+// !!
+// !!
+// !! wishlist routes !!
+// !!
 exports.userRouter = router;

@@ -8,7 +8,6 @@ import {
     User
 } from "../entities";
 import { Auth } from "../middleware/auth.middleware";
-import { assign } from "@mikro-orm/core";
 
 const router = Router({mergeParams: true});
 
@@ -93,7 +92,7 @@ router.post('/login', async (req, res) => {
         firstName: existingUser.firstName,
         lastName: existingUser.lastName,
     });
-    
+
     if (token) {
         return res.status(200).json({ accessToken: token, id: existingUser.id });
     } else {
@@ -147,6 +146,14 @@ router.get("/profile/:id", Auth.verifyAccess, async (req, res) => {
 
 //logout user
 
+
+// !!
+// !! cart routes !!
+// !!
+
+// !!
+// !! wishlist routes !!
+// !!
 
 
 export const userRouter = router;

@@ -1,9 +1,17 @@
 import express from 'express';
 import cors from 'cors';
 import http from "http";
-import { Item, User } from "./entities";
-import { itemRouter } from './routes/itemRouter';
-import { userRouter } from './routes/userRouter';
+import { 
+    Item, 
+    User, 
+    Order
+    } from "./entities";
+
+import { 
+    itemRouter, 
+    userRouter 
+    } from './routes';
+    
 import {
     EntityManager,
     EntityRepository,
@@ -22,6 +30,7 @@ export const DI = {} as {
     em: EntityManager;
     itemRepository: EntityRepository<Item>;
     userRepository: EntityRepository<User>;
+    orderRepository: EntityRepository<Order>;
 }
 
 export const initializeORM = async () => {

@@ -1,10 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const item_1 = require("./entities/item");
-const user_1 = require("./entities/user");
+const entities_1 = require("./entities");
 const options = {
     type: 'postgresql',
-    entities: [item_1.Item, user_1.User],
+    entities: [entities_1.Item, entities_1.User, entities_1.Order],
     host: 'localhost',
     dbName: 'jasa_titip_DB',
     password: 'jasa_titip123',

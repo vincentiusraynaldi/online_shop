@@ -1,10 +1,9 @@
 import { Options } from '@mikro-orm/core';
-import { Item } from './entities/item';
-import { User } from './entities/user';
+import { Order, Item, User } from './entities';
 
 const options: Options = {
     type: 'postgresql',
-    entities: [Item, User],
+    entities: [Item, User, Order],
     host: 'localhost',
     dbName: 'jasa_titip_DB',
     password: 'jasa_titip123',
