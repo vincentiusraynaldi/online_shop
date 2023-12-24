@@ -7,11 +7,12 @@ import {
     RegisterUserSchema,
     User
 } from "../entities";
+// import  passport  from "../passport-config";
 import { Auth } from "../middleware/auth.middleware";
 
 const router = Router({mergeParams: true});
 
-//register new user
+//register new user 
 router.post("/register", async (req, res) => {
     try{
         const validatedData = await RegisterUserSchema.validate(req.body).catch(
@@ -26,6 +27,8 @@ router.post("/register", async (req, res) => {
         const RegisterUserDTO: RegisterUserDTO = {
             ...validatedData,
             email: validatedData.email.toLowerCase(),
+            //todo: make the password have password best practices
+            //(uppercase, lowercase, number, special character, length)
             password: await Auth.hashPassword(validatedData.password),
         }
 

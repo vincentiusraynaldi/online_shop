@@ -13,9 +13,10 @@ exports.userRouter = void 0;
 const express_1 = require("express");
 const __1 = require("../");
 const entities_1 = require("../entities");
+// import  passport  from "../passport-config";
 const auth_middleware_1 = require("../middleware/auth.middleware");
 const router = (0, express_1.Router)({ mergeParams: true });
-//register new user
+//register new user 
 router.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const validatedData = yield entities_1.RegisterUserSchema.validate(req.body).catch((err) => {
@@ -24,7 +25,10 @@ router.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, functio
         if (!validatedData) {
             return;
         }
-        const RegisterUserDTO = Object.assign(Object.assign({}, validatedData), { email: validatedData.email.toLowerCase(), password: yield auth_middleware_1.Auth.hashPassword(validatedData.password) });
+        const RegisterUserDTO = Object.assign(Object.assign({}, validatedData), { email: validatedData.email.toLowerCase(), 
+            //todo: make the password have password best practices
+            //(uppercase, lowercase, number, special character, length)
+            password: yield auth_middleware_1.Auth.hashPassword(validatedData.password) });
         //check if email already exist
         const existingUser = yield __1.DI.userRepository.findOne({
             email: req.body.email.toLowerCase()

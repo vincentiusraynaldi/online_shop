@@ -13,6 +13,7 @@ exports.itemRouter = void 0;
 const express_1 = require("express");
 const __1 = require("../");
 const entities_1 = require("../entities");
+// import passport from '../passport-config';
 const router = (0, express_1.Router)({ mergeParams: true });
 //get all item
 router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
