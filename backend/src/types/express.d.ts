@@ -4,7 +4,7 @@ import { JwtToken } from "../middleware/auth.middleware";
 declare global {
     namespace Express {
         interface Request {
-            user: User | undefined;
+            user: User | null;
             token: JwtToken | null;
         }
     }
