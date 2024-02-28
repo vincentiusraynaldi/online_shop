@@ -1,22 +1,7 @@
 "use strict";
-// import { DI } from "./";
-// import  { VerifyCallback, ExtractJwt, Strategy as JwtStrategy } from 'passport-jwt';
-// import passport from "passport";
-// const JWT_SECRET = process.env.token;
-// const jwtOptions = {
-//   secretOrKey: JWT_SECRET,
-//   jwtFromRequest: ExtractJwt.fromHeader('Authorization')
-// };
-// passport.use(new JwtStrategy(jwtOptions, async (JwtPayload, done) => {
-//   try {
-//     const user = await DI.userRepository.findOne({ id: JwtPayload.id });
-//     if (user) {
-//       return done(null, user);
-//     } else {
-//       return done(null, false);
-//     }
-//   } catch (error) {
-//     return done(error, false);
-//   }
-// }));
-// module.exports = passport;
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const passport_1 = __importDefault(require("passport"));
+module.exports = passport_1.default;

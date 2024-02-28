@@ -7,7 +7,6 @@ import {
     RegisterUserSchema,
     User
 } from "../entities";
-// import  passport  from "../passport-config";
 import { Auth } from "../middleware/auth.middleware";
 
 const router = Router({mergeParams: true});

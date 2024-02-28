@@ -6,8 +6,6 @@ CreateItemSchema,
 CreateItemDTO,
 Item
  } from '../entities';
-// import passport from '../passport-config';
-
 const router = Router({ mergeParams: true });
 
 //get all item
