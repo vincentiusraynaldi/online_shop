@@ -14,7 +14,9 @@ const core_1 = require("@mikro-orm/core");
 const baseEntity_1 = require("./baseEntity");
 const yup_1 = require("yup");
 let User = class User extends baseEntity_1.BaseEntity {
-    constructor({ email, password, firstName, lastName }, address, city, country, postalCode, phoneNumber) {
+    constructor({ email, firstName, lastName, password }, 
+    // password: string,
+    address, city, country, postalCode, phoneNumber) {
         super();
         this.password = password;
         this.email = email;

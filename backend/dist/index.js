@@ -18,7 +18,9 @@ const cors_1 = __importDefault(require("cors"));
 const entities_1 = require("./entities");
 const routes_1 = require("./routes");
 const core_1 = require("@mikro-orm/core");
-const auth_middleware_1 = require("./middleware/auth.middleware");
+const passport_1 = __importDefault(require("passport"));
+require("./passport-config");
+// import { Auth } from './middleware/auth.middleware';
 const app = (0, express_1.default)();
 // import passport from './passport-config';
 app.use((0, cors_1.default)());
@@ -34,7 +36,8 @@ const initializeServer = () => __awaiter(void 0, void 0, void 0, function* () {
     (0, exports.initializeORM)();
     app.use(express_1.default.json());
     app.use((req, res, next) => core_1.RequestContext.create(exports.DI.orm.em, next));
-    app.use(auth_middleware_1.Auth.prepareAuthentication);
+    // app.use(Auth.prepareAuthentication);
+    app.use(passport_1.default.initialize());
     app.use("/item", routes_1.itemRouter);
     app.use("/user", routes_1.userRouter);
     exports.DI.server = app.listen(4000, () => {

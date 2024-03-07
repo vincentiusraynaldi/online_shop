@@ -8,6 +8,7 @@ import {
     User
 } from "../entities";
 import { Auth } from "../middleware/auth.middleware";
+import passport from "passport";
 
 const router = Router({mergeParams: true});
 
@@ -30,6 +31,8 @@ router.post("/register", async (req, res) => {
             //(uppercase, lowercase, number, special character, length)
             password: await Auth.hashPassword(validatedData.password),
         }
+        
+        // const password = await Auth.hashPassword(validatedData.password);
 
         //check if email already exist
         const existingUser = await DI.userRepository.findOne({
@@ -39,7 +42,7 @@ router.post("/register", async (req, res) => {
         {
             return res.status(400).json({ error: "Email already in use"})
         }
-        
+
         const newUser = new User(RegisterUserDTO);
         await DI.userRepository.persistAndFlush(newUser);
 
@@ -106,7 +109,8 @@ router.post('/login', async (req, res) => {
 });
 
 // edit profile
-router.put("/edit/:id", Auth.verifyAccess, async (req, res) => {
+// router.put("/edit/:id", Auth.verifyAccess, async (req, res) => {
+router.put("/edit/:id", passport.authenticate('jwt', {session: false}), async (req, res) => {
     try {
         const id = req.params.id;
         const exitstingUser = await DI.userRepository.findOne(id);
@@ -128,7 +132,8 @@ router.put("/edit/:id", Auth.verifyAccess, async (req, res) => {
 });
 
 //get user profile
-router.get("/profile/:id", Auth.verifyAccess, async (req, res) => {
+// router.get("/profile/:id", Auth.verifyAccess, async (req, res) => {
+router.get("/profile/:id",passport.authenticate('jwt', {session: false}), async (req, res) => {
     try {
         const id = req.params.id;
         const exitstingUser = await DI.userRepository.findOne(id);

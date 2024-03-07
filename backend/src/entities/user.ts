@@ -38,7 +38,8 @@ export class User extends BaseEntity {
     phoneNumber?: string;
 
     constructor(
-        { email, password, firstName, lastName }: RegisterUserDTO,
+        { email, firstName, lastName, password }: RegisterUserDTO,
+        // password: string,
         address?: string,
         city?: string,
         country?: string,
@@ -59,10 +60,10 @@ export class User extends BaseEntity {
 }
 
 export type RegisterUserDTO = {
-    password: string;
     email: string;
     firstName: string;
     lastName: string;
+    password: string;
 };
 
 export const RegisterUserSchema = object({

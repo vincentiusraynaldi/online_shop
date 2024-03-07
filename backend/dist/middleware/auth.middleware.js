@@ -21,7 +21,7 @@ const path_1 = __importDefault(require("path"));
 dotenv_1.default.config({ path: path_1.default.join(__dirname, '../../.env') });
 const BCRYPT_SALT = 10;
 const JWT_SECRET = process.env.token;
-console.log("jwt secret: ", JWT_SECRET);
+// console.log("jwt secret: ", JWT_SECRET);
 const JWT_OPTIONS = {
     expiresIn: '1h',
     algorithm: 'HS256',

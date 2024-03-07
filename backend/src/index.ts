@@ -18,7 +18,9 @@ import {
     MikroORM,
     RequestContext,
     } from "@mikro-orm/core";
-import { Auth } from './middleware/auth.middleware';
+import passport from "passport";
+import './passport-config';
+// import { Auth } from './middleware/auth.middleware';
 
 const app = express();
 
@@ -47,7 +49,8 @@ export const initializeServer = async () => {
     
     app.use(express.json());
     app.use((req, res, next) => RequestContext.create(DI.orm.em, next));
-    app.use(Auth.prepareAuthentication);
+    // app.use(Auth.prepareAuthentication);
+    app.use(passport.initialize());
     
     app.use("/item", itemRouter);
     app.use("/user", userRouter);
