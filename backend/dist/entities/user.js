@@ -9,29 +9,27 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.LoginUserSchema = exports.RegisterUserSchema = exports.User = void 0;
+exports.RegisterGoogleUserSchema = exports.LoginUserSchema = exports.RegisterUserSchema = exports.User = void 0;
 const core_1 = require("@mikro-orm/core");
 const baseEntity_1 = require("./baseEntity");
 const yup_1 = require("yup");
 let User = class User extends baseEntity_1.BaseEntity {
-    constructor({ email, firstName, lastName, password }, 
-    // password: string,
-    address, city, country, postalCode, phoneNumber) {
+    constructor(email, firstName, lastName) {
         super();
-        this.password = password;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.address = address;
-        this.city = city;
-        this.country = country;
-        this.postalCode = postalCode;
-        this.phoneNumber = phoneNumber;
+        // this.password = password;
+        // this.address = address;
+        // this.city = city;
+        // this.country = country;
+        // this.postalCode = postalCode;
+        // this.phoneNumber = phoneNumber;
     }
 };
 exports.User = User;
 __decorate([
-    (0, core_1.Property)(),
+    (0, core_1.Property)({ nullable: true }),
     __metadata("design:type", String)
 ], User.prototype, "password", void 0);
 __decorate([
@@ -66,9 +64,13 @@ __decorate([
     (0, core_1.Property)({ nullable: true }),
     __metadata("design:type", String)
 ], User.prototype, "phoneNumber", void 0);
+__decorate([
+    (0, core_1.Property)({ nullable: true }),
+    __metadata("design:type", String)
+], User.prototype, "googleId", void 0);
 exports.User = User = __decorate([
     (0, core_1.Entity)(),
-    __metadata("design:paramtypes", [Object, String, String, String, String, String])
+    __metadata("design:paramtypes", [String, String, String])
 ], User);
 exports.RegisterUserSchema = (0, yup_1.object)({
     password: (0, yup_1.string)().required(),
@@ -79,4 +81,10 @@ exports.RegisterUserSchema = (0, yup_1.object)({
 exports.LoginUserSchema = (0, yup_1.object)({
     password: (0, yup_1.string)().required(),
     email: (0, yup_1.string)().required(),
+});
+exports.RegisterGoogleUserSchema = (0, yup_1.object)({
+    email: (0, yup_1.string)().required(),
+    firstName: (0, yup_1.string)().required(),
+    lastName: (0, yup_1.string)().required(),
+    googleId: (0, yup_1.string)().required(),
 });

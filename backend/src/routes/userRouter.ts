@@ -1,12 +1,15 @@
 import { Router } from "express";
-
 import { DI } from "../";
 import {
     LoginUserSchema,
-    RegisterUserDTO,
     RegisterUserSchema,
     User
 } from "../entities";
+import {
+    RegisterUserDTO, 
+    RegisterGoogleUserDTO
+} from "../dto/userDTO";
+import { UserMapper } from "../mapper/userMapper";
 import { Auth } from "../middleware/auth.middleware";
 import passport from "passport";
 
@@ -43,7 +46,8 @@ router.post("/register", async (req, res) => {
             return res.status(400).json({ error: "Email already in use"})
         }
 
-        const newUser = new User(RegisterUserDTO);
+        // const newUser = new User(RegisterUserDTO.email, RegisterUserDTO.firstName, RegisterUserDTO.lastName, RegisterUserDTO.password);
+        const newUser = UserMapper.createUserFromRegisterUserDTO(RegisterUserDTO);
         await DI.userRepository.persistAndFlush(newUser);
 
         return res.status(201).json({ 
@@ -78,6 +82,11 @@ router.post('/login', async (req, res) => {
 
     if(!existingUser){
         return res.status(400).json({ error: "Email not found"});
+    }
+
+    //check if there is password for the user
+    if (!existingUser.password) {
+        return res.status(400).json({ error: "Invalid password"});
     }
 
     //check if the password is correct

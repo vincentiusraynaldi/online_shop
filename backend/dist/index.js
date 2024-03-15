@@ -45,4 +45,5 @@ const initializeServer = () => __awaiter(void 0, void 0, void 0, function* () {
     });
 });
 exports.initializeServer = initializeServer;
+//test
 (0, exports.initializeServer)();

@@ -1,9 +1,12 @@
 import {
     Entity,
+    ManyToOne,
+    OneToMany,
     Property,
 }
 from "@mikro-orm/core";
 import { BaseEntity } from "./baseEntity";
+// import { Wishlist } from "./wishlist";
 import { object, string, number } from "yup";
 
 @Entity()
@@ -26,6 +29,9 @@ export class Item extends BaseEntity {
 
     @Property()
     itemCategory: string;
+
+    // @OneToMany(() => Wishlist, wishlist => wishlist.items)
+    // wishlist: Wishlist;
 
     // @Property()
     // itemImage: string[] | void ;

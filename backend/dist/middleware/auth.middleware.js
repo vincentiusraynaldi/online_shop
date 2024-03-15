@@ -25,7 +25,7 @@ const JWT_SECRET = process.env.token;
 const JWT_OPTIONS = {
     expiresIn: '1h',
     algorithm: 'HS256',
-    issuer: 'https://localhost:3000',
+    issuer: 'https://localhost:4000',
 };
 const hashPassword = (password) => bcrypt_1.default.hash(password, BCRYPT_SALT);
 const comparePasswordwithHash = (password, hash) => __awaiter(void 0, void 0, void 0, function* () {

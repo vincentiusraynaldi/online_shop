@@ -17,7 +17,7 @@ const JWT_SECRET = process.env.token;
 const JWT_OPTIONS: SignOptions = {
     expiresIn: '1h', // 1 hour or 3600 seconds
     algorithm: 'HS256',
-    issuer: 'https://localhost:3000',
+    issuer: 'https://localhost:4000',
 };
 
 type JwtUserData = {
