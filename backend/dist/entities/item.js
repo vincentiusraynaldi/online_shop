@@ -12,8 +12,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateItemSchema = exports.Item = void 0;
 const core_1 = require("@mikro-orm/core");
 const baseEntity_1 = require("./baseEntity");
+// import { Wishlist } from "./wishlist";
 const yup_1 = require("yup");
 let Item = class Item extends baseEntity_1.BaseEntity {
+    // @OneToMany(() => Wishlist, wishlist => wishlist.items)
+    // wishlist: Wishlist;
     // @Property()
     // itemImage: string[] | void ;
     constructor({ itemName, itemDescription, itemPrice, itemWeight, itemBrand, itemCategory,

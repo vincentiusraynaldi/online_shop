@@ -1,17 +1,21 @@
 import { Router } from "express";
-
 import { DI } from "../";
 import {
     LoginUserSchema,
-    RegisterUserDTO,
     RegisterUserSchema,
     User
-} from "../entities";
+} from "../entity";
+import {
+    RegisterUserDTO, 
+    RegisterGoogleUserDTO
+} from "../dto/userDTO";
+import { UserMapper } from "../mapper/userMapper";
 import { Auth } from "../middleware/auth.middleware";
+import passport from "passport";
 
 const router = Router({mergeParams: true});
 
-//register new user
+//register new user 
 router.post("/register", async (req, res) => {
     try{
         const validatedData = await RegisterUserSchema.validate(req.body).catch(
@@ -26,8 +30,12 @@ router.post("/register", async (req, res) => {
         const RegisterUserDTO: RegisterUserDTO = {
             ...validatedData,
             email: validatedData.email.toLowerCase(),
+            //todo: make the password have password best practices
+            //(uppercase, lowercase, number, special character, length)
             password: await Auth.hashPassword(validatedData.password),
         }
+        
+        // const password = await Auth.hashPassword(validatedData.password);
 
         //check if email already exist
         const existingUser = await DI.userRepository.findOne({
@@ -37,8 +45,9 @@ router.post("/register", async (req, res) => {
         {
             return res.status(400).json({ error: "Email already in use"})
         }
-        
-        const newUser = new User(RegisterUserDTO);
+
+        // const newUser = new User(RegisterUserDTO.email, RegisterUserDTO.firstName, RegisterUserDTO.lastName, RegisterUserDTO.password);
+        const newUser = UserMapper.createUserFromRegisterUserDTO(RegisterUserDTO);
         await DI.userRepository.persistAndFlush(newUser);
 
         return res.status(201).json({ 
@@ -75,6 +84,11 @@ router.post('/login', async (req, res) => {
         return res.status(400).json({ error: "Email not found"});
     }
 
+    //check if there is password for the user
+    if (!existingUser.password) {
+        return res.status(400).json({ error: "Invalid password"});
+    }
+
     //check if the password is correct
     const validPassword = await Auth.comparePasswordwithHash(
         validatedData.password,
@@ -104,7 +118,8 @@ router.post('/login', async (req, res) => {
 });
 
 // edit profile
-router.put("/edit/:id", Auth.verifyAccess, async (req, res) => {
+// router.put("/edit/:id", Auth.verifyAccess, async (req, res) => {
+router.put("/edit/:id", passport.authenticate('jwt', {session: false}), async (req, res) => {
     try {
         const id = req.params.id;
         const exitstingUser = await DI.userRepository.findOne(id);
@@ -126,7 +141,8 @@ router.put("/edit/:id", Auth.verifyAccess, async (req, res) => {
 });
 
 //get user profile
-router.get("/profile/:id", Auth.verifyAccess, async (req, res) => {
+// router.get("/profile/:id", Auth.verifyAccess, async (req, res) => {
+router.get("/profile/:id",passport.authenticate('jwt', {session: false}), async (req, res) => {
     try {
         const id = req.params.id;
         const exitstingUser = await DI.userRepository.findOne(id);

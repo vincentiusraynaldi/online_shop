@@ -12,12 +12,12 @@ dotenv.config({ path: path.join(__dirname, '../../.env') });
 const BCRYPT_SALT = 10;
 
 const JWT_SECRET = process.env.token;
-console.log("jwt secret: ", JWT_SECRET);
+// console.log("jwt secret: ", JWT_SECRET);
 
 const JWT_OPTIONS: SignOptions = {
     expiresIn: '1h', // 1 hour or 3600 seconds
     algorithm: 'HS256',
-    issuer: 'https://localhost:3000',
+    issuer: 'https://localhost:4000',
 };
 
 type JwtUserData = {

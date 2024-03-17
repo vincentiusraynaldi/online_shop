@@ -8,14 +8,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userRouter = void 0;
 const express_1 = require("express");
 const __1 = require("../");
 const entities_1 = require("../entities");
+const userMapper_1 = require("../mapper/userMapper");
 const auth_middleware_1 = require("../middleware/auth.middleware");
+const passport_1 = __importDefault(require("passport"));
 const router = (0, express_1.Router)({ mergeParams: true });
-//register new user
+//register new user 
 router.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const validatedData = yield entities_1.RegisterUserSchema.validate(req.body).catch((err) => {
@@ -24,7 +29,11 @@ router.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, functio
         if (!validatedData) {
             return;
         }
-        const RegisterUserDTO = Object.assign(Object.assign({}, validatedData), { email: validatedData.email.toLowerCase(), password: yield auth_middleware_1.Auth.hashPassword(validatedData.password) });
+        const RegisterUserDTO = Object.assign(Object.assign({}, validatedData), { email: validatedData.email.toLowerCase(), 
+            //todo: make the password have password best practices
+            //(uppercase, lowercase, number, special character, length)
+            password: yield auth_middleware_1.Auth.hashPassword(validatedData.password) });
+        // const password = await Auth.hashPassword(validatedData.password);
         //check if email already exist
         const existingUser = yield __1.DI.userRepository.findOne({
             email: req.body.email.toLowerCase()
@@ -32,7 +41,8 @@ router.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, functio
         if (existingUser) {
             return res.status(400).json({ error: "Email already in use" });
         }
-        const newUser = new entities_1.User(RegisterUserDTO);
+        // const newUser = new User(RegisterUserDTO.email, RegisterUserDTO.firstName, RegisterUserDTO.lastName, RegisterUserDTO.password);
+        const newUser = userMapper_1.UserMapper.createUserFromRegisterUserDTO(RegisterUserDTO);
         yield __1.DI.userRepository.persistAndFlush(newUser);
         return res.status(201).json({
             firstName: newUser.firstName,
@@ -62,6 +72,10 @@ router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* 
         if (!existingUser) {
             return res.status(400).json({ error: "Email not found" });
         }
+        //check if there is password for the user
+        if (!existingUser.password) {
+            return res.status(400).json({ error: "Invalid password" });
+        }
         //check if the password is correct
         const validPassword = yield auth_middleware_1.Auth.comparePasswordwithHash(validatedData.password, existingUser.password);
         if (!validPassword) {
@@ -86,7 +100,8 @@ router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
 }));
 // edit profile
-router.put("/edit/:id", auth_middleware_1.Auth.verifyAccess, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+// router.put("/edit/:id", Auth.verifyAccess, async (req, res) => {
+router.put("/edit/:id", passport_1.default.authenticate('jwt', { session: false }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
         const id = req.params.id;
@@ -109,7 +124,8 @@ router.put("/edit/:id", auth_middleware_1.Auth.verifyAccess, (req, res) => __awa
     }
 }));
 //get user profile
-router.get("/profile/:id", auth_middleware_1.Auth.verifyAccess, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+// router.get("/profile/:id", Auth.verifyAccess, async (req, res) => {
+router.get("/profile/:id", passport_1.default.authenticate('jwt', { session: false }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _b;
     try {
         const id = req.params.id;
