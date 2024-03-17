@@ -7,6 +7,7 @@ import {
 from "@mikro-orm/core";
 import { BaseEntity } from "./baseEntity";
 // import { Wishlist } from "./wishlist";
+import { Category } from "./category";
 import { object, string, number } from "yup";
 
 @Entity()

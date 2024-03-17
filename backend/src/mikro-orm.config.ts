@@ -1,5 +1,5 @@
 import { Options } from '@mikro-orm/core';
-import { Order, Item, User } from './entities';
+import { Order, Item, User } from './entity';
 
 const options: Options = {
     type: 'postgresql',

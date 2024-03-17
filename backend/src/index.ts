@@ -5,7 +5,7 @@ import {
     Item, 
     User, 
     Order
-    } from "./entities";
+    } from "./entity";
 
 import { 
     itemRouter, 

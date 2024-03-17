@@ -5,7 +5,7 @@ import {
 CreateItemSchema,
 CreateItemDTO,
 Item
- } from '../entities';
+ } from '../entity';
 const router = Router({ mergeParams: true });
 
 //get all item

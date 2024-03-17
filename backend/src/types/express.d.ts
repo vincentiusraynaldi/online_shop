@@ -1,4 +1,4 @@
-import  { User as userInfo }  from "../entities";
+import  { User as userInfo }  from "../entity";
 import { JwtToken } from "../middleware/auth.middleware";
 import { User as PassportUser} from 'passport';
 

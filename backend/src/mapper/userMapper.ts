@@ -1,5 +1,5 @@
 import { RegisterUserDTO, RegisterGoogleUserDTO } from '../dto/userDTO';
-import { User } from '../entities/user';
+import { User } from '../entity/user';
 
 class UserMapper {
     static createUserFromRegisterUserDTO(dto: RegisterUserDTO): User {

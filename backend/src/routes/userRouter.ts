@@ -4,7 +4,7 @@ import {
     LoginUserSchema,
     RegisterUserSchema,
     User
-} from "../entities";
+} from "../entity";
 import {
     RegisterUserDTO, 
     RegisterGoogleUserDTO
