@@ -4,20 +4,23 @@ import http from "http";
 import { 
     Item, 
     User, 
-    Order
+    Order,
+    Category
     } from "./entity";
 
 import { 
     itemRouter, 
-    userRouter 
+    userRouter,
+    categoryRouter 
     } from './routes';
-    
+
 import {
     EntityManager,
     EntityRepository,
     MikroORM,
     RequestContext,
     } from "@mikro-orm/core";
+    
 import passport from "passport";
 import './passport-config';
 // import { Auth } from './middleware/auth.middleware';
@@ -35,6 +38,7 @@ export const DI = {} as {
     itemRepository: EntityRepository<Item>;
     userRepository: EntityRepository<User>;
     orderRepository: EntityRepository<Order>;
+    categoryRepository: EntityRepository<Category>;
 }
 
 export const initializeORM = async () => {

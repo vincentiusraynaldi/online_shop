@@ -1,21 +1,20 @@
-// import { Property } from "@mikro-orm/core";
-// import { BaseEntity } from "./baseEntity";
-// import { Entity, OneToMany } from "@mikro-orm/core";
+import { ManyToMany, Property } from "@mikro-orm/core";
+import { BaseEntity } from "./baseEntity";
+import { Entity, OneToMany } from "@mikro-orm/core";
+import { Item } from "./item";
+import { CategoryItem } from "./category_item";
 
-// @Entity()
-// class Category extends BaseEntity{
-//     @Property()
-//     categoryName: string;
+@Entity()
+export class Category extends BaseEntity{
+    @Property()
+    categoryName: string;
 
-//     @OneToMany(() => Item, item => item.category)
-//     items: Item[];
+    @ManyToMany({ entity: () => Item, pivotEntity: () => CategoryItem,
+    inversedBy: (item: Item) => item.categories})
+    items = new Set<Item>();
 
-//     constructor(categoryName: string) {
-//         super();
-//         this.categoryName = categoryName;
-//     }
-// }
-
-// export default Category;
-
-//todo: must think wether make an category entity or just using it as an attribute in item entity
+    constructor(categoryName: string) {
+        super();
+        this.categoryName = categoryName;
+    }
+}

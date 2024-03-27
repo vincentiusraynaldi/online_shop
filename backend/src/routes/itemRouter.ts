@@ -3,9 +3,11 @@ import { Router } from 'express';
 import { DI } from '../';
 import {
 CreateItemSchema,
-CreateItemDTO,
 Item
  } from '../entity';
+import { CreateItemDTO } from '../dto';
+import { itemMapper } from '../mapper';
+
 const router = Router({ mergeParams: true });
 
 //get all item
@@ -23,7 +25,8 @@ router.post('/newItem', async (req, res) => {
         if(!validatedData) return;
     
         const CreateItemDTO: CreateItemDTO = {
-            ...validatedData
+            ...validatedData,
+            categories: req.body.categories || [],
         };
     
         const existingItem = await DI.itemRepository.findOne({
@@ -32,7 +35,7 @@ router.post('/newItem', async (req, res) => {
         if(existingItem)
          return res.status(400).send({ message: 'Item already exists' });
 
-        const newItem = new Item(CreateItemDTO);
+        const newItem = itemMapper.createItemFromDTO(CreateItemDTO);
         await DI.itemRepository.persistAndFlush(newItem);
 
         return res.status(201).json(newItem);
@@ -70,10 +73,25 @@ router.get('/name/:name', async (req, res) => {
 });
 
 
-//get item by category
+// get items by category
+// todo: must check if the user wanted to show items from multiple categories
+// !! check if query will be joined or seperated (items from all categories or items from each category)
 router.get('/category/:category', async (req, res) => {
-    const items = await DI.itemRepository.find({ itemCategory: req.params.category });
+    const categories = req.params.category.split(','); // Split the category parameter into an array of categories
+    const categoryEntity = await DI.categoryRepository.find({ categoryName: { $in: categories } });
+    const items = await DI.itemRepository.find(categoryEntity, { populate: ['categories'] });
     res.send(items);
+});
+
+// add item to category
+router.put('/addCategory/:itemId/:categoryId', async (req, res) => {
+    const item = await DI.itemRepository.findOne({ id: req.params.itemId });
+    const category = await DI.categoryRepository.findOne({ id: req.params.categoryId });
+    if (!item || !category) return res.status(404).send({ message: 'Item or Category not found' });
+
+    item.categories.add(category);
+    await DI.itemRepository.flush();
+    res.send(item);
 });
 
 export const itemRouter = router;

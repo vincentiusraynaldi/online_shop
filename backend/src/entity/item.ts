@@ -1,5 +1,6 @@
 import {
     Entity,
+    ManyToMany,
     ManyToOne,
     OneToMany,
     Property,
@@ -9,27 +10,31 @@ import { BaseEntity } from "./baseEntity";
 // import { Wishlist } from "./wishlist";
 import { Category } from "./category";
 import { object, string, number } from "yup";
+import { CategoryItem } from "./category_item";
 
 @Entity()
 export class Item extends BaseEntity {
 
     @Property()
-    itemName: string;
+    itemName!: string;
 
     @Property()
-    itemDescription: string;
+    itemDescription!: string;
 
     @Property({type: 'decimal', scale: 2})
-    itemPrice: number;
+    itemPrice!: number;
 
     @Property()
-    itemWeight: number;
+    itemWeight!: number;
 
     @Property()
-    itemBrand: string;
+    itemBrand!: string;
 
-    @Property()
-    itemCategory: string;
+    @ManyToMany({ entity: () => Category, pivotEntity: () => CategoryItem,
+    inversedBy: (category: Category) => category.items})
+    categories = new Set<Category>();
+    // @Property()
+    // itemCategory: string;
 
     // @OneToMany(() => Wishlist, wishlist => wishlist.items)
     // wishlist: Wishlist;
@@ -37,48 +42,31 @@ export class Item extends BaseEntity {
     // @Property()
     // itemImage: string[] | void ;
 
-    constructor({ 
-        itemName,
-        itemDescription,
-        itemPrice,
-        itemWeight,
-        itemBrand,
-        itemCategory,
-        // itemImage
-     }: CreateItemDTO) {
+    // constructor({ 
+    //     itemName,
+    //     itemDescription,
+    //     itemPrice,
+    //     itemWeight,
+    //     itemBrand,
+    //     categories,
+    //     // itemCategory,
+    //     // itemImage
+    //  }: CreateItemDTO) {
+    //     super();
+    //     this.itemName = itemName;
+    //     this.itemDescription = itemDescription;
+    //     this.itemPrice = itemPrice;
+    //     this.itemWeight = itemWeight;
+    //     this.itemBrand = itemBrand;
+    //     this.categories = new Set(categories);
+    //     // this.itemCategory = itemCategory;
+    //     // this.itemImage = itemImage;
+    // };
+
+    constructor(){
         super();
-        this.itemName = itemName;
-        this.itemDescription = itemDescription;
-        this.itemPrice = itemPrice;
-        this.itemWeight = itemWeight;
-        this.itemBrand = itemBrand;
-        this.itemCategory = itemCategory;
-        // this.itemImage = itemImage;
-    };
+    }
 }
-
-export type CreateItemDTO = {
-    itemName: string;
-    itemDescription: string;
-    itemPrice: number;
-    itemWeight: number;
-    itemBrand: string;
-    itemCategory: string;
-    // itemImage: string[];
-};
-
-export type ItemDTO = {
-    id: string;
-    itemName: string;
-    itemDescription: string;
-    itemPrice: number;
-    itemWeight: number;
-    itemBrand: string;
-    itemCategory: string;
-    // itemImage: string[];
-    createdAt: Date;
-    updatedAt: Date;
-};
 
 export const CreateItemSchema = object({
     itemName: string().required(),
@@ -86,6 +74,7 @@ export const CreateItemSchema = object({
     itemPrice: number().required().positive(),
     itemWeight: number().required().positive().integer(),
     itemBrand: string().required(),
-    itemCategory: string().required(),
+    categories: object().required(),
+    // itemCategory: string().required(),
     // itemImage: string().required().min(0),
 }) 

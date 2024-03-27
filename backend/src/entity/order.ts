@@ -1,6 +1,7 @@
 import {
     Entity,
     ManyToOne,
+    OneToMany,
     Property,
 }
 from "@mikro-orm/core";
@@ -14,11 +15,11 @@ export class Order extends BaseEntity {
     @Property()
     totalPrice: number;
 
-    @ManyToOne(() => User)
+    @ManyToOne({ entity: () => User })
     user!: User;
 
-    @ManyToOne(() => Item)
-    item!: Item;
+    // @OneToMany({ mappedBy: , entity: () => Item })
+    // item!: Item[];
 
     //address
     
