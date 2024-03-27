@@ -27,8 +27,6 @@ import './passport-config';
 
 const app = express();
 
-// import passport from './passport-config';
-
 app.use(cors());
 
 export const DI = {} as {
@@ -58,12 +56,12 @@ export const initializeServer = async () => {
     
     app.use("/item", itemRouter);
     app.use("/user", userRouter);
+    app.use("/category", categoryRouter);
 
     DI.server = app.listen(4000, () => {
         console.log('Server running on port 4000');
         }
     );
 }
-//test
 
 initializeServer();

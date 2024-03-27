@@ -12,6 +12,7 @@ import {
 import { UserMapper } from "../mapper/userMapper";
 import { Auth } from "../middleware/auth.middleware";
 import passport from "passport";
+import { wishlistRouter } from "./";
 
 const router = Router({mergeParams: true});
 
@@ -170,6 +171,7 @@ router.get("/profile/:id",passport.authenticate('jwt', {session: false}), async 
 // !!
 // !! wishlist routes !!
 // !!
+router.use("/wishlist", wishlistRouter);
 
 
 export const userRouter = router;
