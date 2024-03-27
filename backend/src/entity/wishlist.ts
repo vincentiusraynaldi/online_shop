@@ -1,30 +1,33 @@
-// import { Item } from "./item";
-// import {
-//     Entity,
-//     ManyToOne,
-//     OneToMany,
-//     OneToOne,
-//     Property,
-// }
-// from "@mikro-orm/core";
-// import { BaseEntity } from "./baseEntity";
+import { Item, User } from "./";
+import {
+    Entity,
+    ManyToMany,
+    ManyToOne,
+    OneToOne,
+    Property,
+}
+from "@mikro-orm/core";
+import { BaseEntity } from "./baseEntity";
+import { WishlistUserItem } from "./wishlist_user_item";
 
-// @Entity()
-// class Wishlist extends BaseEntity {
-//     @OneToOne()
-//     userId: string;
+@Entity()
+class Wishlist extends BaseEntity {
+    @ManyToOne({entity: () => User, inversedBy: (user: User) => user.wishlists})
+    userId!: string;
 
-//     @OneToMany(() => Item, item => item.wishlist)
-//     items: Item[];
+    @ManyToMany({ entity: () => Item, pivotEntity: () => WishlistUserItem})
+    items = new Set<Item>();
 
-//     constructor(userId: string, items : Item[] ) {
-//         super();
-//         this.userId = userId;
-//         this.items = items;
-//     }
-// }
+    @Property()
+    wishlistName?: string;
 
-// export { Wishlist };
+    constructor(wishlistName?: string) {
+        super();
+        this.wishlistName = wishlistName;
+    }
+}
+
+export { Wishlist };
 
 //!! need to think about how to implement the wishlist entity
 //!! need to think about composition or asosiation of wishlist from user entity

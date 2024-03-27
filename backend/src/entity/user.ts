@@ -1,5 +1,6 @@
 import {
     Entity,
+    OneToMany,
     Property,
 }
 from "@mikro-orm/core";
@@ -7,6 +8,7 @@ import { BaseEntity } from "./baseEntity";
 import { object, string} from "yup";
 import { RegisterUserDTO } from "../dto/userDTO";
 import { type } from "os";
+import { Wishlist } from "./wishlist";
 
 @Entity()
 export class User extends BaseEntity {
@@ -40,6 +42,9 @@ export class User extends BaseEntity {
 
     @Property({ nullable: true })
     googleId?: string;
+
+    @OneToMany({entity: () => Wishlist, mappedBy: 'userId'})
+    wishlists = new Set<Wishlist>();
 
     constructor(
         // email: string,

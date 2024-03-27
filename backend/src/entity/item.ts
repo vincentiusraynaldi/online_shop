@@ -31,7 +31,7 @@ export class Item extends BaseEntity {
     itemBrand!: string;
 
     @ManyToMany({ entity: () => Category, pivotEntity: () => CategoryItem,
-    inversedBy: (category: Category) => category.items})
+    mappedBy:(category: Category) => category.items})
     categories = new Set<Category>();
     // @Property()
     // itemCategory: string;
