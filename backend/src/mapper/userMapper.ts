@@ -1,5 +1,5 @@
 import { RegisterUserDTO, RegisterGoogleUserDTO } from '../dto/userDTO';
-import { Wishlist } from '../entity';
+import { Item, Wishlist } from '../entity';
 import { User } from '../entity/user';
 
 class UserMapper {

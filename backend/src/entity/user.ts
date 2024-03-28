@@ -1,14 +1,18 @@
 import {
+    Embedded,
     Entity,
     OneToMany,
     Property,
 }
 from "@mikro-orm/core";
 import { BaseEntity } from "./baseEntity";
-import { object, string} from "yup";
-import { RegisterUserDTO } from "../dto/userDTO";
-import { type } from "os";
-import { Wishlist } from "./wishlist";
+import { object, string } from "yup";
+import { 
+    Wishlist,
+    Cart,
+    Address 
+}
+from "./";
 
 @Entity()
 export class User extends BaseEntity {
@@ -26,18 +30,6 @@ export class User extends BaseEntity {
     lastName!: string;
 
     @Property({ nullable: true })
-    address?: string;
-
-    @Property({ nullable: true })
-    city?: string;
-
-    @Property({ nullable: true })
-    country?: string;
-
-    @Property({ nullable:true })
-    postalCode?: string;
-
-    @Property({ nullable: true })
     phoneNumber?: string;
 
     @Property({ nullable: true })
@@ -45,6 +37,12 @@ export class User extends BaseEntity {
 
     @OneToMany({entity: () => Wishlist, mappedBy: 'userId'})
     wishlists = new Set<Wishlist>();
+
+    @Embedded({ entity: () => Cart })
+    cart = new Cart();
+
+    @Embedded({ entity: () => Address })
+    address = new Address();
 
     constructor(
         // email: string,

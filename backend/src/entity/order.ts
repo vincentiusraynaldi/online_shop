@@ -1,5 +1,6 @@
 import {
     Entity,
+    ManyToMany,
     ManyToOne,
     OneToMany,
     Property,
@@ -18,12 +19,18 @@ export class Order extends BaseEntity {
     @ManyToOne({ entity: () => User })
     user!: User;
 
-    // @OneToMany({ mappedBy: , entity: () => Item })
-    // item!: Item[];
+    @ManyToMany({ entity: () => Item })
+    item = new Set<Item>();
 
     //address
-    
-    //payment method
+    @Property()
+    address!: string;
+
+    @Property()
+    orderStatus!: string; //pending, processing, shipped, delivered
+
+    @Property()
+    paymentMethod!: string; //cash, card
 
     constructor(totalPrice: number) {
         super();
