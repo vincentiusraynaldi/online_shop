@@ -1,14 +1,13 @@
 import {
     Entity,
     ManyToMany,
-    ManyToOne,
-    OneToMany,
     Property,
 }
 from "@mikro-orm/core";
 import { BaseEntity } from "./baseEntity";
-// import { Wishlist } from "./wishlist";
-import { Category } from "./category";
+import {
+    Category 
+} from "./";
 import { object, string, number } from "yup";
 import { CategoryItem } from "./category_item";
 
@@ -30,14 +29,12 @@ export class Item extends BaseEntity {
     @Property()
     itemBrand!: string;
 
+    @Property()
+    availableStock!: number;
+
     @ManyToMany({ entity: () => Category, pivotEntity: () => CategoryItem,
     mappedBy:(category: Category) => category.items})
     categories = new Set<Category>();
-    // @Property()
-    // itemCategory: string;
-
-    // @OneToMany(() => Wishlist, wishlist => wishlist.items)
-    // wishlist: Wishlist;
 
     // @Property()
     // itemImage: string[] | void ;
