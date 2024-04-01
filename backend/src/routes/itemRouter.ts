@@ -61,15 +61,25 @@ router.put('/edit/:id', async (req, res) => {
 
 //get item by id
 router.get('/id/:id', async (req, res) => {
-    const item = await DI.itemRepository.findOne({ id: req.params.id });
-    res.send(item);
+    try {
+        const item = await DI.itemRepository.findOne({ id: req.params.id });
+        res.send(item);
+    } catch (e: any) {
+        return res.status(400).send({ message: e.message });
+        
+    }
 });
 
 // get items by name
 router.get('/name/:name', async (req, res) => {
-    const searchPattern = new RegExp(req.params.name, 'i'); // 'i' for case-insensitive search
-    const items = await DI.itemRepository.find({ itemName:  searchPattern });
-    res.send(items);
+    try {
+        const searchPattern = new RegExp(req.params.name, 'i'); // 'i' for case-insensitive search
+        const items = await DI.itemRepository.find({ itemName:  searchPattern });
+        res.send(items);
+    } catch (e: any) {
+        return res.status(400).send({ message: e.message });
+        
+    }
 });
 
 
@@ -77,21 +87,69 @@ router.get('/name/:name', async (req, res) => {
 // todo: must check if the user wanted to show items from multiple categories
 // !! check if query will be joined or seperated (items from all categories or items from each category)
 router.get('/category/:category', async (req, res) => {
-    const categories = req.params.category.split(','); // Split the category parameter into an array of categories
-    const categoryEntity = await DI.categoryRepository.find({ categoryName: { $in: categories } });
-    const items = await DI.itemRepository.find(categoryEntity, { populate: ['categories'] });
-    res.send(items);
+try {
+        const categories = req.params.category.split(','); // Split the category parameter into an array of categories
+        const categoryEntity = await DI.categoryRepository.find({ categoryName: { $in: categories } });
+        const items = await DI.itemRepository.find(categoryEntity, { populate: ['categories'] });
+        res.send(items);
+} catch (e: any) {
+        return res.status(400).send({ message: e.message });    
+}
 });
 
 // add item to category
 router.put('/addCategory/:itemId/:categoryId', async (req, res) => {
-    const item = await DI.itemRepository.findOne({ id: req.params.itemId });
-    const category = await DI.categoryRepository.findOne({ id: req.params.categoryId });
-    if (!item || !category) return res.status(404).send({ message: 'Item or Category not found' });
+try {
+        const item = await DI.itemRepository.findOne({ id: req.params.itemId });
+        const category = await DI.categoryRepository.findOne({ id: req.params.categoryId });
+        if (!item || !category) return res.status(404).send({ message: 'Item or Category not found' });
+    
+        item.categories.add(category);
+        await DI.itemRepository.flush();
+        res.send(item);
+} catch (e: any) {
+    return res.status(400).send({ message: e.message });
+}
+});
 
-    item.categories.add(category);
-    await DI.itemRepository.flush();
-    res.send(item);
+// add item to wishlist
+router.post('/addToWishlist/:itemId/:wishlistId', async (req, res) => {
+try {
+        const item = await DI.itemRepository.findOne({ id: req.params.itemId });
+        const wishlist = await DI.wishlistRepository.findOne({ id: req.params.wishlistId });
+        if (!item || !wishlist) return res.status(404).send({ message: 'Item or Wishlist not found' });
+
+        //check if item is already in wishlist
+        if (wishlist.items.has(item)) return res.status(400).send({ message: 'Item already in wishlist' });
+
+        wishlist.items.add(item);
+        await DI.wishlistRepository.flush();
+        res.send(wishlist);
+} catch (e: any) {
+    return res.status(400).send({ message: e.message });    
+}
+});
+
+// add item to cart
+router.post("/addToCart/:itemId", async (req, res) => {
+    try{
+        const existingItem = await DI.itemRepository.findOne(req.params.itemId);
+        if (!existingItem) return res.status(404).send({ message: "Item not found" });
+
+        const user = req.user;
+        
+        //add item in cart if there is no such item in cart
+        if(!user.cart.has(existingItem)){
+            user.cart.set(existingItem,1);
+            await DI.userRepository.flush();
+        } else { // add item quantity if there is already such item in cart
+            user.cart.set(existingItem, user.cart.get(existingItem) + req.body.quantity);
+            await DI.userRepository.flush();   
+        }
+    }
+    catch(e:any){
+        return res.status(400).send({ message: e.message });
+    }
 });
 
 export const itemRouter = router;

@@ -5,7 +5,10 @@ import {
     Item, 
     User, 
     Order,
-    Category
+    Category,
+    Cart,
+    Wishlist,
+    Address
     } from "./entity";
 
 import { 
@@ -37,6 +40,9 @@ export const DI = {} as {
     userRepository: EntityRepository<User>;
     orderRepository: EntityRepository<Order>;
     categoryRepository: EntityRepository<Category>;
+    cartRepository: EntityRepository<Cart>;
+    wishlistRepository: EntityRepository<Wishlist>;
+    addressRepository: EntityRepository<Address>;
 }
 
 export const initializeORM = async () => {

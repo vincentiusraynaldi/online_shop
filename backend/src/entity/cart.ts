@@ -4,5 +4,5 @@ import { Item } from "./";
 @Embeddable()
 export class Cart {
     // Add properties here
-    items = new Set<Item>();
+    items = new Map<Item, number>();
 }

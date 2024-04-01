@@ -12,7 +12,10 @@ import {
 import { UserMapper } from "../mapper/userMapper";
 import { Auth } from "../middleware/auth.middleware";
 import passport from "passport";
-import { wishlistRouter } from "./";
+import { 
+    wishlistRouter,
+    cartRouter
+} from "./";
 
 const router = Router({mergeParams: true});
 
@@ -163,10 +166,32 @@ router.get("/profile/:id",passport.authenticate('jwt', {session: false}), async 
 
 //logout user
 
+// get order info
+//todo check if correct
+router.get('/orders/:orderId', async (req, res) => {
+    try{
+        const id = req.params.orderId;
+        const order = await DI.orderRepository.findOne(id);
+        if(!order){
+            return res.status(404).json({ error: "Order not found" });
+        }
+
+        if(req.user?.id === order.user.id){
+            return res.status(200).json(order);
+        } else {
+            return res.status(401).json({ error: "Unauthorized" });
+        }
+    }
+    catch(e: any){
+        return res.status(400).json({ message: e.message });
+    }
+});
+
 
 // !!
 // !! cart routes !!
 // !!
+router.use("/cart", cartRouter);
 
 // !!
 // !! wishlist routes !!
