@@ -50,6 +50,11 @@ export const initializeORM = async () => {
     DI.em = DI.orm.em;
     DI.itemRepository = DI.orm.em.getRepository(Item);
     DI.userRepository = DI.orm.em.getRepository(User);
+    DI.orderRepository = DI.orm.em.getRepository(Order);
+    DI.categoryRepository = DI.orm.em.getRepository(Category);
+    DI.cartRepository = DI.orm.em.getRepository(Cart);
+    DI.wishlistRepository = DI.orm.em.getRepository(Wishlist);
+    DI.addressRepository = DI.orm.em.getRepository(Address);
 }
 
 export const initializeServer = async () => {

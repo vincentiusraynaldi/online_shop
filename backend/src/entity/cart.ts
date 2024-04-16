@@ -1,8 +1,18 @@
-import { Embeddable, Entity, OneToMany } from "@mikro-orm/core";
-import { Item } from "./";
+import { Collection, Embeddable, Entity, ManyToMany, OneToMany, OneToOne, Property } from "@mikro-orm/core";
+import { Item, User } from "./";
+import { CartItem } from "./cartItem";
+import { BaseEntity } from "./baseEntity";
 
-@Embeddable()
-export class Cart {
+@Entity()
+export class Cart extends BaseEntity{
+
+    @OneToOne({ entity: () => User, onDelete: 'cascade' })
+    user!: User;
+
     // Add properties here
-    items = new Map<Item, number>();
+    @ManyToMany({ entity: () => CartItem })
+    items = new Collection<CartItem>(this);
+
+    @Property()
+    totalPrice!: number;
 }
