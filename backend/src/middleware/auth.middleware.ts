@@ -11,7 +11,7 @@ dotenv.config({ path: path.join(__dirname, '../../.env') });
 
 const BCRYPT_SALT = 10;
 
-const JWT_SECRET = process.env.token;
+const JWT_SECRET = process.env.JWT_SECRET;
 // console.log("jwt secret: ", JWT_SECRET);
 
 const JWT_OPTIONS: SignOptions = {

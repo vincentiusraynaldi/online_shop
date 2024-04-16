@@ -1,4 +1,4 @@
-import { ManyToMany, Property } from "@mikro-orm/core";
+import { Collection, ManyToMany, Property } from "@mikro-orm/core";
 import { BaseEntity } from "./baseEntity";
 import { Entity, OneToMany } from "@mikro-orm/core";
 import { Item } from "./item";
@@ -11,7 +11,7 @@ export class Category extends BaseEntity{
 
     @ManyToMany({ entity: () => Item, pivotEntity: () => CategoryItem,
     inversedBy: (item: Item) => item.categories})
-    items = new Set<Item>();
+    items = new Collection<Item>(this);
 
     constructor(categoryName: string) {
         super();

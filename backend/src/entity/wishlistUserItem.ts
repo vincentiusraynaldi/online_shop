@@ -1,5 +1,5 @@
-import { Entity, ManyToOne } from "@mikro-orm/core";
-import { Wishlist, User, Item } from "./";
+import { Collection, Entity, ManyToOne } from "@mikro-orm/core";
+import { Wishlist, User, Item } from ".";
 
 @Entity()
 export class WishlistUserItem {
@@ -10,9 +10,9 @@ export class WishlistUserItem {
     user!: User;
 
     @ManyToOne({ entity: () => Item, primary: true })
-    items = new Set<Item>;
+    items = new Collection<Item>(this);
 
-    constructor(wishlist: Wishlist, user: User, items: Set<Item>) {
+    constructor(wishlist: Wishlist, user: User, items: Collection<Item>) {
         this.wishlist = wishlist;
         this.user = user;
         this.items = items;

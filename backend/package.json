@@ -23,6 +23,7 @@
     "passport-google-oauth20": "^2.0.0",
     "passport-jwt": "^4.0.1",
     "prettier": "^3.0.3",
+    "stripe": "^15.2.0",
     "uuid": "^9.0.0",
     "yup": "^1.2.0"
   },
@@ -36,6 +37,7 @@
     "@types/node": "^20.6.5",
     "@types/passport-google-oauth20": "^2.0.14",
     "@types/passport-jwt": "^3.0.13",
+    "@types/stripe": "^8.0.417",
     "@types/uuid": "^9.0.4",
     "ts-node": "^10.9.2",
     "tsc-watch": "^6.0.4",

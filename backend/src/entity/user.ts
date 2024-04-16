@@ -39,7 +39,7 @@ export class User extends BaseEntity {
     googleId?: string;
 
     @OneToMany({entity: () => Wishlist, mappedBy: 'userId'})
-    wishlists = new Set<Wishlist>();
+    wishlists = new Collection<Wishlist>(this);
 
     @OneToOne({ entity: () => Cart, owner: true, nullable: true, orphanRemoval: true })
     cart?: Cart;

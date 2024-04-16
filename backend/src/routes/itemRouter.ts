@@ -120,7 +120,7 @@ try {
         if (!item || !wishlist) return res.status(404).send({ message: 'Item or Wishlist not found' });
 
         //check if item is already in wishlist
-        if (wishlist.items.has(item)) return res.status(400).send({ message: 'Item already in wishlist' });
+        if (wishlist.items.contains(item)) return res.status(400).send({ message: 'Item already in wishlist' });
 
         wishlist.items.add(item);
         await DI.wishlistRepository.flush();

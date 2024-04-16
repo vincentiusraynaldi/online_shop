@@ -16,3 +16,6 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./itemRouter"), exports);
 __exportStar(require("./userRouter"), exports);
+__exportStar(require("./categoryRouter"), exports);
+__exportStar(require("./wishlistRouter"), exports);
+__exportStar(require("./cartRouter"), exports);

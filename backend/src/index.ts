@@ -8,7 +8,10 @@ import {
     Category,
     Cart,
     Wishlist,
-    Address
+    Address,
+    CartItem,
+    OrderItem,
+    WishlistUserItem
     } from "./entity";
 
 import { 
@@ -26,9 +29,20 @@ import {
     
 import passport from "passport";
 import './passport-config';
+import Stripe from "stripe";
+import dotenv from "dotenv";
+import path from "path";
 // import { Auth } from './middleware/auth.middleware';
 
 const app = express();
+
+dotenv.config({ path: path.join(__dirname, '../.env') });
+
+if (!process.env.STRIPE_TEST_SECRET_KEY) {
+    throw new Error('No STRIPE_TEST_SECRET_KEY provided');
+}
+
+const STRIPE_TEST_SECRET_KEY = process.env.STRIPE_TEST_SECRET_KEY;
 
 app.use(cors());
 
@@ -43,6 +57,10 @@ export const DI = {} as {
     cartRepository: EntityRepository<Cart>;
     wishlistRepository: EntityRepository<Wishlist>;
     addressRepository: EntityRepository<Address>;
+    cartItemRepository: EntityRepository<CartItem>;
+    orderItemRepository: EntityRepository<OrderItem>;
+    wishlistUserItemRepository: EntityRepository<WishlistUserItem>;
+    stripe: Stripe;
 }
 
 export const initializeORM = async () => {
@@ -55,6 +73,12 @@ export const initializeORM = async () => {
     DI.cartRepository = DI.orm.em.getRepository(Cart);
     DI.wishlistRepository = DI.orm.em.getRepository(Wishlist);
     DI.addressRepository = DI.orm.em.getRepository(Address);
+    DI.cartItemRepository = DI.orm.em.getRepository(CartItem);
+    DI.orderItemRepository = DI.orm.em.getRepository(OrderItem);
+    DI.wishlistUserItemRepository = DI.orm.em.getRepository(WishlistUserItem);
+    DI.stripe = new Stripe(STRIPE_TEST_SECRET_KEY, {
+        apiVersion: '2024-04-10',
+    });
 }
 
 export const initializeServer = async () => {

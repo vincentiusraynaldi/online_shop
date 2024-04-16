@@ -15,15 +15,22 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.userRouter = void 0;
 const express_1 = require("express");
 const __1 = require("../");
-const entities_1 = require("../entities");
+const entity_1 = require("../entity");
 const userMapper_1 = require("../mapper/userMapper");
 const auth_middleware_1 = require("../middleware/auth.middleware");
 const passport_1 = __importDefault(require("passport"));
+//todo: cart and wishlist routes from index.ts doesnt work, idk why
+// import { 
+//     wishlistRouter,
+//     cartRouter
+// } from "./";
+const cartRouter_1 = require("./cartRouter");
+const wishlistRouter_1 = require("./wishlistRouter");
 const router = (0, express_1.Router)({ mergeParams: true });
 //register new user 
 router.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const validatedData = yield entities_1.RegisterUserSchema.validate(req.body).catch((err) => {
+        const validatedData = yield entity_1.RegisterUserSchema.validate(req.body).catch((err) => {
             res.status(400).json({ error: err.errors });
         });
         if (!validatedData) {
@@ -59,7 +66,7 @@ router.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, functio
 router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // check if the email and password are valid
-        const validatedData = yield entities_1.LoginUserSchema.validate(req.body).catch((err) => {
+        const validatedData = yield entity_1.LoginUserSchema.validate(req.body).catch((err) => {
             res.status(400).json({ error: err.errors });
         });
         if (!validatedData) {
@@ -145,10 +152,36 @@ router.get("/profile/:id", passport_1.default.authenticate('jwt', { session: fal
     }
 }));
 //logout user
+// get order info
+//todo check if correct
+router.get('/orders/:orderId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _c;
+    try {
+        const id = req.params.orderId;
+        const order = yield __1.DI.orderRepository.findOne(id);
+        if (!order) {
+            return res.status(404).json({ error: "Order not found" });
+        }
+        if (((_c = req.user) === null || _c === void 0 ? void 0 : _c.id) === order.user.id) {
+            return res.status(200).json(order);
+        }
+        else {
+            return res.status(401).json({ error: "Unauthorized" });
+        }
+    }
+    catch (e) {
+        return res.status(400).json({ message: e.message });
+    }
+}));
 // !!
 // !! cart routes !!
 // !!
+router.use("/cart", cartRouter_1.cartRouter);
 // !!
 // !! wishlist routes !!
+// !!
+router.use("/wishlist", wishlistRouter_1.wishlistRouter);
+// !!
+// !! address routes !!
 // !!
 exports.userRouter = router;

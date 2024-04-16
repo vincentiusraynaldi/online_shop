@@ -86,10 +86,10 @@ router.delete("/:id/:itemId", async (req, res) => {
         if (!item) return res.status(404).send({ message: "Item not found" });
 
         // check if item is in wishlist
-        if (!wishlist.items.has(item)) 
+        if (!wishlist.items.contains(item)) 
         return res.status(404).send({ message: "Item not in wishlist" });
 
-        wishlist.items.delete(item);
+        wishlist.items.remove(item);
         await DI.wishlistRepository.flush();
         return res.status(200).send({ message: "Item removed from wishlist" });
     }catch(e: any){

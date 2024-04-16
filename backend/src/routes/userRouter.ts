@@ -12,10 +12,13 @@ import {
 import { UserMapper } from "../mapper/userMapper";
 import { Auth } from "../middleware/auth.middleware";
 import passport from "passport";
-import { 
-    wishlistRouter,
-    cartRouter
-} from "./";
+//todo: cart and wishlist routes from index.ts doesnt work, idk why
+// import { 
+//     wishlistRouter,
+//     cartRouter
+// } from "./";
+import { cartRouter } from "./cartRouter";
+import { wishlistRouter } from "./wishlistRouter";
 
 const router = Router({mergeParams: true});
 

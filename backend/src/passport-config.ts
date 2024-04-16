@@ -12,7 +12,7 @@ import path from 'path';
 
 dotenv.config({ path: path.join(__dirname, '../.env') });
 
-const JWT_SECRET = process.env.token as string;
+const JWT_SECRET = process.env.JWT_SECRET as string;
 
 console.log("jwt secret: ", JWT_SECRET);
 

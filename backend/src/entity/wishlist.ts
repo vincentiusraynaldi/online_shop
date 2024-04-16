@@ -1,5 +1,6 @@
 import { Item, User } from "./";
 import {
+    Collection,
     Entity,
     ManyToMany,
     ManyToOne,
@@ -8,7 +9,7 @@ import {
 }
 from "@mikro-orm/core";
 import { BaseEntity } from "./baseEntity";
-import { WishlistUserItem } from "./wishlist_user_item";
+import { WishlistUserItem } from "./wishlistUserItem";
 import { object, string, number } from "yup";
 
 @Entity()
@@ -17,7 +18,7 @@ class Wishlist extends BaseEntity {
     userId!: string;
 
     @ManyToMany({ entity: () => Item, pivotEntity: () => WishlistUserItem})
-    items = new Set<Item>();
+    items = new Collection<Item>(this);
 
     @Property()
     wishlistName?: string;

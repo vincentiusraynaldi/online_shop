@@ -18,7 +18,7 @@ const passport_jwt_1 = require("passport-jwt");
 const dotenv_1 = __importDefault(require("dotenv"));
 const path_1 = __importDefault(require("path"));
 dotenv_1.default.config({ path: path_1.default.join(__dirname, '../.env') });
-const JWT_SECRET = process.env.token;
+const JWT_SECRET = process.env.JWT_SECRET;
 console.log("jwt secret: ", JWT_SECRET);
 const opts = {
     jwtFromRequest: passport_jwt_1.ExtractJwt.fromAuthHeaderAsBearerToken(),

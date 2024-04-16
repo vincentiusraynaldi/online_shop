@@ -1,4 +1,5 @@
 import {
+    Collection,
     Entity,
     ManyToMany,
     Property,
@@ -34,7 +35,7 @@ export class Item extends BaseEntity {
 
     @ManyToMany({ entity: () => Category, pivotEntity: () => CategoryItem,
     mappedBy:(category: Category) => category.items})
-    categories = new Set<Category>();
+    categories = new Collection<Category>(this);
 
     // @Property()
     // itemImage: string[] | void ;

@@ -1,5 +1,6 @@
 import { CreateItemDTO } from "../dto/itemDTO";
-import { Item } from "../entity/item";
+import { Item, Category } from "../entity/";
+import { Collection } from "@mikro-orm/core";
 
 class itemMapper {
     static createItemFromDTO(dto: CreateItemDTO): Item {
@@ -9,7 +10,7 @@ class itemMapper {
         item.itemPrice = dto.itemPrice;
         item.itemWeight = dto.itemWeight;
         item.itemBrand = dto.itemBrand;
-        item.categories = new Set(dto.categories);
+        item.categories = new Collection<Category>(item);
         return item;
     }
 }

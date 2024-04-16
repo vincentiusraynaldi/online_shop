@@ -12,7 +12,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.itemRouter = void 0;
 const express_1 = require("express");
 const __1 = require("../");
-const entities_1 = require("../entities");
+const entity_1 = require("../entity");
+const mapper_1 = require("../mapper");
 const router = (0, express_1.Router)({ mergeParams: true });
 //get all item
 router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -22,16 +23,16 @@ router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 //add an item
 router.post('/newItem', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const validatedData = yield entities_1.CreateItemSchema.validate(req.body).catch((err) => { res.status(400).send({ error: err.errors }); });
+        const validatedData = yield entity_1.CreateItemSchema.validate(req.body).catch((err) => { res.status(400).send({ error: err.errors }); });
         if (!validatedData)
             return;
-        const CreateItemDTO = Object.assign({}, validatedData);
+        const CreateItemDTO = Object.assign(Object.assign({}, validatedData), { categories: req.body.categories || [] });
         const existingItem = yield __1.DI.itemRepository.findOne({
             itemName: CreateItemDTO.itemName
         });
         if (existingItem)
             return res.status(400).send({ message: 'Item already exists' });
-        const newItem = new entities_1.Item(CreateItemDTO);
+        const newItem = mapper_1.itemMapper.createItemFromDTO(CreateItemDTO);
         yield __1.DI.itemRepository.persistAndFlush(newItem);
         return res.status(201).json(newItem);
     }
@@ -55,18 +56,91 @@ router.put('/edit/:id', (req, res) => __awaiter(void 0, void 0, void 0, function
 }));
 //get item by id
 router.get('/id/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const item = yield __1.DI.itemRepository.findOne({ id: req.params.id });
-    res.send(item);
+    try {
+        const item = yield __1.DI.itemRepository.findOne({ id: req.params.id });
+        res.send(item);
+    }
+    catch (e) {
+        return res.status(400).send({ message: e.message });
+    }
 }));
 // get items by name
 router.get('/name/:name', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const searchPattern = new RegExp(req.params.name, 'i'); // 'i' for case-insensitive search
-    const items = yield __1.DI.itemRepository.find({ itemName: searchPattern });
-    res.send(items);
+    try {
+        const searchPattern = new RegExp(req.params.name, 'i'); // 'i' for case-insensitive search
+        const items = yield __1.DI.itemRepository.find({ itemName: searchPattern });
+        res.send(items);
+    }
+    catch (e) {
+        return res.status(400).send({ message: e.message });
+    }
 }));
-//get item by category
+// get items by category
+// todo: must check if the user wanted to show items from multiple categories
+// !! check if query will be joined or seperated (items from all categories or items from each category)
 router.get('/category/:category', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const items = yield __1.DI.itemRepository.find({ itemCategory: req.params.category });
-    res.send(items);
+    try {
+        const categories = req.params.category.split(','); // Split the category parameter into an array of categories
+        const categoryEntity = yield __1.DI.categoryRepository.find({ categoryName: { $in: categories } });
+        const items = yield __1.DI.itemRepository.find(categoryEntity, { populate: ['categories'] });
+        res.send(items);
+    }
+    catch (e) {
+        return res.status(400).send({ message: e.message });
+    }
+}));
+// add item to category
+router.put('/addCategory/:itemId/:categoryId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const item = yield __1.DI.itemRepository.findOne({ id: req.params.itemId });
+        const category = yield __1.DI.categoryRepository.findOne({ id: req.params.categoryId });
+        if (!item || !category)
+            return res.status(404).send({ message: 'Item or Category not found' });
+        item.categories.add(category);
+        yield __1.DI.itemRepository.flush();
+        res.send(item);
+    }
+    catch (e) {
+        return res.status(400).send({ message: e.message });
+    }
+}));
+// add item to wishlist
+router.post('/addToWishlist/:itemId/:wishlistId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const item = yield __1.DI.itemRepository.findOne({ id: req.params.itemId });
+        const wishlist = yield __1.DI.wishlistRepository.findOne({ id: req.params.wishlistId });
+        if (!item || !wishlist)
+            return res.status(404).send({ message: 'Item or Wishlist not found' });
+        //check if item is already in wishlist
+        if (wishlist.items.contains(item))
+            return res.status(400).send({ message: 'Item already in wishlist' });
+        wishlist.items.add(item);
+        yield __1.DI.wishlistRepository.flush();
+        res.send(wishlist);
+    }
+    catch (e) {
+        return res.status(400).send({ message: e.message });
+    }
+}));
+// add item to cart
+router.post("/addToCart/:itemId", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const existingItem = yield __1.DI.itemRepository.findOne(req.params.itemId);
+        if (!existingItem)
+            return res.status(404).send({ message: "Item not found" });
+        const user = req.user;
+        //add item in cart if there is no such item in cart
+        if (!user.cart.has(existingItem)) {
+            user.cart.set(existingItem, 1);
+            yield __1.DI.userRepository.flush();
+        }
+        else { // add item quantity if there is already such item in cart
+            user.cart.set(existingItem, user.cart.get(existingItem) + req.body.quantity);
+            yield __1.DI.userRepository.flush();
+        }
+    }
+    catch (e) {
+        return res.status(400).send({ message: e.message });
+    }
 }));
 exports.itemRouter = router;
