@@ -1,4 +1,5 @@
 import {
+    Collection,
     Entity,
     ManyToMany,
     ManyToOne,
@@ -10,6 +11,8 @@ import { BaseEntity } from "./baseEntity";
 import { object, string, number } from "yup";
 import { Item } from "./item";
 import { User } from "./user";
+import { Address } from "./address";
+import { OrderItem } from "./orderItem";
 
 @Entity()
 export class Order extends BaseEntity {
@@ -19,12 +22,12 @@ export class Order extends BaseEntity {
     @ManyToOne({ entity: () => User })
     user!: User;
 
-    @ManyToMany({ entity: () => Item })
-    item = new Set<Item>();
+    @ManyToMany({ entity: () => OrderItem })
+    items = new Collection<OrderItem>(this);
 
     //address
     @Property()
-    address!: string;
+    address!: Address;
 
     @Property()
     orderStatus!: string; //pending, processing, shipped, delivered

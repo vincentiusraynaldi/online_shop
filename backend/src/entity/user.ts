@@ -12,7 +12,8 @@ import { object, string } from "yup";
 import { 
     Wishlist,
     Cart,
-    Address 
+    Address, 
+    Order
 }
 from "./";
 
@@ -40,11 +41,11 @@ export class User extends BaseEntity {
     @OneToMany({entity: () => Wishlist, mappedBy: 'userId'})
     wishlists = new Set<Wishlist>();
 
-    // @Embedded({ entity: () => Cart })
-    // cart = new Cart();
-
     @OneToOne({ entity: () => Cart, owner: true, nullable: true, orphanRemoval: true })
     cart?: Cart;
+
+    @OneToMany({ entity: () => Order, mappedBy: 'user' })
+    orders = new Collection<Order>(this);
 
     @Embedded({ entity: () => Address })
     address = new Collection<Address>(this);
