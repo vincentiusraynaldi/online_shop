@@ -24,7 +24,7 @@ let Wishlist = class Wishlist extends baseEntity_1.BaseEntity {
 };
 exports.Wishlist = Wishlist;
 __decorate([
-    (0, core_1.ManyToOne)({ entity: () => _1.User }),
+    (0, core_1.ManyToOne)({ entity: () => _1.User, lazy: true }),
     __metadata("design:type", _1.User)
 ], Wishlist.prototype, "user", void 0);
 __decorate([

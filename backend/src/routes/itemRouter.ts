@@ -114,33 +114,6 @@ try {
 }
 });
 
-// add item to wishlist
-router.post('/addToWishlist/:itemId/:wishlistId',passport.authenticate("jwt", {session: false}), async (req, res) => {
-try {
-        const user = req.user;
-        console.log(user);
-        const item = await DI.itemRepository.findOne({ id: req.params.itemId });
-
-        await user.wishlists.init();
-
-        const wishlist = user.wishlists.getItems().find((wishlist: Wishlist) => wishlist.id === req.params.wishlistId);
-        if (!item || !wishlist) return res.status(404).send({ message: 'Item or Wishlist not found' });
-
-        await wishlist.items.init();
-
-        //check if item is already in wishlist
-        if (wishlist.items.contains(item)) return res.status(400).send({ message: 'Item already in wishlist' });
-
-        wishlist.items.add(item);
-        wishlist.user = user;
-        await DI.userRepository.flush();
-        
-        res.send(wishlist);
-} catch (e: any) {
-    return res.status(400).send({ message: e.message });    
-}
-});
-
 // add item to cart
 router.post("/addToCart/:itemId", async (req, res) => {
     try{

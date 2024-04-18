@@ -19,7 +19,7 @@ const entity_1 = require("../entity");
 const passport_1 = __importDefault(require("passport"));
 const router = (0, express_1.Router)({ mergeParams: true });
 // add wishlist
-router.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post("/", passport_1.default.authenticate("jwt", { session: false }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const validatedData = yield entity_1.CreateWishlistSchema.validate(req.body).catch((err) => { res.status(400).send({ error: err.errors }); });
         if (!validatedData)
@@ -42,7 +42,7 @@ router.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 }));
 // show all wishlist
-router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/", passport_1.default.authenticate("jwt", { session: false }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = req.user;
         yield user.wishlists.init();
@@ -69,12 +69,8 @@ router.get("/:id", passport_1.default.authenticate("jwt", { session: false }), (
     }
 }));
 // update wishlist (change name)
-router.put("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.put("/:id", passport_1.default.authenticate("jwt", { session: false }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        // const wishlist = await DI.wishlistRepository.findOne({ id: req.params.id });
-        // if (!wishlist) return res.status(404).send({ message: "Wishlist not found" });
-        // Object.assign(wishlist, req.body);
-        // await DI.wishlistRepository.flush();
         const user = req.user;
         yield user.wishlists.init();
         const wishlist = user.wishlists.getItems().find((wishlist) => wishlist.id === req.params.id);
@@ -89,9 +85,8 @@ router.put("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 }));
 // delete wishlist
-router.delete("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.delete("/:id", passport_1.default.authenticate("jwt", { session: false }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        // const wishlist = await DI.wishlistRepository.findOne({ id: req.params.id });
         const user = req.user;
         yield user.wishlists.init();
         const wishlist = user.wishlists.getItems().find((wishlist) => wishlist.id === req.params.id);
@@ -106,7 +101,7 @@ router.delete("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
 }));
 // delete item in wishlist
-router.delete("/:id/:itemId", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.delete("/:id/:itemId", passport_1.default.authenticate("jwt", { session: false }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // const wishlist = await DI.wishlistRepository.findOne({ id: req.params.id });
         const user = req.user;
@@ -117,12 +112,38 @@ router.delete("/:id/:itemId", (req, res) => __awaiter(void 0, void 0, void 0, fu
         const item = yield __1.DI.itemRepository.findOne({ id: req.params.itemId });
         if (!item)
             return res.status(404).send({ message: "Item not found" });
+        yield wishlist.items.init();
         // check if item is in wishlist
         if (!wishlist.items.contains(item))
             return res.status(404).send({ message: "Item not in wishlist" });
         wishlist.items.remove(item);
         yield __1.DI.wishlistRepository.flush();
         return res.status(200).send({ message: "Item removed from wishlist" });
+    }
+    catch (e) {
+        return res.status(400).send({ message: e.message });
+    }
+}));
+// add item to wishlist
+router.post('/:wishlistId/:itemId', passport_1.default.authenticate("jwt", { session: false }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = req.user;
+        console.log(user);
+        const item = yield __1.DI.itemRepository.findOne({ id: req.params.itemId });
+        yield user.wishlists.init();
+        const wishlist = user.wishlists.getItems().find((wishlist) => wishlist.id === req.params.wishlistId);
+        if (!item)
+            return res.status(404).send({ message: 'Item not found' });
+        if (!wishlist)
+            return res.status(404).send({ message: 'Wishlist not found' });
+        yield wishlist.items.init();
+        //check if item is already in wishlist
+        if (wishlist.items.contains(item))
+            return res.status(400).send({ message: 'Item already in wishlist' });
+        wishlist.items.add(item);
+        wishlist.user = user;
+        yield __1.DI.userRepository.flush();
+        res.send(wishlist);
     }
     catch (e) {
         return res.status(400).send({ message: e.message });

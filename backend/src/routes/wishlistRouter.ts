@@ -6,7 +6,7 @@ import passport from "passport";
 const router = Router({mergeParams: true})
 
 // add wishlist
-router.post("/", async (req, res) => {
+router.post("/",passport.authenticate("jwt", {session: false}), async (req, res) => {
     try {
         const validatedData = await CreateWishlistSchema.validate(req.body).catch(
             (err) => {res.status(400).send({ error: err.errors })}
@@ -34,7 +34,7 @@ router.post("/", async (req, res) => {
 });
 
 // show all wishlist
-router.get("/", async (req, res) => {
+router.get("/",passport.authenticate("jwt", {session: false}), async (req, res) => {
     try{
         const user = req.user;
         await user.wishlists.init();
@@ -62,14 +62,8 @@ router.get("/:id", passport.authenticate("jwt", {session: false}), async (req, r
 });
 
 // update wishlist (change name)
-router.put("/:id", async (req, res) => {
+router.put("/:id",passport.authenticate("jwt", {session: false}), async (req, res) => {
     try{
-        // const wishlist = await DI.wishlistRepository.findOne({ id: req.params.id });
-        // if (!wishlist) return res.status(404).send({ message: "Wishlist not found" });
-
-        // Object.assign(wishlist, req.body);
-        // await DI.wishlistRepository.flush();
-
         const user = req.user;
         await user.wishlists.init();
         const wishlist = user.wishlists.getItems().find((wishlist: Wishlist) => wishlist.id === req.params.id);
@@ -83,9 +77,8 @@ router.put("/:id", async (req, res) => {
 });
 
 // delete wishlist
-router.delete("/:id", async (req, res) => {
+router.delete("/:id",passport.authenticate("jwt", {session: false}), async (req, res) => {
     try{
-        // const wishlist = await DI.wishlistRepository.findOne({ id: req.params.id });
         const user = req.user;
         await user.wishlists.init();
         const wishlist = user.wishlists.getItems().find((wishlist: Wishlist) => wishlist.id === req.params.id);
@@ -99,7 +92,7 @@ router.delete("/:id", async (req, res) => {
 });
 
 // delete item in wishlist
-router.delete("/:id/:itemId", async (req, res) => {
+router.delete("/:id/:itemId",passport.authenticate("jwt", {session: false}), async (req, res) => {
     try{
         // const wishlist = await DI.wishlistRepository.findOne({ id: req.params.id });
         const user = req.user;
@@ -109,6 +102,9 @@ router.delete("/:id/:itemId", async (req, res) => {
 
         const item = await DI.itemRepository.findOne({ id: req.params.itemId });
         if (!item) return res.status(404).send({ message: "Item not found" });
+
+
+        await wishlist.items.init();
 
         // check if item is in wishlist
         if (!wishlist.items.contains(item)) 
@@ -121,5 +117,33 @@ router.delete("/:id/:itemId", async (req, res) => {
         return res.status(400).send({ message: e.message });
     }
 });
+
+// add item to wishlist
+router.post('/:wishlistId/:itemId',passport.authenticate("jwt", {session: false}), async (req, res) => {
+    try {
+            const user = req.user;
+            console.log(user);
+            const item = await DI.itemRepository.findOne({ id: req.params.itemId });
+    
+            await user.wishlists.init();
+    
+            const wishlist = user.wishlists.getItems().find((wishlist: Wishlist) => wishlist.id === req.params.wishlistId);
+            if (!item) return res.status(404).send({ message: 'Item not found' });
+            if (!wishlist) return res.status(404).send({ message: 'Wishlist not found' });
+    
+            await wishlist.items.init();
+    
+            //check if item is already in wishlist
+            if (wishlist.items.contains(item)) return res.status(400).send({ message: 'Item already in wishlist' });
+    
+            wishlist.items.add(item);
+            wishlist.user = user;
+            await DI.userRepository.flush();
+            
+            res.send(wishlist);
+    } catch (e: any) {
+        return res.status(400).send({ message: e.message });    
+    }
+    });
 
 export const wishlistRouter = router;
