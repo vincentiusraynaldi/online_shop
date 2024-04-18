@@ -9,11 +9,22 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Address = void 0;
+exports.CreateNewAddressSchema = exports.Address = void 0;
 const core_1 = require("@mikro-orm/core");
-let Address = class Address {
+const baseEntity_1 = require("./baseEntity");
+const _1 = require("./");
+const yup_1 = require("yup");
+let Address = class Address extends baseEntity_1.BaseEntity {
+    constructor() {
+        super();
+        this.users = new core_1.Collection(this);
+    }
 };
 exports.Address = Address;
+__decorate([
+    (0, core_1.ManyToMany)({ entity: () => _1.User }),
+    __metadata("design:type", Object)
+], Address.prototype, "users", void 0);
 __decorate([
     (0, core_1.Property)({ nullable: true }),
     __metadata("design:type", String)
@@ -35,5 +46,13 @@ __decorate([
     __metadata("design:type", String)
 ], Address.prototype, "postalCode", void 0);
 exports.Address = Address = __decorate([
-    (0, core_1.Embeddable)()
+    (0, core_1.Entity)(),
+    __metadata("design:paramtypes", [])
 ], Address);
+exports.CreateNewAddressSchema = (0, yup_1.object)({
+    street: (0, yup_1.string)().required(),
+    houseNumber: (0, yup_1.string)().required(),
+    city: (0, yup_1.string)().required(),
+    country: (0, yup_1.string)().required(),
+    postalCode: (0, yup_1.string)().required()
+});

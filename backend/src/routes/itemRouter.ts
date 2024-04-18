@@ -3,10 +3,12 @@ import { Router } from 'express';
 import { DI } from '../';
 import {
 CreateItemSchema,
-Item
+Wishlist
  } from '../entity';
 import { CreateItemDTO } from '../dto';
 import { itemMapper } from '../mapper';
+import passport from 'passport';
+import { Collection } from '@mikro-orm/core';
 
 const router = Router({ mergeParams: true });
 
@@ -113,17 +115,26 @@ try {
 });
 
 // add item to wishlist
-router.post('/addToWishlist/:itemId/:wishlistId', async (req, res) => {
+router.post('/addToWishlist/:itemId/:wishlistId',passport.authenticate("jwt", {session: false}), async (req, res) => {
 try {
+        const user = req.user;
+        console.log(user);
         const item = await DI.itemRepository.findOne({ id: req.params.itemId });
-        const wishlist = await DI.wishlistRepository.findOne({ id: req.params.wishlistId });
+
+        await user.wishlists.init();
+
+        const wishlist = user.wishlists.getItems().find((wishlist: Wishlist) => wishlist.id === req.params.wishlistId);
         if (!item || !wishlist) return res.status(404).send({ message: 'Item or Wishlist not found' });
+
+        await wishlist.items.init();
 
         //check if item is already in wishlist
         if (wishlist.items.contains(item)) return res.status(400).send({ message: 'Item already in wishlist' });
 
         wishlist.items.add(item);
-        await DI.wishlistRepository.flush();
+        wishlist.user = user;
+        await DI.userRepository.flush();
+        
         res.send(wishlist);
 } catch (e: any) {
     return res.status(400).send({ message: e.message });    

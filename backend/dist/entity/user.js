@@ -29,7 +29,7 @@ let User = class User extends baseEntity_1.BaseEntity {
         super();
         this.wishlists = new core_1.Collection(this);
         this.orders = new core_1.Collection(this);
-        this.address = new core_1.Collection(this);
+        this.addresses = new core_1.Collection(this);
         // this.email = email;
         // this.firstName = firstName;
         // this.lastName = lastName;
@@ -67,7 +67,7 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "googleId", void 0);
 __decorate([
-    (0, core_1.OneToMany)({ entity: () => _1.Wishlist, mappedBy: 'userId' }),
+    (0, core_1.OneToMany)({ entity: () => _1.Wishlist, mappedBy: 'user', orphanRemoval: true }),
     __metadata("design:type", Object)
 ], User.prototype, "wishlists", void 0);
 __decorate([
@@ -79,9 +79,9 @@ __decorate([
     __metadata("design:type", Object)
 ], User.prototype, "orders", void 0);
 __decorate([
-    (0, core_1.Embedded)({ entity: () => _1.Address }),
+    (0, core_1.ManyToMany)({ entity: () => _1.Address, owner: true, inversedBy: 'users' }),
     __metadata("design:type", Object)
-], User.prototype, "address", void 0);
+], User.prototype, "addresses", void 0);
 exports.User = User = __decorate([
     (0, core_1.Entity)(),
     __metadata("design:paramtypes", [])

@@ -7,6 +7,7 @@ export type CreateItemDTO = {
     itemWeight: number;
     itemBrand: string;
     categories: Category[];
+    availableStock: number;
     // itemCategory: string;
     // itemImage: string[];
 };

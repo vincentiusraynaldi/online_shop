@@ -13,22 +13,22 @@ exports.CreateWishlistSchema = exports.Wishlist = void 0;
 const _1 = require("./");
 const core_1 = require("@mikro-orm/core");
 const baseEntity_1 = require("./baseEntity");
-const wishlistUserItem_1 = require("./wishlistUserItem");
 const yup_1 = require("yup");
 let Wishlist = class Wishlist extends baseEntity_1.BaseEntity {
     constructor(wishlistName) {
         super();
         this.items = new core_1.Collection(this);
         this.wishlistName = wishlistName;
+        this.items = new core_1.Collection(this);
     }
 };
 exports.Wishlist = Wishlist;
 __decorate([
-    (0, core_1.ManyToOne)({ entity: () => _1.User, inversedBy: (user) => user.wishlists }),
-    __metadata("design:type", String)
-], Wishlist.prototype, "userId", void 0);
+    (0, core_1.ManyToOne)({ entity: () => _1.User }),
+    __metadata("design:type", _1.User)
+], Wishlist.prototype, "user", void 0);
 __decorate([
-    (0, core_1.ManyToMany)({ entity: () => _1.Item, pivotEntity: () => wishlistUserItem_1.WishlistUserItem }),
+    (0, core_1.ManyToMany)({ entity: () => _1.Item }),
     __metadata("design:type", Object)
 ], Wishlist.prototype, "items", void 0);
 __decorate([

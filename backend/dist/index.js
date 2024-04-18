@@ -44,7 +44,6 @@ const initializeORM = () => __awaiter(void 0, void 0, void 0, function* () {
     exports.DI.addressRepository = exports.DI.orm.em.getRepository(entity_1.Address);
     exports.DI.cartItemRepository = exports.DI.orm.em.getRepository(entity_1.CartItem);
     exports.DI.orderItemRepository = exports.DI.orm.em.getRepository(entity_1.OrderItem);
-    exports.DI.wishlistUserItemRepository = exports.DI.orm.em.getRepository(entity_1.WishlistUserItem);
     exports.DI.stripe = new stripe_1.default(STRIPE_TEST_SECRET_KEY, {
         apiVersion: '2024-04-10',
     });

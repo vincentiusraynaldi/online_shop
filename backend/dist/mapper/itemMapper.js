@@ -12,6 +12,7 @@ class itemMapper {
         item.itemWeight = dto.itemWeight;
         item.itemBrand = dto.itemBrand;
         item.categories = new core_1.Collection(item);
+        item.availableStock = dto.availableStock;
         return item;
     }
 }

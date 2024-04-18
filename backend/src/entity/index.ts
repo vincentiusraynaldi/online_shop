@@ -4,7 +4,6 @@ export * from "./order";
 export * from "./category";
 export * from "./wishlist";
 export * from "./cart";
-export * from "./wishlistUserItem";
 export * from "./order";
 export * from "./address";
 export * from "./cartItem";

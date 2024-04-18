@@ -8,11 +8,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.wishlistRouter = void 0;
 const express_1 = require("express");
 const __1 = require("../");
 const entity_1 = require("../entity");
+const passport_1 = __importDefault(require("passport"));
 const router = (0, express_1.Router)({ mergeParams: true });
 // add wishlist
 router.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -20,13 +24,18 @@ router.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const validatedData = yield entity_1.CreateWishlistSchema.validate(req.body).catch((err) => { res.status(400).send({ error: err.errors }); });
         if (!validatedData)
             return;
-        const existingWishlist = yield __1.DI.wishlistRepository.findOne({
-            wishlistName: validatedData.wishlistName
-        });
-        if (existingWishlist)
-            return res.status(400).send({ message: "Wishlist already exists" });
-        const newWishlist = yield __1.DI.wishlistRepository.persistAndFlush(validatedData);
-        return res.status(201).json(newWishlist);
+        // const existingWishlist = await DI.wishlistRepository.findOne({
+        //     wishlistName: validatedData.wishlistName
+        // });
+        // if (existingWishlist) return res.status(400).send({ message: "Wishlist already exists" });
+        // const newWishlist = await DI.wishlistRepository.persistAndFlush(validatedData);
+        // return res.status(201).json(newWishlist);
+        const user = req.user;
+        const wishlist = new entity_1.Wishlist(req.body);
+        // const wishlist = DI.wishlistRepository.create(req.body);
+        user.wishlists.add(wishlist);
+        yield __1.DI.userRepository.flush();
+        return res.status(201).json(wishlist);
     }
     catch (e) {
         return res.status(400).send({ message: e.message });
@@ -35,19 +44,24 @@ router.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 // show all wishlist
 router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const wishlist = yield __1.DI.wishlistRepository.findAll();
-        res.send(wishlist);
+        const user = req.user;
+        yield user.wishlists.init();
+        res.send(user.wishlists.getItems());
     }
     catch (e) {
         return res.status(400).send({ message: e.message });
     }
 }));
 // show all items in wishlist by id
-router.get("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/:id", passport_1.default.authenticate("jwt", { session: false }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const wishlist = yield __1.DI.wishlistRepository.findOne({ id: req.params.id });
+        const user = req.user;
+        yield user.wishlists.init();
+        const wishlist = user.wishlists.getItems().find((wishlist) => wishlist.id === req.params.id);
         if (!wishlist)
             return res.status(404).send({ message: "Wishlist not found" });
+        yield wishlist.items.init();
+        console.log(wishlist.items);
         res.send(wishlist.items);
     }
     catch (e) {
@@ -57,11 +71,17 @@ router.get("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 // update wishlist (change name)
 router.put("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const wishlist = yield __1.DI.wishlistRepository.findOne({ id: req.params.id });
+        // const wishlist = await DI.wishlistRepository.findOne({ id: req.params.id });
+        // if (!wishlist) return res.status(404).send({ message: "Wishlist not found" });
+        // Object.assign(wishlist, req.body);
+        // await DI.wishlistRepository.flush();
+        const user = req.user;
+        yield user.wishlists.init();
+        const wishlist = user.wishlists.getItems().find((wishlist) => wishlist.id === req.params.id);
         if (!wishlist)
             return res.status(404).send({ message: "Wishlist not found" });
         Object.assign(wishlist, req.body);
-        yield __1.DI.wishlistRepository.flush();
+        yield __1.DI.userRepository.flush();
         return res.status(200).json(wishlist);
     }
     catch (e) {
@@ -71,9 +91,13 @@ router.put("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 // delete wishlist
 router.delete("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const wishlist = yield __1.DI.wishlistRepository.findOne({ id: req.params.id });
+        // const wishlist = await DI.wishlistRepository.findOne({ id: req.params.id });
+        const user = req.user;
+        yield user.wishlists.init();
+        const wishlist = user.wishlists.getItems().find((wishlist) => wishlist.id === req.params.id);
         if (!wishlist)
             return res.status(404).send({ message: "Wishlist not found" });
+        yield __1.DI.userRepository.flush();
         yield __1.DI.wishlistRepository.removeAndFlush(wishlist);
         return res.status(200).send({ message: "Wishlist deleted" });
     }
@@ -84,7 +108,10 @@ router.delete("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* 
 // delete item in wishlist
 router.delete("/:id/:itemId", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const wishlist = yield __1.DI.wishlistRepository.findOne({ id: req.params.id });
+        // const wishlist = await DI.wishlistRepository.findOne({ id: req.params.id });
+        const user = req.user;
+        yield user.wishlists.init();
+        const wishlist = user.wishlists.getItems().find((wishlist) => wishlist.id === req.params.id);
         if (!wishlist)
             return res.status(404).send({ message: "Wishlist not found" });
         const item = yield __1.DI.itemRepository.findOne({ id: req.params.itemId });

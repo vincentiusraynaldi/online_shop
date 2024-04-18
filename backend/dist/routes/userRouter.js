@@ -26,6 +26,7 @@ const passport_1 = __importDefault(require("passport"));
 // } from "./";
 const cartRouter_1 = require("./cartRouter");
 const wishlistRouter_1 = require("./wishlistRouter");
+const addressRouter_1 = require("./addressRouter");
 const router = (0, express_1.Router)({ mergeParams: true });
 //register new user 
 router.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -51,12 +52,7 @@ router.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, functio
         // const newUser = new User(RegisterUserDTO.email, RegisterUserDTO.firstName, RegisterUserDTO.lastName, RegisterUserDTO.password);
         const newUser = userMapper_1.UserMapper.createUserFromRegisterUserDTO(RegisterUserDTO);
         yield __1.DI.userRepository.persistAndFlush(newUser);
-        return res.status(201).json({
-            firstName: newUser.firstName,
-            lastName: newUser.lastName,
-            email: newUser.email,
-            address: newUser.address,
-        });
+        return res.status(201).json(newUser);
     }
     catch (e) {
         return res.status(400).json({ message: e.message });
@@ -184,4 +180,5 @@ router.use("/wishlist", wishlistRouter_1.wishlistRouter);
 // !!
 // !! address routes !!
 // !!
+router.use("/address", addressRouter_1.addressRouter);
 exports.userRouter = router;

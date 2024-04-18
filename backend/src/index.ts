@@ -10,8 +10,7 @@ import {
     Wishlist,
     Address,
     CartItem,
-    OrderItem,
-    WishlistUserItem
+    OrderItem
     } from "./entity";
 
 import { 
@@ -59,7 +58,6 @@ export const DI = {} as {
     addressRepository: EntityRepository<Address>;
     cartItemRepository: EntityRepository<CartItem>;
     orderItemRepository: EntityRepository<OrderItem>;
-    wishlistUserItemRepository: EntityRepository<WishlistUserItem>;
     stripe: Stripe;
 }
 
@@ -75,7 +73,6 @@ export const initializeORM = async () => {
     DI.addressRepository = DI.orm.em.getRepository(Address);
     DI.cartItemRepository = DI.orm.em.getRepository(CartItem);
     DI.orderItemRepository = DI.orm.em.getRepository(OrderItem);
-    DI.wishlistUserItemRepository = DI.orm.em.getRepository(WishlistUserItem);
     DI.stripe = new Stripe(STRIPE_TEST_SECRET_KEY, {
         apiVersion: '2024-04-10',
     });

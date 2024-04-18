@@ -19,6 +19,7 @@ import passport from "passport";
 // } from "./";
 import { cartRouter } from "./cartRouter";
 import { wishlistRouter } from "./wishlistRouter";
+import { addressRouter } from "./addressRouter";
 
 const router = Router({mergeParams: true});
 
@@ -57,12 +58,7 @@ router.post("/register", async (req, res) => {
         const newUser = UserMapper.createUserFromRegisterUserDTO(RegisterUserDTO);
         await DI.userRepository.persistAndFlush(newUser);
 
-        return res.status(201).json({ 
-            firstName: newUser.firstName,
-            lastName: newUser.lastName,
-            email: newUser.email,
-            address: newUser.address,
-            });
+        return res.status(201).json(newUser);
     } catch (e: any) {
         return res.status(400).json({ message: e.message });
     }
@@ -204,6 +200,6 @@ router.use("/wishlist", wishlistRouter);
 // !!
 // !! address routes !!
 // !!
-
+router.use("/address", addressRouter);
 
 export const userRouter = router;

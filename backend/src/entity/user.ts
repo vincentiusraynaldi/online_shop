@@ -4,7 +4,8 @@ import {
     OneToMany,
     Property,
     OneToOne,
-    Collection
+    Collection,
+    ManyToMany
 }
 from "@mikro-orm/core";
 import { BaseEntity } from "./baseEntity";
@@ -38,7 +39,7 @@ export class User extends BaseEntity {
     @Property({ nullable: true })
     googleId?: string;
 
-    @OneToMany({entity: () => Wishlist, mappedBy: 'userId'})
+    @OneToMany({entity: () => Wishlist, mappedBy: 'user', orphanRemoval: true})
     wishlists = new Collection<Wishlist>(this);
 
     @OneToOne({ entity: () => Cart, owner: true, nullable: true, orphanRemoval: true })
@@ -47,8 +48,8 @@ export class User extends BaseEntity {
     @OneToMany({ entity: () => Order, mappedBy: 'user' })
     orders = new Collection<Order>(this);
 
-    @Embedded({ entity: () => Address })
-    address = new Collection<Address>(this);
+    @ManyToMany({ entity: () => Address, owner: true, inversedBy: 'users'})
+    addresses = new Collection<Address>(this);
 
     constructor(
         // email: string,

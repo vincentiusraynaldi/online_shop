@@ -1,7 +1,13 @@
-import { Embeddable, Property } from "@mikro-orm/core";
+import { Embeddable, Entity, ManyToMany, Property, Collection } from "@mikro-orm/core";
+import { BaseEntity } from "./baseEntity";
+import { User } from "./";
+import { object, string } from "yup";
 
-@Embeddable()
-export class Address {
+@Entity()
+export class Address extends BaseEntity{
+    @ManyToMany({ entity: () => User })
+    users = new Collection<User>(this);
+
     @Property({ nullable: true })
     street?: string;
 
@@ -20,4 +26,16 @@ export class Address {
 
     @Property({ nullable:true })
     postalCode?: string;
+
+    constructor(){
+        super();
+    }
 }
+
+export const CreateNewAddressSchema = object({
+    street: string().required(),
+    houseNumber: string().required(),
+    city: string().required(),
+    country: string().required(),
+    postalCode: string().required()
+});

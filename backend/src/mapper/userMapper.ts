@@ -12,7 +12,7 @@ class UserMapper {
         user.password = dto.password;
         user.orders = new Collection<Order>(user);
         user.wishlists = new Collection<Wishlist>(user);
-        // user.wishlists.add(new Wishlist("Wishlist"));
+        user.wishlists.add(new Wishlist("Wishlist"));
         // set other fields...
         return user;
     }
@@ -24,6 +24,7 @@ class UserMapper {
         user.lastName = dto.lastName;
         user.googleId = dto.googleId;
         user.wishlists.add(new Wishlist("Wishlist"));
+        user.orders = new Collection<Order>(user);
         // set other fields...
         return user;
     }

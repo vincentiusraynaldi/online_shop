@@ -8,13 +8,12 @@ import {
     Address, 
     Wishlist,
     CartItem,
-    OrderItem,
-    WishlistUserItem
+    OrderItem 
 } from './entity';
 
 const options: Options = {
     type: 'postgresql',
-    entities: [Item, User, Order, Category, Cart, Address, Wishlist, CartItem, OrderItem, WishlistUserItem],
+    entities: [Item, User, Order, Category, Cart, Address, Wishlist, CartItem, OrderItem],
     host: 'localhost',
     dbName: 'jasa_titip_DB',
     password: 'jasa_titip123',

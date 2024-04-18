@@ -72,7 +72,8 @@ export const CreateItemSchema = object({
     itemPrice: number().required().positive(),
     itemWeight: number().required().positive().integer(),
     itemBrand: string().required(),
-    categories: object().required(),
+    categories: object(),
+    availableStock: number().required().positive().integer(),
     // itemCategory: string().required(),
     // itemImage: string().required().min(0),
 }) 

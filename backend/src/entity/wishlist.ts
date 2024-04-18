@@ -9,15 +9,14 @@ import {
 }
 from "@mikro-orm/core";
 import { BaseEntity } from "./baseEntity";
-import { WishlistUserItem } from "./wishlistUserItem";
 import { object, string, number } from "yup";
 
 @Entity()
 class Wishlist extends BaseEntity {
-    @ManyToOne({entity: () => User, inversedBy: (user: User) => user.wishlists})
-    userId!: string;
+    @ManyToOne({entity: () => User})
+    user!: User;
 
-    @ManyToMany({ entity: () => Item, pivotEntity: () => WishlistUserItem})
+    @ManyToMany({ entity: () => Item })
     items = new Collection<Item>(this);
 
     @Property()
@@ -26,6 +25,7 @@ class Wishlist extends BaseEntity {
     constructor(wishlistName?: string) {
         super();
         this.wishlistName = wishlistName;
+        this.items = new Collection<Item>(this);
     }
 }
 

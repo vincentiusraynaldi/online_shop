@@ -83,7 +83,8 @@ exports.CreateItemSchema = (0, yup_1.object)({
     itemPrice: (0, yup_1.number)().required().positive(),
     itemWeight: (0, yup_1.number)().required().positive().integer(),
     itemBrand: (0, yup_1.string)().required(),
-    categories: (0, yup_1.object)().required(),
+    categories: (0, yup_1.object)(),
+    availableStock: (0, yup_1.number)().required().positive().integer(),
     // itemCategory: string().required(),
     // itemImage: string().required().min(0),
 });

@@ -8,12 +8,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.itemRouter = void 0;
 const express_1 = require("express");
 const __1 = require("../");
 const entity_1 = require("../entity");
 const mapper_1 = require("../mapper");
+const passport_1 = __importDefault(require("passport"));
 const router = (0, express_1.Router)({ mergeParams: true });
 //get all item
 router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -105,17 +109,22 @@ router.put('/addCategory/:itemId/:categoryId', (req, res) => __awaiter(void 0, v
     }
 }));
 // add item to wishlist
-router.post('/addToWishlist/:itemId/:wishlistId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post('/addToWishlist/:itemId/:wishlistId', passport_1.default.authenticate("jwt", { session: false }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const user = req.user;
+        console.log(user);
         const item = yield __1.DI.itemRepository.findOne({ id: req.params.itemId });
-        const wishlist = yield __1.DI.wishlistRepository.findOne({ id: req.params.wishlistId });
+        yield user.wishlists.init();
+        const wishlist = user.wishlists.getItems().find((wishlist) => wishlist.id === req.params.wishlistId);
         if (!item || !wishlist)
             return res.status(404).send({ message: 'Item or Wishlist not found' });
+        yield wishlist.items.init();
         //check if item is already in wishlist
         if (wishlist.items.contains(item))
             return res.status(400).send({ message: 'Item already in wishlist' });
         wishlist.items.add(item);
-        yield __1.DI.wishlistRepository.flush();
+        wishlist.user = user;
+        yield __1.DI.userRepository.flush();
         res.send(wishlist);
     }
     catch (e) {
