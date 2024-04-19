@@ -114,26 +114,4 @@ try {
 }
 });
 
-// add item to cart
-router.post("/addToCart/:itemId", async (req, res) => {
-    try{
-        const existingItem = await DI.itemRepository.findOne(req.params.itemId);
-        if (!existingItem) return res.status(404).send({ message: "Item not found" });
-
-        const user = req.user;
-        
-        //add item in cart if there is no such item in cart
-        if(!user.cart.has(existingItem)){
-            user.cart.set(existingItem,1);
-            await DI.userRepository.flush();
-        } else { // add item quantity if there is already such item in cart
-            user.cart.set(existingItem, user.cart.get(existingItem) + req.body.quantity);
-            await DI.userRepository.flush();   
-        }
-    }
-    catch(e:any){
-        return res.status(400).send({ message: e.message });
-    }
-});
-
 export const itemRouter = router;

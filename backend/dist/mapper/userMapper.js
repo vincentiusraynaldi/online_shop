@@ -13,8 +13,11 @@ class UserMapper {
         user.password = dto.password;
         user.orders = new core_1.Collection(user);
         user.wishlists = new core_1.Collection(user);
-        user.wishlists.add(new entity_1.Wishlist("Wishlist"));
+        user.cart = new entity_1.Cart(user);
         // set other fields...
+        user.wishlists.add(new entity_1.Wishlist("Wishlist"));
+        user.cart.items = new core_1.Collection(user.cart);
+        user.cart.totalPrice = 0;
         return user;
     }
     static createUserFromRegisterGoogleUserDTO(dto) {

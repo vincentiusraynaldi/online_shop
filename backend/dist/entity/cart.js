@@ -15,9 +15,12 @@ const _1 = require("./");
 const cartItem_1 = require("./cartItem");
 const baseEntity_1 = require("./baseEntity");
 let Cart = class Cart extends baseEntity_1.BaseEntity {
-    constructor() {
-        super(...arguments);
+    constructor(user) {
+        super();
         // Add properties here
+        this.items = new core_1.Collection(this);
+        this.user = user;
+        this.totalPrice = 0;
         this.items = new core_1.Collection(this);
     }
 };
@@ -31,9 +34,10 @@ __decorate([
     __metadata("design:type", Object)
 ], Cart.prototype, "items", void 0);
 __decorate([
-    (0, core_1.Property)(),
+    (0, core_1.Property)({ type: 'decimal', scale: 2 }),
     __metadata("design:type", Number)
 ], Cart.prototype, "totalPrice", void 0);
 exports.Cart = Cart = __decorate([
-    (0, core_1.Entity)()
+    (0, core_1.Entity)(),
+    __metadata("design:paramtypes", [_1.User])
 ], Cart);

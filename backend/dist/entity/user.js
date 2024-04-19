@@ -28,6 +28,7 @@ let User = class User extends baseEntity_1.BaseEntity {
     ) {
         super();
         this.wishlists = new core_1.Collection(this);
+        this.cart = new _1.Cart(this);
         this.orders = new core_1.Collection(this);
         this.addresses = new core_1.Collection(this);
         // this.email = email;
@@ -72,7 +73,7 @@ __decorate([
 ], User.prototype, "wishlists", void 0);
 __decorate([
     (0, core_1.OneToOne)({ entity: () => _1.Cart, owner: true, nullable: true, orphanRemoval: true }),
-    __metadata("design:type", _1.Cart)
+    __metadata("design:type", Object)
 ], User.prototype, "cart", void 0);
 __decorate([
     (0, core_1.OneToMany)({ entity: () => _1.Order, mappedBy: 'user' }),

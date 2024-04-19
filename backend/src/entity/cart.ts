@@ -13,6 +13,13 @@ export class Cart extends BaseEntity{
     @ManyToMany({ entity: () => CartItem })
     items = new Collection<CartItem>(this);
 
-    @Property()
+    @Property({type: 'decimal', scale: 2})
     totalPrice!: number;
+
+    constructor(user: User){
+        super();
+        this.user = user;
+        this.totalPrice = 0;
+        this.items = new Collection<CartItem>(this);
+    }
 }

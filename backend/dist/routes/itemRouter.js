@@ -104,25 +104,4 @@ router.put('/addCategory/:itemId/:categoryId', (req, res) => __awaiter(void 0, v
         return res.status(400).send({ message: e.message });
     }
 }));
-// add item to cart
-router.post("/addToCart/:itemId", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const existingItem = yield __1.DI.itemRepository.findOne(req.params.itemId);
-        if (!existingItem)
-            return res.status(404).send({ message: "Item not found" });
-        const user = req.user;
-        //add item in cart if there is no such item in cart
-        if (!user.cart.has(existingItem)) {
-            user.cart.set(existingItem, 1);
-            yield __1.DI.userRepository.flush();
-        }
-        else { // add item quantity if there is already such item in cart
-            user.cart.set(existingItem, user.cart.get(existingItem) + req.body.quantity);
-            yield __1.DI.userRepository.flush();
-        }
-    }
-    catch (e) {
-        return res.status(400).send({ message: e.message });
-    }
-}));
 exports.itemRouter = router;

@@ -20,11 +20,12 @@ let Order = class Order extends baseEntity_1.BaseEntity {
         super();
         this.items = new core_1.Collection(this);
         this.totalPrice = totalPrice;
+        this.items = new core_1.Collection(this);
     }
 };
 exports.Order = Order;
 __decorate([
-    (0, core_1.Property)(),
+    (0, core_1.Property)({ type: 'decimal', scale: 2 }),
     __metadata("design:type", Number)
 ], Order.prototype, "totalPrice", void 0);
 __decorate([

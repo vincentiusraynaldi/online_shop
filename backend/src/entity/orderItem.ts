@@ -10,4 +10,10 @@ export class OrderItem extends BaseEntity{
     
     @Property()
     quantity!: number;
+
+    constructor(item: Item, quantity: number){
+        super();
+        this.item = item;
+        this.quantity = quantity;
+    }
 }

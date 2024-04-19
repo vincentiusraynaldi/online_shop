@@ -16,7 +16,7 @@ import { OrderItem } from "./orderItem";
 
 @Entity()
 export class Order extends BaseEntity {
-    @Property()
+    @Property({type: 'decimal', scale: 2})
     totalPrice: number;
 
     @ManyToOne({ entity: () => User })
@@ -38,5 +38,6 @@ export class Order extends BaseEntity {
     constructor(totalPrice: number) {
         super();
         this.totalPrice = totalPrice;
+        this.items = new Collection<OrderItem>(this);
     }
 }

@@ -14,6 +14,11 @@ const core_1 = require("@mikro-orm/core");
 const _1 = require("./");
 const baseEntity_1 = require("./baseEntity");
 let OrderItem = class OrderItem extends baseEntity_1.BaseEntity {
+    constructor(item, quantity) {
+        super();
+        this.item = item;
+        this.quantity = quantity;
+    }
 };
 exports.OrderItem = OrderItem;
 __decorate([
@@ -25,5 +30,6 @@ __decorate([
     __metadata("design:type", Number)
 ], OrderItem.prototype, "quantity", void 0);
 exports.OrderItem = OrderItem = __decorate([
-    (0, core_1.Entity)()
+    (0, core_1.Entity)(),
+    __metadata("design:paramtypes", [_1.Item, Number])
 ], OrderItem);

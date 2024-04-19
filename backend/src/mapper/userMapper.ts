@@ -1,6 +1,6 @@
 import { Collection } from '@mikro-orm/core';
 import { RegisterUserDTO, RegisterGoogleUserDTO } from '../dto/userDTO';
-import { Item, Wishlist, Order } from '../entity';
+import { Item, Wishlist, Order, Cart, CartItem } from '../entity';
 import { User } from '../entity/user';
 
 class UserMapper {
@@ -12,8 +12,11 @@ class UserMapper {
         user.password = dto.password;
         user.orders = new Collection<Order>(user);
         user.wishlists = new Collection<Wishlist>(user);
-        user.wishlists.add(new Wishlist("Wishlist"));
+        user.cart = new Cart(user);
         // set other fields...
+        user.wishlists.add(new Wishlist("Wishlist"));
+        user.cart.items = new Collection<CartItem>(user.cart);
+        user.cart.totalPrice = 0;
         return user;
     }
 

@@ -43,7 +43,7 @@ export class User extends BaseEntity {
     wishlists = new Collection<Wishlist>(this);
 
     @OneToOne({ entity: () => Cart, owner: true, nullable: true, orphanRemoval: true })
-    cart?: Cart;
+    cart = new Cart(this);
 
     @OneToMany({ entity: () => Order, mappedBy: 'user' })
     orders = new Collection<Order>(this);
