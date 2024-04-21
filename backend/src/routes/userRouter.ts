@@ -20,6 +20,7 @@ import passport from "passport";
 import { cartRouter } from "./cartRouter";
 import { wishlistRouter } from "./wishlistRouter";
 import { addressRouter } from "./addressRouter";
+import { orderRouter } from "./orderRouter";
 
 const router = Router({mergeParams: true});
 
@@ -201,5 +202,10 @@ router.use("/wishlist", wishlistRouter);
 // !! address routes !!
 // !!
 router.use("/address", addressRouter);
+
+// !!
+// !! order routes !!
+// !!
+router.use("/order", orderRouter);
 
 export const userRouter = router;

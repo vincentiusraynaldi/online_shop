@@ -1,4 +1,3 @@
-
 export type AddressDTO = {
     street: string;
     houseNumber: string;

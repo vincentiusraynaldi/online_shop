@@ -1,8 +1,9 @@
 import { Router } from "express";
 import { DI } from "../";
 import passport from "passport";
-import { CartItem, Item, Order, OrderItem } from "../entity";
+import { CartItem, Item, Order, OrderItem, Address } from "../entity";
 import { Collection } from "@mikro-orm/core";
+import { AddressMapper } from "../mapper";
 
 const router = Router({mergeParams: true});
 
@@ -22,6 +23,73 @@ router.get("/", passport.authenticate("jwt", {session: false}), async (req, res)
     }
 });
 // select item in cart
+
+// checkout selected item in cart
+// todo needs to check if it is right since it is only from copilot
+router.post("/checkout", passport.authenticate("jwt", {session: false}), async (req, res) => {
+    try {
+        const user = await DI.userRepository.findOne({ id: req.user.id }, { populate: ["cart.items.item", "addresses"] });
+
+        if (!user) return res.status(404).send({ message: "User not found" });
+
+        let total = user.cart.totalPrice;
+        // res.send({message: "Checkout successful", userCart: user.cart, items: user.cart.items});
+        user.cart.items.getItems().forEach((cartItem: CartItem) => {
+            total += cartItem.item.itemPrice * cartItem.quantity;
+        });
+
+        const address = new Address();
+        address.street = "1234 Main St";
+        address.houseNumber = "123";
+        address.city = "Los Angeles";
+        address.country = "USA";
+        address.postalCode = "90007";
+
+        // if (typeof total !== "number") return res.status(400).send({ message: "Total must be a number" });
+        // else res.status(200).send({ message: "total is a number", user.cart.totalPrice });
+
+
+        const order = new Order(total);
+        order.totalPrice = total;
+        // res.send({message: "Checkout successful", orderTotal: order.totalPrice, total: total});
+        user.cart.items.getItems().forEach((cartItem: CartItem) => {
+            order.items.add(new OrderItem(cartItem.item, cartItem.quantity));
+        });
+        order.user = user;
+        order.orderStatus = "pending";
+        order.paymentMethod = "cash";
+        order.address = address;
+        order.totalPrice = total;
+        user.orders.add(order);
+        
+        user.cart.items.removeAll();
+        user.cart.totalPrice -= total;
+        await DI.userRepository.flush();
+        res.send({message: "Checkout successful", total});
+        // res.status(200).send(user);
+    }
+    catch (e: any) {
+        return res.status(400).send({message: e.message});
+    }
+});
+
+// test stripe
+router.post("/stripe", passport.authenticate("jwt", {session: false}), async (req, res) => {
+    try {
+        const charge = await DI.stripe.charges.create({
+            amount: 1000,
+            currency: "usd",
+            source: "tok_visa",
+            description: 'Charge for ' + req.body.amount +' amount',
+        });
+        // Process the charge and handle the response as needed
+        console.log(charge);
+        res.status(200).send({ message: "Payment successful", charge });
+    }
+    catch (e: any) {
+        return res.status(400).send({message: e.message});
+    }
+});
 
 // add item to cart
 router.post("/:itemId", passport.authenticate("jwt", {session: false}), async (req, res) => {
@@ -95,54 +163,6 @@ router.delete("/:id", passport.authenticate("jwt", {session: false}), async (req
     }
 });
 
-// checkout selected item in cart
-// todo needs to check if it is right since it is only from copilot
-router.post("/checkout", passport.authenticate("jwt", {session: false}), async (req, res) => {
-    try {
-        const user = await DI.userRepository.findOne({ id: req.user.id }, { populate: ["cart.items"] });
 
-        if (!user) return res.status(404).send({ message: "User not found" });
-
-        // let total = user.cart.totalPrice;
-        // user.cart.items.getItems().forEach((cartItem: CartItem) => {
-        //     total += cartItem.item.itemPrice * cartItem.quantity;
-        // });
-
-        // const order = new Order(total);
-        // user.cart.items.getItems().forEach((cartItem: CartItem) => {
-        //     order.items.add(new OrderItem(cartItem.item, cartItem.quantity));
-        // });
-        // // order.address = user.address;
-        // // order.totalPrice = total;
-        // user.orders.add(order);
-        
-        // user.cart.items.removeAll();
-        // user.cart.totalPrice = 0;
-        await DI.userRepository.flush();
-        // res.send({message: "Checkout successful", total});
-        res.status(200).send(user);
-    }
-    catch (e: any) {
-        return res.status(400).send({message: e.message});
-    }
-});
-
-// test stripe
-router.post("/stripe", passport.authenticate("jwt", {session: false}), async (req, res) => {
-    try {
-        const charge = await DI.stripe.charges.create({
-            amount: 1000,
-            currency: "usd",
-            source: "tok_visa",
-            description: 'Charge for ' + req.body.amount +' amount',
-        });
-        // Process the charge and handle the response as needed
-        console.log(charge);
-        res.status(200).send({ message: "Payment successful", charge });
-    }
-    catch (e: any) {
-        return res.status(400).send({message: e.message});
-    }
-});
 
 export const cartRouter = router;

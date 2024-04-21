@@ -27,6 +27,7 @@ const passport_1 = __importDefault(require("passport"));
 const cartRouter_1 = require("./cartRouter");
 const wishlistRouter_1 = require("./wishlistRouter");
 const addressRouter_1 = require("./addressRouter");
+const orderRouter_1 = require("./orderRouter");
 const router = (0, express_1.Router)({ mergeParams: true });
 //register new user 
 router.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -181,4 +182,8 @@ router.use("/wishlist", wishlistRouter_1.wishlistRouter);
 // !! address routes !!
 // !!
 router.use("/address", addressRouter_1.addressRouter);
+// !!
+// !! order routes !!
+// !!
+router.use("/order", orderRouter_1.orderRouter);
 exports.userRouter = router;
