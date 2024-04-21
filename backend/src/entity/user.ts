@@ -2,7 +2,6 @@ import {
     Embedded,
     Entity,
     OneToMany,
-    OneToOne,
     Property,
     OneToOne,
     Collection,

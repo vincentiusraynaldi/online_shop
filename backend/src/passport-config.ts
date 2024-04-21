@@ -6,6 +6,8 @@ import { Request } from "express";
 // import { User } from "./entities";
 import { UseRequestContext } from "@mikro-orm/core";
 import { VerifiedCallback } from "passport-jwt";
+import { RegisterGoogleUserDTO } from "./dto";
+import { UserMapper } from "./mapper";
 
 import dotenv from 'dotenv';
 import path from 'path';
@@ -34,30 +36,32 @@ passport.use(new JwtStrategy(opts, async (jwt_payload, done) => {
     }
 }));
 
-// passport.use(new GoogleStrategy({
-//     clientID: process.env.GOOGLE_CLIENT_ID as string,
-//     clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-//     callbackURL: process.env.GOOGLE_CALLBACK_URL as string,
-//     scope: ['email', 'profile']
-// }, async (accessToken, refreshToken, profile: Profile, done: VerifiedCallback) => {
-    // if(profile)
-    // {
-    //     console.log("profile: ", profile);
-    //     const user = await DI.userRepository.findOne({ email: profile.emails![0].value });
-    //     if(user)
-    //     {
-    //         done(null, user);
-    //     } else {
-    //         const newUser = new User({
-    //             email: profile.emails![0].value,
-    //             firstName: profile.name!.givenName,
-    //             lastName: profile.name!.familyName,
-    //         });
-    //         await DI.userRepository.persistAndFlush(newUser);
-    //         done(null, newUser);
-    //     }
-    // }
-// }));
+passport.use(new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID as string,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+    callbackURL: process.env.GOOGLE_REDIRECT_URI as string,
+    scope: ['email', 'profile']
+}, async (accessToken, refreshToken, profile: Profile, done: VerifiedCallback) => {
+    if(profile)
+    {
+        console.log("profile: ", profile);
+        const user = await DI.userRepository.findOne({ email: profile.emails![0].value });
+        if(user)
+        {
+            done(null, user);
+        } else {
+            const newUserDTO: RegisterGoogleUserDTO = {
+                email: profile.emails![0].value,
+                firstName: profile.name!.givenName!,
+                lastName: profile.name!.familyName!,
+                googleId: profile.id
+            };
+            const newUser = UserMapper.createUserFromRegisterGoogleUserDTO(newUserDTO);
+            await DI.userRepository.persistAndFlush(newUser);
+            done(null, newUser);
+        }
+    }
+}));
 
 passport.serializeUser((user, done) => {
     done(null, user);

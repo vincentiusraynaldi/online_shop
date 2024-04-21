@@ -26,9 +26,13 @@ class UserMapper {
         user.firstName = dto.firstName;
         user.lastName = dto.lastName;
         user.googleId = dto.googleId;
-        user.wishlists.add(new entity_1.Wishlist("Wishlist"));
         user.orders = new core_1.Collection(user);
+        user.wishlists = new core_1.Collection(user);
+        user.cart = new entity_1.Cart(user);
         // set other fields...
+        user.wishlists.add(new entity_1.Wishlist("Wishlist"));
+        user.cart.items = new core_1.Collection(user.cart);
+        user.cart.totalPrice = 0;
         return user;
     }
 }

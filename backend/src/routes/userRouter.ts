@@ -65,7 +65,7 @@ router.post("/register", async (req, res) => {
     }
 });
 
-//login new user
+//login new user using jwt
 router.post('/login', async (req, res) => {
     try{
         // check if the email and password are valid
@@ -121,8 +121,32 @@ router.post('/login', async (req, res) => {
     }
 });
 
+//login with google
+router.get('/google', passport.authenticate('google', { scope: ['email', 'profile'] }));
+
+//google callback
+router.get('/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), (req, res) => {
+
+    const token = Auth.generateToken({
+        id: req.user.id,
+        email: req.user.email,
+        firstName: req.user.firstName,
+        lastName: req.user.lastName,
+    });
+    console.log("token: ",token);
+    console.log("req.user: ",req.user);
+
+    //todo change the redirect to the home page of frontend
+    // res.redirect(`http://localhost:4000?token=${token}`);
+});
+
+//logout user
+router.get("/logout", (req, res) => {
+    req.logout(() => {});
+    return res.status(200).json({ message: "Logged out" });
+});
+
 // edit profile
-// router.put("/edit/:id", Auth.verifyAccess, async (req, res) => {
 router.put("/edit/:id", passport.authenticate('jwt', {session: false}), async (req, res) => {
     try {
         const id = req.params.id;
@@ -145,7 +169,6 @@ router.put("/edit/:id", passport.authenticate('jwt', {session: false}), async (r
 });
 
 //get user profile
-// router.get("/profile/:id", Auth.verifyAccess, async (req, res) => {
 router.get("/profile/:id",passport.authenticate('jwt', {session: false}), async (req, res) => {
     try {
         const id = req.params.id;
@@ -163,8 +186,6 @@ router.get("/profile/:id",passport.authenticate('jwt', {session: false}), async 
         return res.status(400).json({ message: e.message });
     }
 });
-
-//logout user
 
 // get order info
 //todo check if correct

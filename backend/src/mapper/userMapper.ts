@@ -26,9 +26,13 @@ class UserMapper {
         user.firstName = dto.firstName;
         user.lastName = dto.lastName;
         user.googleId = dto.googleId;
-        user.wishlists.add(new Wishlist("Wishlist"));
         user.orders = new Collection<Order>(user);
+        user.wishlists = new Collection<Wishlist>(user);
+        user.cart = new Cart(user);
         // set other fields...
+        user.wishlists.add(new Wishlist("Wishlist"));
+        user.cart.items = new Collection<CartItem>(user.cart);
+        user.cart.totalPrice = 0;
         return user;
     }
 }

@@ -59,7 +59,7 @@ router.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, functio
         return res.status(400).json({ message: e.message });
     }
 }));
-//login new user
+//login new user using jwt
 router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // check if the email and password are valid
@@ -103,8 +103,27 @@ router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* 
         return res.status(400).json({ message: e.message });
     }
 }));
+//login with google
+router.get('/google', passport_1.default.authenticate('google', { scope: ['email', 'profile'] }));
+//google callback
+router.get('/google/callback', passport_1.default.authenticate('google', { failureRedirect: '/login' }), (req, res) => {
+    const token = auth_middleware_1.Auth.generateToken({
+        id: req.user.id,
+        email: req.user.email,
+        firstName: req.user.firstName,
+        lastName: req.user.lastName,
+    });
+    console.log("token: ", token);
+    console.log("req.user: ", req.user);
+    //todo change the redirect to the home page of frontend
+    // res.redirect(`http://localhost:4000?token=${token}`);
+});
+//logout user
+router.get("/logout", (req, res) => {
+    req.logout(() => { });
+    return res.status(200).json({ message: "Logged out" });
+});
 // edit profile
-// router.put("/edit/:id", Auth.verifyAccess, async (req, res) => {
 router.put("/edit/:id", passport_1.default.authenticate('jwt', { session: false }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
@@ -128,7 +147,6 @@ router.put("/edit/:id", passport_1.default.authenticate('jwt', { session: false 
     }
 }));
 //get user profile
-// router.get("/profile/:id", Auth.verifyAccess, async (req, res) => {
 router.get("/profile/:id", passport_1.default.authenticate('jwt', { session: false }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _b;
     try {
@@ -148,7 +166,6 @@ router.get("/profile/:id", passport_1.default.authenticate('jwt', { session: fal
         return res.status(400).json({ message: e.message });
     }
 }));
-//logout user
 // get order info
 //todo check if correct
 router.get('/orders/:orderId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {

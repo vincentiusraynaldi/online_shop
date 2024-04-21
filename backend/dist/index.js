@@ -23,6 +23,7 @@ require("./passport-config");
 const stripe_1 = __importDefault(require("stripe"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const path_1 = __importDefault(require("path"));
+const express_session_1 = __importDefault(require("express-session"));
 // import { Auth } from './middleware/auth.middleware';
 const app = (0, express_1.default)();
 dotenv_1.default.config({ path: path_1.default.join(__dirname, '../.env') });
@@ -53,8 +54,14 @@ const initializeServer = () => __awaiter(void 0, void 0, void 0, function* () {
     (0, exports.initializeORM)();
     app.use(express_1.default.json());
     app.use((req, res, next) => core_1.RequestContext.create(exports.DI.orm.em, next));
+    app.use((0, express_session_1.default)({
+        secret: 'keyboard cat',
+        resave: false,
+        saveUninitialized: false
+    }));
     // app.use(Auth.prepareAuthentication);
     app.use(passport_1.default.initialize());
+    app.use(passport_1.default.session());
     app.use("/item", routes_1.itemRouter);
     app.use("/user", routes_1.userRouter);
     app.use("/category", routes_1.categoryRouter);

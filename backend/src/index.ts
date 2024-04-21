@@ -31,6 +31,7 @@ import './passport-config';
 import Stripe from "stripe";
 import dotenv from "dotenv";
 import path from "path";
+import expressSession from "express-session";
 // import { Auth } from './middleware/auth.middleware';
 
 const app = express();
@@ -83,9 +84,15 @@ export const initializeServer = async () => {
     
     app.use(express.json());
     app.use((req, res, next) => RequestContext.create(DI.orm.em, next));
+    app.use(expressSession({
+        secret: 'keyboard cat',
+        resave: false,
+        saveUninitialized: false
+    }));
     // app.use(Auth.prepareAuthentication);
     app.use(passport.initialize());
-    
+    app.use(passport.session());
+
     app.use("/item", itemRouter);
     app.use("/user", userRouter);
     app.use("/category", categoryRouter);
