@@ -13,7 +13,7 @@ import { object, string, number } from "yup";
 
 @Entity()
 class Wishlist extends BaseEntity {
-    @ManyToOne({ entity: () => User, lazy: true })
+    @ManyToOne({ entity: () => User})
     user!: User;
 
     @ManyToMany({ entity: () => Item })

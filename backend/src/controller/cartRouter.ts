@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { DI } from "../";
+import { DI } from "..";
 import passport from "passport";
 import { CartItem, Item, Order, OrderItem, Address } from "../entity";
 import { Collection } from "@mikro-orm/core";

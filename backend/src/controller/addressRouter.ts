@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { DI } from "../";
+import { DI } from "..";
 import passport from "passport";
 import { Address, CreateNewAddressSchema } from "../entity";
 import { AddressMapper } from "../mapper";

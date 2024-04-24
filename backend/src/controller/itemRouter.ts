@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { DI } from '../';
+import { DI } from '..';
 import {
 CreateItemSchema,
 Wishlist

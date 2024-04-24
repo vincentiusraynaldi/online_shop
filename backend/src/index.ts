@@ -17,7 +17,7 @@ import {
     itemRouter, 
     userRouter,
     categoryRouter 
-    } from './routes';
+    } from './controller';
 
 import {
     EntityManager,
@@ -93,9 +93,9 @@ export const initializeServer = async () => {
     app.use(passport.initialize());
     app.use(passport.session());
 
-    app.use("/item", itemRouter);
-    app.use("/user", userRouter);
-    app.use("/category", categoryRouter);
+    app.use("/items", itemRouter);
+    app.use("/users", userRouter);
+    app.use("/categories", categoryRouter);
 
     DI.server = app.listen(4000, () => {
         console.log('Server running on port 4000');

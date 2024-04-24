@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { DI } from "../";
+import { DI } from "..";
 import { Category } from "../entity";
 
 const router = Router({ mergeParams: true });
