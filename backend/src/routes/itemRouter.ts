@@ -25,10 +25,13 @@ router.get('/', itemController.getAllItems);
 router.post('/newItem', itemController.addItem);
 
 //edit item
-router.put('/edit/:id', itemController.editItem);
+router.put('/:id', itemController.editItem);
 
 //get item by id
-router.get('/id/:id', itemController.getItemById);
+router.get('/:id', itemController.getItemById);
+
+// delete item
+router.delete('/:id', itemController.deleteItem);
 
 // get items by name
 router.get('/name/:name', itemController.getItemsByName);

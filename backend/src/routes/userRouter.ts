@@ -32,13 +32,13 @@ router.get('/google/callback', passport.authenticate('google', { failureRedirect
 router.get("/logout", authenticateJWT, userController.logoutUser);
 
 // edit profile
-router.put("/edit/:id", authenticateJWT, userController.editUserProfile);
+router.put("/:id", authenticateJWT, userController.editUserProfile);
 
 //get user profile
-router.get("/profile/:id", authenticateJWT, userController.getUserProfile);
+router.get("/:id", authenticateJWT, userController.getUserProfile);
 
 // delete user
-router.delete("/delete/:id", authenticateJWT, userController.deleteUser);
+router.delete("/:id", authenticateJWT, userController.deleteUser);
 
 // !!
 // !! cart routes !!
