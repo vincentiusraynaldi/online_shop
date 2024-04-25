@@ -39,8 +39,8 @@ export class itemController{
     static async addItem(req: Request, res: Response) {
         try {
 
-            const newItem = itemService.addItem(req.body);
-
+            const newItem = await itemService.addItem(req.body);
+            console.log(newItem);
             return res.status(201).json(newItem);
         } catch (e: any) {
             return res.status(400).send({ message: e.message });

@@ -32,6 +32,7 @@ import Stripe from "stripe";
 import dotenv from "dotenv";
 import path from "path";
 import expressSession from "express-session";
+// import { errorHandler } from "./middleware/errorHandler.middleware";
 // import { Auth } from './middleware/auth.middleware';
 
 const app = express();
@@ -84,6 +85,7 @@ export const initializeServer = async () => {
     
     app.use(express.json());
     app.use((req, res, next) => RequestContext.create(DI.orm.em, next));
+    // app.use(errorHandler);
     app.use(expressSession({
         secret: 'keyboard cat',
         resave: false,
