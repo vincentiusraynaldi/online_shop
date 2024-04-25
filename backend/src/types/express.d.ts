@@ -16,4 +16,5 @@ declare module 'express-serve-static-core' {
         user: userInfo & PassportUser | any;
         token: JwtToken | null;
     }
+    
 }

@@ -2,6 +2,11 @@ import { Router } from "express";
 import passport from "passport";
 import { wishlistController } from "../controller/wishlistContoller";
 
+//todo refactor the itemrouter itemcontroller and itemservice
+//todo test the items
+//todo test the wishlist
+//todo test user
+
 const router = Router({mergeParams: true})
 
 const authenticateJWT = passport.authenticate('jwt', { session: false });

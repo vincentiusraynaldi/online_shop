@@ -9,95 +9,32 @@ import { CreateItemDTO } from '../dto';
 import { itemMapper } from '../mapper';
 import passport from 'passport';
 import { Collection } from '@mikro-orm/core';
+import { itemController } from '../controller/itemController';
+
+//todo refactor the itemrouter itemcontroller and itemservice
+//todo test the items
+//todo test the wishlist
+//todo test user
 
 const router = Router({ mergeParams: true });
 
 //get all item
-router.get('/', async (req, res) => {
-    const items = await DI.itemRepository.findAll();
-    res.send(items);
-});
+router.get('/', itemController.getAllItems);
 
 //add an item
-router.post('/newItem', async (req, res) => {
-    try{
-        const validatedData = await CreateItemSchema.validate(req.body).catch(
-            (err) => {res.status(400).send({ error: err.errors})}
-        );
-        if(!validatedData) return;
-    
-        const CreateItemDTO: CreateItemDTO = {
-            ...validatedData,
-            categories: req.body.categories || [],
-        };
-    
-        const existingItem = await DI.itemRepository.findOne({
-             itemName: CreateItemDTO.itemName 
-            });
-        if(existingItem)
-         return res.status(400).send({ message: 'Item already exists' });
-
-        const newItem = itemMapper.createItemFromDTO(CreateItemDTO);
-        await DI.itemRepository.persistAndFlush(newItem);
-
-        return res.status(201).json(newItem);
-    }catch ( e: any){
-        return res.status(400).send({ message: e.message });
-    }
-});
+router.post('/newItem', itemController.addItem);
 
 //edit item
-router.put('/edit/:id', async (req, res) => {
-    try{
-        const existingItem = await DI.itemRepository.findOne({ id: req.params.id });
-        if(!existingItem) return res.status(404).send({ message: 'Item not found' });
-
-        Object.assign(existingItem, req.body);
-        await DI.itemRepository.flush();
-        return res.status(200).json(existingItem);
-    }catch(e:any){
-        return res.status(400).send({ message: e.message });
-    }
-});
-
+router.put('/edit/:id', itemController.editItem);
 
 //get item by id
-router.get('/id/:id', async (req, res) => {
-    try {
-        const item = await DI.itemRepository.findOne({ id: req.params.id });
-        res.send(item);
-    } catch (e: any) {
-        return res.status(400).send({ message: e.message });
-        
-    }
-});
+router.get('/id/:id', itemController.getItemById);
 
 // get items by name
-router.get('/name/:name', async (req, res) => {
-    try {
-        const searchPattern = new RegExp(req.params.name, 'i'); // 'i' for case-insensitive search
-        const items = await DI.itemRepository.find({ itemName:  searchPattern });
-        res.send(items);
-    } catch (e: any) {
-        return res.status(400).send({ message: e.message });
-        
-    }
-});
-
+router.get('/name/:name', itemController.getItemsByName);
 
 // get items by category
-// todo: must check if the user wanted to show items from multiple categories
-// !! check if query will be joined or seperated (items from all categories or items from each category)
-router.get('/category/:category', async (req, res) => {
-try {
-        const categories = req.params.category.split(','); // Split the category parameter into an array of categories
-        const categoryEntity = await DI.categoryRepository.find({ categoryName: { $in: categories } });
-        const items = await DI.itemRepository.find(categoryEntity, { populate: ['categories'] });
-        res.send(items);
-} catch (e: any) {
-        return res.status(400).send({ message: e.message });    
-}
-});
+router.get('/category/:category', itemController.getItemsByCategory);
 
 // add item to category
 router.put('/addCategory/:itemId/:categoryId', async (req, res) => {
