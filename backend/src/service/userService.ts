@@ -4,6 +4,13 @@ import { RegisterUserSchema, LoginUserSchema, User } from "../entity";
 import { Auth } from "../middleware/auth.middleware";
 import { UserMapper } from "../mapper/userMapper";
 
+interface RegisterUserData {
+    id: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+}
+
 export class userService {
 
     static generateToken(data: any) {
@@ -23,13 +30,7 @@ export class userService {
         return await DI.userRepository.findOne({ email: email.toLowerCase() });
     }
 
-    static async updateUser(id: string, data: any) {
-        const user = await this.getUserById(id);
-        if (!user) throw new Error("User not found");
-        Object.assign(user, data);
-        await DI.userRepository.flush();
-        return user;
-    }
+
 
     static async registerUser(data: any) {
         

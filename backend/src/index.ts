@@ -17,7 +17,7 @@ import {
     itemRouter, 
     userRouter,
     categoryRouter 
-    } from './controller';
+    } from './routes';
 
 import {
     EntityManager,
