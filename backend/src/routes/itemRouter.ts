@@ -30,19 +30,4 @@ router.get('/name/:name', itemController.getItemsByName);
 // get items by category
 router.get('/category/:category', itemController.getItemsByCategory);
 
-// add item to category
-router.put('/addCategory/:itemId/:categoryId', async (req, res) => {
-try {
-        const item = await DI.itemRepository.findOne({ id: req.params.itemId });
-        const category = await DI.categoryRepository.findOne({ id: req.params.categoryId });
-        if (!item || !category) return res.status(404).send({ message: 'Item or Category not found' });
-    
-        item.categories.add(category);
-        await DI.itemRepository.flush();
-        res.send(item);
-} catch (e: any) {
-    return res.status(400).send({ message: e.message });
-}
-});
-
 export const itemRouter = router;

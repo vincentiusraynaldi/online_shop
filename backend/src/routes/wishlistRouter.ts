@@ -27,9 +27,9 @@ router.put("/:id", authenticateJWT, wishlistController.updateWishlist);
 router.delete("/:id", authenticateJWT, wishlistController.deleteWishlist);
 
 // delete item in wishlist
-router.delete("/:id/:itemId", authenticateJWT, wishlistController.deleteItemFromWishlist);
+router.delete("/:wishlistId/items/:itemId", authenticateJWT, wishlistController.deleteItemFromWishlist);
 
 // add item to wishlist
-router.post('/:wishlistId/:itemId', authenticateJWT, wishlistController.addItemToWishlist);
+router.post('/:wishlistId/items/:itemId', authenticateJWT, wishlistController.addItemToWishlist);
 
 export const wishlistRouter = router;

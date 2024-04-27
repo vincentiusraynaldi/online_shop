@@ -1,6 +1,6 @@
 import { BaseEntity } from "./baseEntity";
 import { Entity, ManyToMany, ManyToOne, Property } from "@mikro-orm/core";
-import { Category, Item } from "./";
+import { Category, Item } from ".";
 
 @Entity()
 export class CategoryItem {

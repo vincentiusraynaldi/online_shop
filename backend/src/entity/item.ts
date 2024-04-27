@@ -10,7 +10,7 @@ import {
     Category 
 } from "./";
 import { object, string, number } from "yup";
-import { CategoryItem } from "./category_item";
+import { CategoryItem } from "./categoryItem";
 
 @Entity()
 export class Item extends BaseEntity {
