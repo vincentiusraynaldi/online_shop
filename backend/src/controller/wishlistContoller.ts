@@ -14,6 +14,7 @@ export class wishlistController {
 
     static async getAllWishlist(req: Request, res: Response) {
         try {
+            console.log(req.user);
             const wishlists = await wishlistService.getAllWishlist(req.user);
 
             return res.status(200).send(wishlists);

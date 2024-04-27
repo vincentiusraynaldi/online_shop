@@ -13,6 +13,8 @@ export class itemService{
     }
 
     static async getItemsByName(name: string) {
+        // search for items with the given name
+        // it can be a partial search
         const searchPattern = new RegExp(name, 'i'); // 'i' for case-insensitive search
         return await DI.itemRepository.find({ itemName: searchPattern });
     }
@@ -26,9 +28,7 @@ export class itemService{
     }
 
     static async addItem(data: any) {
-        const validatedData = await CreateItemSchema.validate(data).catch(
-            (err) => { throw new Error(err.errors) }
-        );
+        const validatedData = await CreateItemSchema.validate(data);
 
         if (!validatedData) throw new Error("Invalid data");
 
@@ -41,7 +41,7 @@ export class itemService{
             itemName: CreateItemDTO.itemName
         });
 
-        if (existingItem) throw new Error("Item already exists");
+        if (existingItem){ throw new Error("Item already exists");}
 
         const newItem = itemMapper.createItemFromDTO(CreateItemDTO);
         await DI.itemRepository.persistAndFlush(newItem);

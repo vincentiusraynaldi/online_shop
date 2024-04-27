@@ -17,7 +17,6 @@ export class Address extends BaseEntity{
     //todo: more info string
     // @Property({ nullable: true })
 
-
     @Property({ nullable: true })
     city?: string;
 

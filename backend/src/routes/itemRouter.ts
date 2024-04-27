@@ -1,14 +1,5 @@
 import { Router } from 'express';
-
 import { DI } from '..';
-import {
-CreateItemSchema,
-Wishlist
- } from '../entity';
-import { CreateItemDTO } from '../dto';
-import { itemMapper } from '../mapper';
-import passport from 'passport';
-import { Collection } from '@mikro-orm/core';
 import { itemController } from '../controller/itemController';
 
 //todo refactor the itemrouter itemcontroller and itemservice

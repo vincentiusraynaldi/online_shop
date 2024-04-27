@@ -39,7 +39,7 @@ export class itemController{
     static async addItem(req: Request, res: Response) {
         try {
 
-            const newItem = itemService.addItem(req.body);
+            const newItem = await itemService.addItem(req.body);
 
             return res.status(201).json(newItem);
         } catch (e: any) {
