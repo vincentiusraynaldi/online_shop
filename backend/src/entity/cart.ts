@@ -1,5 +1,5 @@
 import { Collection, Embeddable, Entity, ManyToMany, OneToMany, OneToOne, Property } from "@mikro-orm/core";
-import { Item, User } from "./";
+import { Item, User } from ".";
 import { CartItem } from "./cartItem";
 import { BaseEntity } from "./baseEntity";
 

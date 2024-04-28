@@ -8,7 +8,7 @@ from "@mikro-orm/core";
 import { BaseEntity } from "./baseEntity";
 import {
     Category 
-} from "./";
+} from ".";
 import { object, string, number } from "yup";
 import { CategoryItem } from "./categoryItem";
 

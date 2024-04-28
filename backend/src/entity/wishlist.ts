@@ -1,4 +1,4 @@
-import { Item, User } from "./";
+import { Item, User } from ".";
 import {
     Collection,
     Entity,

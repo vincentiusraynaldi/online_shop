@@ -16,7 +16,7 @@ import {
     Address, 
     Order
 }
-from "./";
+from ".";
 
 @Entity()
 export class User extends BaseEntity {

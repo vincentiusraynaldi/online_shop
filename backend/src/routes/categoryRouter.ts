@@ -1,6 +1,4 @@
 import { Router } from "express";
-import { DI } from "..";
-import { Category } from "../entity";
 import { categoryController } from "../controller/categoryController";
 
 const router = Router({ mergeParams: true });

@@ -1,6 +1,6 @@
 import { Embeddable, Entity, ManyToMany, Property, Collection } from "@mikro-orm/core";
 import { BaseEntity } from "./baseEntity";
-import { User } from "./";
+import { User } from ".";
 import { object, string } from "yup";
 
 @Entity()
