@@ -16,10 +16,10 @@ router.get("/", authenticateJWT, cartController.getAllItemsInCart);
 router.post("/checkout", authenticateJWT, );
 
 // add item to cart
-router.post("/:itemId", authenticateJWT, cartController.addItemToCart);
+router.post("/items/:itemId", authenticateJWT, cartController.addItemToCart);
 
 // delete item in cart
-router.delete("/:id", authenticateJWT, cartController.deleteItemFromCart); 
+router.delete("/items/:itemId", authenticateJWT, cartController.deleteItemFromCart); 
 
 // test stripe
 router.post("/stripe", authenticateJWT, async (req, res) => {

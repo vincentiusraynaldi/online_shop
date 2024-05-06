@@ -1,4 +1,3 @@
-import e from "express";
 import { DI } from "..";
 import { CartItem, Order, OrderItem, Address } from "../entity";
 
@@ -14,6 +13,7 @@ export class cartService {
     static async getAllItemsInCart(id: string) {
         // Return all items in the cart
         const user = await DI.userRepository.findOne(id, { populate: ["cart.items.item"] });
+        return user?.cart;
     }
 
     static async checkout(id: string) {
@@ -70,17 +70,20 @@ export class cartService {
         const cart = user.cart;
         const items = cart.items;
 
+        //check if existingitem total price is a number
+        if (isNaN(existingItem.itemPrice)) throw new Error("Item price must be a number");
+
         // if the item is not in the cart, add the item
         if (!items.getItems().find((cartItem: CartItem) => cartItem.item.id === itemId)) {
             const cartItem = new CartItem(existingItem, data.quantity);
             items.add(cartItem);
-            cart.totalPrice += existingItem.itemPrice * Number(data.quantity);
+            cart.totalPrice = Number(cart.totalPrice) + Number(existingItem.itemPrice) * Number(data.quantity);
         } else {
             // if the item is in the cart, add the quantity
             items.getItems().forEach((cartItem: CartItem) => {
                 if (cartItem.item.id === itemId) {
                     cartItem.quantity += Number(data.quantity);
-                    cart.totalPrice += existingItem.itemPrice * Number(data.quantity);
+                    cart.totalPrice = Number(cart.totalPrice) + Number(existingItem.itemPrice) * Number(data.quantity);
                 }
             });
         }
@@ -89,6 +92,10 @@ export class cartService {
     }
 
     static async deleteItemFromCart(userId: string, itemId: string, data: any) {
+        const existingItem = await DI.itemRepository.findOne(itemId);
+
+        if (!existingItem) throw new Error("Item not found");
+
         const user = await DI.userRepository.findOne({ id: userId }, { populate: ["cart.items.item"] });
 
         if (!user) throw new Error ("User not found" );
@@ -96,20 +103,26 @@ export class cartService {
         // check if item price is a number
         this.validateQuantity(data);
 
-        user.cart.items.getItems().forEach((cartItem: CartItem) => {
+        if (!user) throw new Error ( "User not found" ); 
+        const cart = user.cart;
+        const items = cart.items;
+
+
+        items.getItems().forEach((cartItem: CartItem) => {
+            console.log('cart item quantity ', cartItem.quantity);
+            console.log('data quantity ', data.quantity);
             // if the item is in the cart and the quantity is greater than the quantity to be deleted, subtract the quantity
             if (cartItem.item.id === itemId && cartItem.quantity > data.quantity) {
                 cartItem.quantity -= Number(data.quantity);
-                user.cart.totalPrice -= Number(cartItem.item.itemPrice) * Number(data.quantity);
+                cart.totalPrice = Number(cart.totalPrice) - Number(cartItem.item.itemPrice) * Number(data.quantity);
 
             // if the item is in the cart and the quantity is less than the quantity to be deleted, remove the item
-            }else if (cartItem.item.id === data.id && cartItem.quantity <= data.quantity) {
-                user.cart.items.remove(cartItem);
-                user.cart.totalPrice -= cartItem.item.itemPrice * cartItem.quantity;
+            }else if (cartItem.item.id === itemId && cartItem.quantity <= data.quantity) {
+                cart.items.remove(cartItem);
+                cart.totalPrice = Number(cart.totalPrice) - Number(cartItem.item.itemPrice) * Number(cartItem.quantity);
             }
         });
         
-        // res.status(200).send(user.cart);
         await DI.userRepository.flush();
         return user.cart;
     }
