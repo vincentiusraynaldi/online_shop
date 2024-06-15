@@ -12,6 +12,15 @@ services:
       - 5432:5432
     volumes:
       - ./data:/var/lib/postgresql/data
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    image: backend
+    restart: unless-stopped
+    ports:
+      - 4000:4000
+
 
 volumes:
   db-data:

@@ -14,7 +14,7 @@ import {
 const options: Options = {
     type: 'postgresql',
     entities: [Item, User, Order, Category, Cart, Address, Wishlist, CartItem, OrderItem],
-    host: 'localhost',
+    host: 'database' || 'localhost', //'database' is from the docker container name for the postgresql image
     dbName: 'jasa_titip_DB',
     password: 'jasa_titip123',
     user: 'jasa_titip',
