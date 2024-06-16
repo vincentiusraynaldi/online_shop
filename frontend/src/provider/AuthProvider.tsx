@@ -42,6 +42,8 @@ export type AuthProviderProps = {
     children: React.ReactNode;
 }
 
+export let isLogInSuccessful = false;
+
 export const AuthProvider = ({children}: AuthProviderProps) => {
     const [user, setUser] = useLocalStorage<User | null>("user", null);
     const [token, setToken] = useLocalStorage<string | null>("token", null);
@@ -66,28 +68,44 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
 
     const login = async (values: LoginData) => {
         //fetch post request using axios
-        const res = await axios.post('', {
-            email: values.email,
-            password: values.password
-        }, {
-        headers: { "Content-Type": "application/json"}
+        const res = await fetch ("http://localhost:4000/users/login", {
+            method: "POST",
+            body: JSON.stringify(values),
+            headers: {"content-type": "application/json"}, 
         });
-        const data = await res.data;
+        const data = await res.json();
+        if (res.ok) {
+            toast({
+                title: "Login",
+                description: "Successfully logged in",
+                status: "success",
+                duration: 9000,
+                isClosable: true,
+            });
+            setToken(data.accessToken);
+            setUser(JSON.parse(atob(data.accessToken.split(".")[1])));
+            navigate("/", {replace: true});
+            isLogInSuccessful = true;
+        } else if (res.status === 401) {
+            toast({
+                title: "Error",
+                description: "Incorrect password",
+                status: "error",
+                duration: 9000,
+                isClosable: true,
+            });
+            isLogInSuccessful = false;
+        } else if (res.status === 400) {
+            toast({ 
+                title: "Error",
+                description: "Email not found",
+                status: "error",
+                duration: 9000,
+                isClosable: true });
+            isLogInSuccessful = false;
+        }
         console.log(data);
     }
-
-    // const register = async (values: RegisterData) => {
-    //     const res = await axios.post('http://localhost:4000/users/register',{
-    //         email: values.email,
-    //         password: values.password,
-    //         firstName: values.firstName,
-    //         lastName: values.lastName
-    //     }, {
-    //         headers: { "Content-Type": "application/json"}
-    //     })
-    //     const data = await res.data;
-    //     console.log(data);
-    // }
 
     const register = async (values: RegisterData) => {
         const res = await fetch("http://localhost:4000/users/register", {
