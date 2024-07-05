@@ -4,8 +4,8 @@ import { BrowserRouter } from 'react-router-dom';
 import AppRoutes from './AppRoutes';
 import { ChakraProvider } from '@chakra-ui/react';
 import { AuthProvider } from './provider/AuthProvider';
+
 function App() {
-  // const [count, setCount] = useState(0)
 
   return (
     <ChakraProvider>
@@ -17,7 +17,7 @@ function App() {
             Hello world!
           </h1>
           <AppRoutes/>
-        </AuthProvider>
+        </AuthProvider>      
       </BrowserRouter>
     </ChakraProvider>
   )

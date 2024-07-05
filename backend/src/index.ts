@@ -44,7 +44,12 @@ if (!process.env.STRIPE_TEST_SECRET_KEY) {
 
 const STRIPE_TEST_SECRET_KEY = process.env.STRIPE_TEST_SECRET_KEY;
 
-app.use(cors());
+// app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:5173', // Update this to your frontend's origin
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type']
+  }));
 
 export const DI = {} as {
     server: http.Server;

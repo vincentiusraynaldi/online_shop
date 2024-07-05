@@ -30,8 +30,9 @@ export class userController{
         const token = userService.generateToken(req.user);
         console.log("token: ",token);
         console.log("req.user: ",req.user);
-        //todo change the redirect to the home page of frontend
-        // res.redirect(`http://localhost:4000?token=${token}`);
+        //TODO change the redirect to the home page of frontend
+        // have to send the user entity as well to the frontend
+        res.redirect(`http://localhost:5173/?token=${token}`);
     }
 
     static async logoutUser(req: Request, res: Response){

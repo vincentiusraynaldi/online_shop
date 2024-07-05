@@ -10,6 +10,8 @@ import {
     RegisterPage 
 } from "./pages";
 
+import { AuthRequired } from "./AuthRequired";
+
 export type RouteConfig = RouteProps & { 
     path: string;
     isPrivate: boolean;
@@ -27,14 +29,19 @@ export const routes: RouteConfig[] = [
         element: <h1>Home</h1>
     },
     {
-        path: "/login",
+        path: "/auth/login",
         isPrivate: false,
         element: <LoginPage/>
     },
     {
-        path: "/register",
+        path: "/auth/register",
         isPrivate: false,
         element: <RegisterPage/>
+    },
+    {
+        path: "/test",
+        isPrivate: true,
+        element: <h1>test</h1>
     }
 ]
 
@@ -43,7 +50,12 @@ export function renderRouteMap({
     element,
     ...restRoute
   }: RouteConfig) {
-    return <Route key={restRoute.path} {...restRoute} element={element}/>;
+    const authRequiredElement = isPrivate ? (
+        <AuthRequired>{element}</AuthRequired>
+      ) : (
+        element
+      );
+      return <Route key={restRoute.path} {...restRoute} element={authRequiredElement} />;
 }
 
 const AppRoutes = () => {

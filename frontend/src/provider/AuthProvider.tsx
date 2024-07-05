@@ -3,8 +3,9 @@ import { useLocalStorage } from "../hooks/useLocalStorage";
 import { useToast, Text } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import invariant from 'tiny-invariant';
-import axios from "axios";
 import React from "react";
+import { useSearchParams } from "react-router-dom";
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 export type User = {
     firstName: string;
@@ -32,7 +33,9 @@ export type AuthContext = {
     isLoggedIn: boolean;
     actions: {
         login: (data: LoginData) => void;
+        loginWithGoogleOauth: () => void;
         register: (data: RegisterData) => void;
+        logout: () => void;
     }
 }
 
@@ -47,6 +50,7 @@ export let isLogInSuccessful = false;
 export const AuthProvider = ({children}: AuthProviderProps) => {
     const [user, setUser] = useLocalStorage<User | null>("user", null);
     const [token, setToken] = useLocalStorage<string | null>("token", null);
+    const [ searchParams, setSearchParams ] = useSearchParams();
     const toast = useToast();
     const navigate = useNavigate();
     const errorToast = (errors: string[]) => {
@@ -107,6 +111,34 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
         console.log(data);
     }
 
+    const loginWithGoogleOauth = async () => {
+        const res = await fetch("http://localhost:4000/users/google", {
+            method: "GET",
+            headers: {"content-type": "application/json"},
+        });
+
+        if(res.ok){
+            toast({
+                title: "Login",
+                description: "Successfully logged in",
+                status: "success",
+                duration: 9000,
+                isClosable: true,
+            });
+        setSearchParams("token");
+        setToken(searchParams);
+        setUser(JSON.parse(atob(token.split(".")[1])));
+        }else{
+            toast({
+                title: "Error",
+                description: "Login failed",
+                status: "error",
+                duration: 9000,
+                isClosable: true,
+            });
+        }
+    }
+
     const register = async (values: RegisterData) => {
         const res = await fetch("http://localhost:4000/users/register", {
             method: "POST",
@@ -139,6 +171,21 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
     };
 
 
+    //logout function
+    const logout = () => {
+        setToken(null);
+        setUser(null);
+        isLogInSuccessful = false;
+        toast({
+            title: "Account logged out",
+            description: "Successfully logged out",
+            status: "success",
+            duration: 9000,
+            isClosable: true,
+        });
+    }
+
+
     return (
         <AuthContext.Provider
             value={{
@@ -147,11 +194,15 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
                 isLoggedIn :!!user,
                 actions:{
                     login,
-                    register
+                    loginWithGoogleOauth,
+                    register,
+                    logout
                 }
             }}
             >
-                {children}
+                <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+                    {children}
+                </GoogleOAuthProvider>
             </AuthContext.Provider>        
     )
 }

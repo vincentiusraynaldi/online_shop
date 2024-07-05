@@ -14,10 +14,10 @@ import {
 const options: Options = {
     type: 'postgresql',
     entities: [Item, User, Order, Category, Cart, Address, Wishlist, CartItem, OrderItem],
-    host: 'database' || 'localhost', //'database' is from the docker container name for the postgresql image
-    dbName: 'jasa_titip_DB',
-    password: 'jasa_titip123',
-    user: 'jasa_titip',
+    host: 'localhost' ||  'database', //'database' is from the docker container name for the postgresql image
+    dbName: process.env.POSTGRES_DB,
+    password: process.env.POSTGRES_PASSWORD,
+    user: process.env.POSTGRES_USER,
     debug: true,
     port: 5432,
 };
