@@ -15,9 +15,9 @@ const options: Options = {
     type: 'postgresql',
     entities: [Item, User, Order, Category, Cart, Address, Wishlist, CartItem, OrderItem],
     host: 'localhost',
-    dbName: 'jasa_titip_DB',
-    password: 'jasa_titip123',
-    user: 'jasa_titip',
+    dbName: 'online_shop_DB',
+    password: 'online_shop123',
+    user: 'online_shop',
     debug: true,
     port: 5432,
 };
