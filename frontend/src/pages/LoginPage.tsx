@@ -22,6 +22,7 @@ export function LoginPage() {
          },
     } = useAuth();
 
+
     return (
         <Box bg={"gray.200"}>
             <AuthCard>
@@ -45,8 +46,14 @@ export function LoginPage() {
                         
                         </VStack>
                     </Formik>
-                    <GoogleLogin logo_alignment='center'
+                    <GoogleLogin
+                            logo_alignment='center'
                             onSuccess={credentialResponse => {
+                                if(!credentialResponse.credential){
+                                    throw new Error("credential not found")
+                                }
+                                loginWithGoogleOauth(credentialResponse.credential);
+                                // loginWithGoogleOauth();
                                 console.log(credentialResponse);
                               }}
                             onError={() => {

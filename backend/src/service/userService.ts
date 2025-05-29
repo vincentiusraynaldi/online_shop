@@ -1,8 +1,10 @@
 import { DI } from "..";
-import { RegisterUserDTO } from "../dto";
-import { RegisterUserSchema, LoginUserSchema, User } from "../entity";
+import { RegisterGoogleUserDTO, RegisterUserDTO } from "../dto";
+import { RegisterUserSchema, LoginUserSchema, User, RegisterGoogleUserSchema } from "../entity";
 import { Auth } from "../middleware/auth.middleware";
 import { UserMapper } from "../mapper/userMapper";
+import { envGoogleClientId, googleClient } from '..';
+import { SmallIntType } from "@mikro-orm/core";
 
 interface RegisterUserData {
     id: string;
@@ -30,8 +32,6 @@ export class userService {
         return await DI.userRepository.findOne({ email: email.toLowerCase() });
     }
 
-
-
     static async registerUser(data: any) {
         
         const validatedData = await RegisterUserSchema.validate(data);
@@ -53,6 +53,7 @@ export class userService {
 
         const newUser = UserMapper.createUserFromRegisterUserDTO(RegisterUserDTO);
         await DI.userRepository.persistAndFlush(newUser);
+        console.log("new user: ", newUser);
         return newUser;
     }
 
@@ -126,6 +127,48 @@ export class userService {
             return { message: "User deleted" };
         } else {
             throw new Error("Unauthorized");
+        }
+    }
+
+    static async verifyGoogleToken(credential : string){
+        try{
+             const result = await googleClient.verifyIdToken({
+                idToken: credential,
+                audience: envGoogleClientId
+            })
+
+            const payload = result.getPayload();
+            if (!payload){
+                throw new Error("Invalid token payload")
+            }
+            
+            if(!payload.email){         
+                console.error("Google token missing email")  
+                throw new Error("there is no email")
+            }
+            let user = await this.getUserByEmail(payload.email.toLowerCase())
+            let isNewUser = false
+            if (!user){
+                const RegisterGoogleUserDTO : RegisterGoogleUserDTO = {
+                    email: payload.email.toLowerCase(),
+                    firstName: payload.given_name || "",
+                    lastName: payload.family_name || "",
+                    googleId: payload.sub
+                }
+
+                user = await UserMapper.createUserFromRegisterGoogleUserDTO(RegisterGoogleUserDTO);
+                await DI.userRepository.persistAndFlush(user);
+                isNewUser = true;
+            }
+
+            console.log("user: ", user)
+            // user = await this.getUserByEmail(payload.email.toLowerCase())
+            const token = this.generateToken(user);
+
+            return {token, user, isNewUser};
+        }catch(error){
+            console.error("Google token verification failed:", error);
+            throw new Error("Google authentication failed");
         }
     }
 }

@@ -7,7 +7,7 @@ import { DI } from '../index';
 import dotenv from 'dotenv';
 import path from 'path';
 
-dotenv.config({ path: path.join(__dirname, '../../.env') });
+dotenv.config({ path: path.join(__dirname, '../../.env.backend') });
 
 const BCRYPT_SALT = 10;
 
@@ -41,7 +41,7 @@ const comparePasswordwithHash = async (password: string, hash: string) =>
 };
 
 const generateToken = (payload: JwtPayload) => {
-    console.log(JWT_SECRET);
+    // console.log(JWT_SECRET);
     if (JWT_SECRET) {
         return jwt.sign(payload, JWT_SECRET, JWT_OPTIONS);
     } else {
@@ -57,47 +57,51 @@ const verifyToken = (token: string) => {
     }
 };
 
-const prepareAuthentication = async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-) => {
-    const AuthHeader = req.get('Authorization');
-    if (AuthHeader) {
-        try{
-            const token = verifyToken(AuthHeader);
-        if (token) {
-            req.user = await DI.userRepository.findOne({id :token.id});
-            req.token = token;
-        } else {
-            req.user = null;
-            req.token = null;
-        }
-        } catch (err) {
-            console.log(err);
-        }
-    } else {
-        req.user = null;
-        req.token = null;
-    }
-    next();
-};
+// const prepareAuthentication = async (
+//     req: Request,
+//     res: Response,
+//     next: NextFunction,
+// ) => {
+//     const AuthHeader = req.get('Authorization');
+//      console.log("=== DEBUG AUTH ===");
+//     console.log("Full AuthHeader:", AuthHeader);
+//     console.log("AuthHeader length:", AuthHeader?.length);
+//     if (AuthHeader) {
+//         try{
+//             // const 
+//             const token = verifyToken(AuthHeader);
+//         if (token) {
+//             req.user = await DI.userRepository.findOne({id :token.id});
+//             req.token = token;
+//         } else {
+//             req.user = null;
+//             req.token = null;
+//         }
+//         } catch (err) {
+//             console.log(err);
+//         }
+//     } else {
+//         req.user = null;
+//         req.token = null;
+//     }
+//     next();
+// };
 
 
-const verifyAccess: RequestHandler = (req, res, next) => {
-    if(!req.user) {
-        res.status(401).json({ message: 'Unauthorized' });
-    } else {
-        next();
-    }
-}
+// const verifyAccess: RequestHandler = (req, res, next) => {
+//     if(!req.user) {
+//         res.status(401).json({ message: 'Unauthorized' });
+//     } else {
+//         next();
+//     }
+// }
  
 export const Auth = {
     hashPassword,
     comparePasswordwithHash,
     generateToken,
     verifyToken,
-    prepareAuthentication,
-    verifyAccess,
+    // prepareAuthentication,
+    // verifyAccess,
 }
 

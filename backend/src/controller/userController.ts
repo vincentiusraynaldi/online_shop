@@ -1,12 +1,12 @@
+import { error } from 'console';
 import { userService } from '../service/userService';
 import { Request, Response, Router } from 'express';
 
 export class userController{
-
     static async registerUser(req: Request, res: Response){
         try {
             const newUser = await userService.registerUser(req.body);
-            res.status(201).send(newUser);
+            return res.status(201).send(newUser);
         } catch (e: any) {
             return res.status(400).send({ message: e.message });    
         }
@@ -33,6 +33,29 @@ export class userController{
         //TODO change the redirect to the home page of frontend
         // have to send the user entity as well to the frontend
         res.redirect(`http://localhost:5173/?token=${token}`);
+    }
+
+    static async verifyGoogleToken(req: Request, res: Response) {
+        try{
+            // //get credential
+            const {credential} = req.body;
+            
+            if (!credential){
+                res.status(400).json({message: "credential is required"})
+            }
+            //check if the user is already registered or not
+            //if not then create a new user
+            const result = await userService.verifyGoogleToken(credential);
+
+            if(result.isNewUser){
+                return res.status(201).send(result.user)
+            }else{
+                return res.status(200).json({accessToken: result.token, id: result.user?.id})
+            }
+        }catch{
+            console.error("Google auth error:", error);
+            return res.status(500).json({message: "Authentication failed"});
+        }
     }
 
     static async logoutUser(req: Request, res: Response){

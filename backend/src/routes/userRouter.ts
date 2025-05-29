@@ -28,6 +28,9 @@ router.get('/google', passport.authenticate('google', { scope: ['email', 'profil
 //google callback
 router.get('/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), userController.googleCallback);
 
+// verify google account
+router.post('/google/verify', userController.verifyGoogleToken)
+
 //logout user
 router.get("/logout", authenticateJWT, userController.logoutUser);
 

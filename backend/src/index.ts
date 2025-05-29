@@ -32,17 +32,25 @@ import Stripe from "stripe";
 import dotenv from "dotenv";
 import path from "path";
 import expressSession from "express-session";
+import { OAuth2Client } from "google-auth-library";
 // import { Auth } from './middleware/auth.middleware';
 
 const app = express();
 
-dotenv.config({ path: path.join(__dirname, '../.env') });
+dotenv.config({ path: path.join(__dirname, '../.env.backend') });
 
 if (!process.env.STRIPE_TEST_SECRET_KEY) {
     throw new Error('No STRIPE_TEST_SECRET_KEY provided');
 }
 
 const STRIPE_TEST_SECRET_KEY = process.env.STRIPE_TEST_SECRET_KEY;
+
+if (!process.env.GOOGLE_CLIENT_ID) {
+    throw new Error('No GOOGLE_CLIENT_ID provided');
+}
+
+export const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+export const envGoogleClientId = process.env.GOOGLE_CLIENT_ID;
 
 // app.use(cors());
 app.use(cors({

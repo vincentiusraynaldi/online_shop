@@ -33,7 +33,7 @@ export type AuthContext = {
     isLoggedIn: boolean;
     actions: {
         login: (data: LoginData) => void;
-        loginWithGoogleOauth: () => void;
+        loginWithGoogleOauth: (credential: string) => void;
         register: (data: RegisterData) => void;
         logout: () => void;
     }
@@ -44,8 +44,6 @@ const AuthContext = createContext<AuthContext | null>(null)
 export type AuthProviderProps = {
     children: React.ReactNode;
 }
-
-export let isLogInSuccessful = false;
 
 export const AuthProvider = ({children}: AuthProviderProps) => {
     const [user, setUser] = useLocalStorage<User | null>("user", null);
@@ -89,7 +87,6 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
             setToken(data.accessToken);
             setUser(JSON.parse(atob(data.accessToken.split(".")[1])));
             navigate("/", {replace: true});
-            isLogInSuccessful = true;
         } else if (res.status === 401) {
             toast({
                 title: "Error",
@@ -98,7 +95,6 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
                 duration: 9000,
                 isClosable: true,
             });
-            isLogInSuccessful = false;
         } else if (res.status === 400) {
             toast({ 
                 title: "Error",
@@ -106,18 +102,20 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
                 status: "error",
                 duration: 9000,
                 isClosable: true });
-            isLogInSuccessful = false;
         }
         console.log(data);
     }
 
-    const loginWithGoogleOauth = async () => {
-        const res = await fetch("http://localhost:4000/users/google", {
-            method: "GET",
+    // const loginWithGoogleOauth = async () => {
+    const loginWithGoogleOauth = async (credential : string) => {
+        const res = await fetch("http://localhost:4000/users/google/verify", {
+            method: "POST",
             headers: {"content-type": "application/json"},
+            body: JSON.stringify({credential}),
         });
 
         if(res.ok){
+            const data = await res.json();
             toast({
                 title: "Login",
                 description: "Successfully logged in",
@@ -125,9 +123,9 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
                 duration: 9000,
                 isClosable: true,
             });
-        setSearchParams("token");
-        setToken(searchParams);
-        setUser(JSON.parse(atob(token.split(".")[1])));
+            setToken(data.accessToken);
+            setUser(JSON.parse(atob(data.accessToken.split(".")[1])));
+            navigate("/", {replace: true});
         }else{
             toast({
                 title: "Error",
@@ -175,7 +173,6 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
     const logout = () => {
         setToken(null);
         setUser(null);
-        isLogInSuccessful = false;
         toast({
             title: "Account logged out",
             description: "Successfully logged out",
@@ -184,7 +181,6 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
             isClosable: true,
         });
     }
-
 
     return (
         <AuthContext.Provider
