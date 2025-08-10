@@ -1,0 +1,56 @@
+[
+    {
+        "itemName": "iPhone 14 Pro",
+        "itemDescription": "Latest iPhone with A16 Bionic chip, 48MP camera system, and Dynamic Island",
+        "itemPrice": 999.99,
+        "itemWeight": 206,
+        "itemBrand": "Apple",
+        "availableStock": 50,
+        "category": ["Handphone", "Electronics"]
+    },
+    {
+        "itemName": "Samsung Galaxy S23",
+        "itemDescription": "Premium Android smartphone with 200MP camera and Snapdragon 8 Gen 2",
+        "itemPrice": 799.99,
+        "itemWeight": 168,
+        "itemBrand": "Samsung",
+        "availableStock": 35,
+        "category": ["Handphone", "Electronics"]
+    },
+    {
+        "itemName": "Sony WH-1000XM4 Headphones",
+        "itemDescription": "Industry-leading noise canceling wireless headphones with 30-hour battery life",
+        "itemPrice": 349.99,
+        "itemWeight": 254,
+        "itemBrand": "Sony",
+        "availableStock": 25,
+        "category": ["Headphone", "Electronics"]
+    },
+    {
+        "itemName": "MacBook Air M2", 
+        "itemDescription": "Redesigned MacBook Air with M2 chip, 13.6-inch Liquid Retina display",
+        "itemPrice": 1199.99,
+        "itemWeight": 1240,
+        "itemBrand": "Apple",
+        "availableStock": 15,
+        "category": ["Laptop", "Electronics"]
+    },
+    {
+        "itemName": "Nike Air Max 270",
+        "itemDescription": "Comfortable running shoes with Max Air unit and breathable mesh upper",
+        "itemPrice": 149.99,
+        "itemWeight": 320,
+        "itemBrand": "Nike",
+        "availableStock": 100,
+        "category": ["Shoes", "Clothing"]
+    },
+    {
+        "itemName": "Adidas Ultraboost 22",
+        "itemDescription": "High-performance running shoes with Boost midsole and Primeknit upper",
+        "itemPrice": 189.99,
+        "itemWeight": 310,
+        "itemBrand": "Adidas",
+        "availableStock": 75,
+        "category": ["Shoes", "Clothing"]
+    }
+]

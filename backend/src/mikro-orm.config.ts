@@ -1,4 +1,5 @@
 import { Options } from '@mikro-orm/core';
+import { SeedManager } from '@mikro-orm/seeder';
 import { 
     Order, 
     Item, 
@@ -10,9 +11,14 @@ import {
     CartItem,
     OrderItem 
 } from './entity';
+import dotenv from "dotenv";
+import path from "path";
+
+dotenv.config({ path: path.join(__dirname, '../.env.backend') });
 
 const options: Options = {
     type: 'postgresql',
+    extensions: [SeedManager],
     entities: [Item, User, Order, Category, Cart, Address, Wishlist, CartItem, OrderItem],
     // host: 'localhost' ||  'database', //'database' is from the docker container name for the postgresql image
     host: 'localhost', //'database' is from the docker container name for the postgresql image
@@ -24,6 +30,15 @@ const options: Options = {
     // user: 'online_shop',
     debug: true,
     port: 5432,
+    seeder: {
+        path: './src/seeder', // path to the folder with seeders js file
+        // path: '../dist/seeders', // path to the folder with seeders js file for production (not yet tested)
+        pathTs: './src/seeder', // path to the folder with TS seeders (if used, you should put path to compiled files in `path`)
+        defaultSeeder: 'DatabaseSeeder', // default seeder class name
+        glob: '!(*.d).{js,ts}', // how to match seeder files (all .js and .ts files, but not .d.ts)
+        emit: 'ts', // seeder generation mode
+        fileName: (className: string) => className, // seeder file naming convention
+    },
 };
 
 export default options;
