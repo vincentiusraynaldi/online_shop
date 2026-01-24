@@ -7,7 +7,8 @@ import {
 
 import { 
     LoginPage,
-    RegisterPage 
+    RegisterPage, 
+    UserProfilePage
 } from "./pages";
 
 import { AuthRequired } from "./AuthRequired";
@@ -37,6 +38,11 @@ export const routes: RouteConfig[] = [
         path: "/auth/register",
         isPrivate: false,
         element: <RegisterPage/>
+    },
+    {
+        path: "/users/profile",
+        isPrivate: true,
+        element: <UserProfilePage/>
     },
     {
         path: "/test",

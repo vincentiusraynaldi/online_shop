@@ -35,13 +35,16 @@ router.post('/google/verify', userController.verifyGoogleToken)
 router.get("/logout", authenticateJWT, userController.logoutUser);
 
 // edit profile
-router.put("/edit/:id", authenticateJWT, userController.editUserProfile);
+router.put("/edit", authenticateJWT, userController.editUserProfile);
+
+// change user password
+router.put("/password", authenticateJWT, userController.changePassword);
 
 //get user profile
-router.get("/profile/:id", authenticateJWT, userController.getUserProfile);
+router.get("/profile", authenticateJWT, userController.getUserProfile);
 
 // delete user
-router.delete("/delete/:id", authenticateJWT, userController.deleteUser);
+router.delete("/delete", authenticateJWT, userController.deleteUser);
 
 // !!
 // !! cart routes !!

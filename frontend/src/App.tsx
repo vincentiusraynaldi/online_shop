@@ -1,5 +1,5 @@
 // import { useState } from 'react'
-import Navbar from './components/Navbar'
+import Navbar from './components/layout/Navbar'
 import { BrowserRouter } from 'react-router-dom';
 import AppRoutes from './AppRoutes';
 import { ChakraProvider } from '@chakra-ui/react';

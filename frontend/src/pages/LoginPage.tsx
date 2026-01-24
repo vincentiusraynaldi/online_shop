@@ -4,7 +4,7 @@ import { Box, Button, Heading, Link, VStack } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import { InputControl } from 'formik-chakra-ui';
 import { Link as RouterLink } from 'react-router-dom';
-import { AuthCard } from '../components/AuthCard';
+import { AuthCard } from '../components/features/auth/AuthCard';
 import { GoogleLogin } from '@react-oauth/google';
 
 // TODO: add google oauth

@@ -3,7 +3,7 @@ import { Formik, Form } from "formik";
 import { InputControl } from "formik-chakra-ui";
 import { Button, VStack, Heading, Grid } from "@chakra-ui/react";
 import * as Yup from "yup";
-import { AuthCard } from "../components/AuthCard";
+import { AuthCard } from "../components/features/auth/AuthCard";
 
 const registerSchema = Yup.object({
     firstName: Yup.string().required(),

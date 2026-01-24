@@ -6,6 +6,7 @@ import invariant from 'tiny-invariant';
 import React from "react";
 import { useSearchParams } from "react-router-dom";
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import { stringify } from "querystring";
 
 export type User = {
     firstName: string;
@@ -27,6 +28,20 @@ export type RegisterData = {
     confirmPassword: string;
 }
 
+
+//todo need to brainstorm bcs the register data is the same with edit user data
+export type EditUserData = {
+    firstName: string;
+    lastName: string;
+    email: string;
+}
+
+export type changePasswordData = {
+    currentPassword: string;
+    newPassword: string;
+    confirmPassword: string;
+}
+
 export type AuthContext = {
     user?: User;
     token?: string;
@@ -36,6 +51,9 @@ export type AuthContext = {
         loginWithGoogleOauth: (credential: string) => void;
         register: (data: RegisterData) => void;
         logout: () => void;
+        // getProfile: () => void;
+        editProfile: (data: EditUserData) => void;
+        changePassword: (data: changePasswordData) => void;
     }
 }
 
@@ -168,7 +186,6 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
         }
     };
 
-
     //logout function
     const logout = () => {
         setToken(null);
@@ -181,6 +198,77 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
             isClosable: true,
         });
     }
+    
+    // const getProfile = async () => {
+    //     const res = await fetch("http://localhost:4000/users/profile", {
+    //         method: "GET",  // Changed from POST
+    //         headers: {
+    //             "Content-Type": "application/json",
+    //             "Authorization": `Bearer ${token}`  // Add your bearer token
+    //         }
+    //     });
+
+    //     // const data
+    // }
+
+    const editProfile = async (values: EditUserData) => {
+        const res = await fetch("http://localhost:4000/users/profile",{
+            method: "PUT",
+            headers: {
+                "content-type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify(values)
+        })
+
+        // const resBody = res.json;
+        if (res.status === 200){
+            toast({
+                title: "Edit account profile",
+                description: "Successfully edit user profile",
+                status: "success",
+                duration: 9000,
+                isClosable: true,
+            })
+        } else {
+            toast({
+                title: "Error",
+                description: "Edit profile failed",
+                status: "error",
+                duration: 9000,
+                isClosable: true,
+            });
+        }
+    }
+
+    const changePassword = async (values: changePasswordData) {
+        const res = await fetch("http://localhost:4000/users/password",{
+            method: "put",
+            headers: {
+                "content-type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify(values)
+        })
+
+        if(res.status == 200){
+            toast({
+                title: "Change Password",
+                description: "Successfully change user password",
+                status: "success",
+                duration: 9000,
+                isClosable: true,
+            })
+        }else{
+            toast({
+                title: "Error",
+                description: "Change password failed",
+                status: "error",
+                duration: 9000,
+                isClosable: true,
+            });
+        }
+    }
 
     return (
         <AuthContext.Provider
@@ -192,7 +280,10 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
                     login,
                     loginWithGoogleOauth,
                     register,
-                    logout
+                    logout,
+                    // getProfile,
+                    editProfile,
+                    changePassword
                 }
             }}
             >

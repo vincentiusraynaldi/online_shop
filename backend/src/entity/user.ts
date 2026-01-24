@@ -87,6 +87,12 @@ export const LoginUserSchema = object({
     email: string().required(),
 });
 
+export const changePasswordSchema = object({
+    currentPassword: string().required(),
+    newPassword: string().required(),
+    confirmPassword: string().required()
+});
+
 export const RegisterGoogleUserSchema = object({
     email: string().required(),
     firstName: string().required(),

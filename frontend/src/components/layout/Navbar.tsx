@@ -1,6 +1,6 @@
 import { Box, Flex, Link, Heading } from "@chakra-ui/react";
-import Searchbar from "./Searchbar";
-import { useAuth } from "../provider/AuthProvider";
+import Searchbar from "../features/search/Searchbar";
+import { useAuth } from "../../provider/AuthProvider";
 
 // TODO: differentiate navbar when user is logged in or not
 

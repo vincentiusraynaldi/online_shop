@@ -1,6 +1,6 @@
 import { error } from 'console';
 import { userService } from '../service/userService';
-import { Request, Response, Router } from 'express';
+import e, { Request, Response, Router } from 'express';
 
 export class userController{
     static async registerUser(req: Request, res: Response){
@@ -70,7 +70,16 @@ export class userController{
     
     static async editUserProfile(req: Request, res: Response){
         try{
-            const updatedUser = await userService.editProfile(req.params.id, req.body, req.user);
+            const updatedUser = await userService.editProfile(req.body, req.user);
+            return res.status(200).json(updatedUser);
+        }catch(e: any){
+            return res.status(400).send({ message: e.message });
+        }
+    }
+
+    static async changePassword(req: Request, res: Response){
+        try{
+            const updatedUser = await userService.editProfile(req.body, req.user);
             return res.status(200).json(updatedUser);
         }catch(e: any){
             return res.status(400).send({ message: e.message });
@@ -79,7 +88,7 @@ export class userController{
 
     static async getUserProfile(req: Request, res: Response){
         try{
-            const userProfileResult = await userService.getUserProfile(req.params.id, req.user);
+            const userProfileResult = await userService.getUserProfile(req.user);
             res.status(200).json(userProfileResult);
         }
         catch(e: any){
@@ -89,7 +98,7 @@ export class userController{
     
     static async deleteUser(req: Request, res: Response){
         try{
-            const deletionResult = await userService.deleteUser(req.params.id, req.user);
+            const deletionResult = await userService.deleteUser(req.user);
             return res.status(200).send(deletionResult);
         }catch(e: any){
             return res.status(400).send({ message: e.message });

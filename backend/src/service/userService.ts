@@ -1,10 +1,9 @@
 import { DI } from "..";
 import { RegisterGoogleUserDTO, RegisterUserDTO } from "../dto";
-import { RegisterUserSchema, LoginUserSchema, User, RegisterGoogleUserSchema } from "../entity";
+import { RegisterUserSchema, LoginUserSchema, User, RegisterGoogleUserSchema, changePasswordSchema } from "../entity";
 import { Auth } from "../middleware/auth.middleware";
 import { UserMapper } from "../mapper/userMapper";
 import { envGoogleClientId, googleClient } from '..';
-import { SmallIntType } from "@mikro-orm/core";
 
 interface RegisterUserData {
     id: string;
@@ -63,12 +62,8 @@ export class userService {
 
         const existingUser = await this.getUserByEmail(validatedData.email);
 
-        if (!existingUser) {
-            throw new Error("Email not found");
-        }
-
-        if(!existingUser.password){
-            throw new Error("Password not found");
+        if (!existingUser || !existingUser.password) {
+            throw new Error("Email or Password not found");
         }
 
         const isPasswordValid = await Auth.comparePasswordwithHash(
@@ -85,8 +80,8 @@ export class userService {
         return {token, id: existingUser.id};
     }
 
-    static async editProfile(id: string, data: any, user: User) {
-        const existingUser = await this.getUserById(id);
+    static async editProfile(data: any, user: User) {
+        const existingUser = await this.getUserById(user.id);
         if (!existingUser) {
             throw new Error("User not found");
         }
@@ -101,8 +96,50 @@ export class userService {
         }
     }
 
-    static async getUserProfile(id: string, user: User) {
-        const existingUser = await this.getUserById(id);
+    static async changePassword (data:any, user: User){
+        
+        const validatedData = await changePasswordSchema.validate(data);
+        if (!validatedData) throw new Error("Data not valid");
+
+        const existingUser = await this.getUserById(user.id);
+        if (!existingUser){
+            throw new Error("User not found");
+        }
+
+        if(!existingUser.password){
+            throw new Error("Password not found")
+        }
+
+        // compare current password from data with the password from the database
+        const isPasswordValid = await Auth.comparePasswordwithHash(
+            validatedData.currentPassword,
+            existingUser.password
+        )
+
+        if(!isPasswordValid){
+            throw new Error("Current password is not the same")
+        }
+
+        // compare current password with the new password so that it is not the same
+        if(validatedData.currentPassword === validatedData.newPassword){
+            throw new Error("Current and new password are the same")
+        }
+
+        // there should be a table where it saves the last passwords but it is for later 
+
+        // compare the newpassword and the current password
+        if (validatedData.newPassword !== validatedData.confirmPassword){
+            throw new Error("New Password and confirm password not the same")
+        }
+
+        // save the new password
+        existingUser.password = await Auth.hashPassword(validatedData.newPassword);
+        await DI.userRepository.flush();
+        return existingUser;
+    }
+
+    static async getUserProfile(user: User) {
+        const existingUser = await this.getUserById(user.id);
         if (!existingUser) {
             throw new Error("User not found");
         }
@@ -114,9 +151,9 @@ export class userService {
         }
     }
 
-    static async deleteUser(id: string, user: User) {
+    static async deleteUser(user: User) {
 
-        const existingUser = await DI.userRepository.findOne(id, { populate: ["cart", "addresses", "orders", "wishlists"] });
+        const existingUser = await DI.userRepository.findOne(user.id, { populate: ["cart", "addresses", "orders", "wishlists"] });
 
         if (!existingUser) {
             throw new Error("User not found");

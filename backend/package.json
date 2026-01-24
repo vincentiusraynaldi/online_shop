@@ -7,7 +7,9 @@
     "start": "tsc  && node ./dist/index.js",
     "start:dev": "tsc-watch --onSuccess \"node ./dist/index.js\"",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "schema:fresh": "npx mikro-orm schema:fresh -r"
+    "schema:fresh": "npx mikro-orm schema:fresh -r",
+    "seed": "mikro-orm seeder:run",
+    "reset:seed": "mikro-orm schema:fresh -r --seed DataSeeder"
   },
   "author": "",
   "license": "ISC",
