@@ -1,0 +1,1 @@
+// hook for fetching the products while filtering the paramether and the searchquery

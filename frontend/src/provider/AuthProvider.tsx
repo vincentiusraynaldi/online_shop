@@ -241,7 +241,7 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
         }
     }
 
-    const changePassword = async (values: changePasswordData) {
+    const changePassword = async (values: changePasswordData) => {
         const res = await fetch("http://localhost:4000/users/password",{
             method: "put",
             headers: {
