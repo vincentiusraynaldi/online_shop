@@ -16,7 +16,8 @@ export class wishlistService {
         const wishlist = new Wishlist(validatedData.wishlistName);
 
         await user.wishlists.add(wishlist);
-        await DI.userRepository.flush();
+        // await DI.userRepository.flush();
+        await DI.em.flush();
         return wishlist;
     }
 
@@ -25,7 +26,8 @@ export class wishlistService {
         const wishlist = user.wishlists.getItems().find((wishlist: Wishlist) => wishlist.id === id);
         if (!wishlist) throw new Error("Wishlist not found");
         await user.wishlists.remove(wishlist);
-        await DI.userRepository.flush();
+        // await DI.userRepository.flush();
+        await DI.em.flush();
         return ({ message: "Wishlist deleted" });
     }
 
@@ -46,7 +48,8 @@ export class wishlistService {
         const wishlist = user.wishlists.getItems().find((wishlist: Wishlist) => wishlist.id === id);
         if (!wishlist) throw new Error("Wishlist not found");
         Object.assign(wishlist, data);
-        await DI.userRepository.flush();
+        // await DI.userRepository.flush();
+        await DI.em.flush();
         return wishlist;
     }
 
@@ -67,7 +70,8 @@ export class wishlistService {
         if (isItemExistsInWishlist) throw new Error("Item already in wishlist");
 
         await wishlist.items.add(item);
-        await DI.userRepository.flush();
+        // await DI.userRepository.flush();
+        await DI.em.flush();
         return ({ message: "Item added to wishlist"});
     }
 
@@ -86,7 +90,8 @@ export class wishlistService {
         if (!item) throw new Error("Item not found in wishlist");
 
         await wishlist.items.remove(item);
-        await DI.userRepository.flush();
+        // await DI.userRepository.flush();
+        await DI.em.flush();
         return ({ message: "Item removed from wishlist"});
     }
 }

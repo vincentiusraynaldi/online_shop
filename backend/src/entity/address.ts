@@ -5,7 +5,7 @@ import { object, string } from "yup";
 
 @Entity()
 export class Address extends BaseEntity{
-    @ManyToMany({ entity: () => User })
+    @ManyToMany({ entity: () => User, mappedBy: 'addresses' })
     users = new Collection<User>(this);
 
     @Property({ nullable: true })

@@ -21,7 +21,8 @@ export class addressService {
         const address = AddressMapper.createAddressFromDTO(data);
         
         user.addresses.add(address);
-        await DI.userRepository.flush();
+        // await DI.userRepository.flush();
+        await DI.em.flush();
         
         return address;
     }
@@ -34,7 +35,9 @@ export class addressService {
         
         AddressMapper.updateAddressFromDTO(address, data);
         
-        await DI.userRepository.flush();
+        // await DI.userRepository.flush();
+        await DI.em.flush();
+
         return address;
     }
 
@@ -45,7 +48,8 @@ export class addressService {
         if (!address) throw new Error("Address not found");
         
         user.addresses.remove(address);
-        await DI.userRepository.flush();
+        // await DI.userRepository.flush();
+        await DI.em.flush();
         
         return { message: "Address deleted" };
     }

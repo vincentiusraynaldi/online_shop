@@ -4,7 +4,7 @@ import { Strategy as GoogleStrategy, Profile } from 'passport-google-oauth20';
 import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
 import { Request } from "express";
 // import { User } from "./entities";
-import { UseRequestContext } from "@mikro-orm/core";
+// import { UseRequestContext } from "@mikro-orm/core";
 import { VerifiedCallback } from "passport-jwt";
 import { RegisterGoogleUserDTO } from "./dto";
 import { UserMapper } from "./mapper";
@@ -57,7 +57,8 @@ passport.use(new GoogleStrategy({
                 googleId: profile.id
             };
             const newUser = UserMapper.createUserFromRegisterGoogleUserDTO(newUserDTO);
-            await DI.userRepository.persistAndFlush(newUser);
+            // await DI.userRepository.persistAndFlush(newUser);
+            await DI.em.persistAndFlush(newUser);
             done(null, newUser);
         }
     }

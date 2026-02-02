@@ -26,7 +26,7 @@ export class Order extends BaseEntity {
     items = new Collection<OrderItem>(this);
 
     //address
-    @Property()
+    @ManyToOne({ entity: () => Address })
     address!: Address;
 
     @Property()

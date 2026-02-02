@@ -51,7 +51,8 @@ export class userService {
         }
 
         const newUser = UserMapper.createUserFromRegisterUserDTO(RegisterUserDTO);
-        await DI.userRepository.persistAndFlush(newUser);
+        // await DI.userRepository.persistAndFlush(newUser);
+        await DI.em.persistAndFlush(newUser);
         console.log("new user: ", newUser);
         return newUser;
     }
@@ -89,7 +90,8 @@ export class userService {
         if( user.email === existingUser.email){
             data.password = await Auth.hashPassword(data.password);
             Object.assign(existingUser, data);
-            await DI.userRepository.flush();
+            // await DI.userRepository.flush();
+            await DI.em.flush();
             return existingUser;
         } else {
             throw new Error("Unauthorized");
@@ -134,7 +136,8 @@ export class userService {
 
         // save the new password
         existingUser.password = await Auth.hashPassword(validatedData.newPassword);
-        await DI.userRepository.flush();
+        // await DI.userRepository.flush();
+        await DI.em.flush();
         return existingUser;
     }
 
@@ -160,7 +163,8 @@ export class userService {
         }
 
         if(user.email === existingUser.email){
-            await DI.userRepository.removeAndFlush(existingUser);
+            // await DI.userRepository.removeAndFlush(existingUser);
+            await DI.em.removeAndFlush(existingUser);
             return { message: "User deleted" };
         } else {
             throw new Error("Unauthorized");
@@ -169,7 +173,7 @@ export class userService {
 
     static async verifyGoogleToken(credential : string){
         try{
-             const result = await googleClient.verifyIdToken({
+            const result = await googleClient.verifyIdToken({
                 idToken: credential,
                 audience: envGoogleClientId
             })
@@ -194,7 +198,8 @@ export class userService {
                 }
 
                 user = await UserMapper.createUserFromRegisterGoogleUserDTO(RegisterGoogleUserDTO);
-                await DI.userRepository.persistAndFlush(user);
+                // await DI.userRepository.persistAndFlush(user);
+                await DI.em.persistAndFlush(user);
                 isNewUser = true;
             }
 

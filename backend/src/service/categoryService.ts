@@ -16,7 +16,8 @@ export class categoryService{
             throw new Error("Category already exists");
 
         const category = new Category(categoryName);
-        await DI.categoryRepository.persistAndFlush(category);
+        // await DI.categoryRepository.persistAndFlush(category);
+        await DI.em.persistAndFlush(category);
         return category;
     }
 
@@ -24,7 +25,8 @@ export class categoryService{
         const category = await DI.categoryRepository.findOne({ id });
         if (!category) throw new Error("Category not found");
 
-        await DI.categoryRepository.removeAndFlush(category);
+        // await DI.categoryRepository.removeAndFlush(category);
+        await DI.em.removeAndFlush(category);
         return { message: "Category deleted" };
     }
 
@@ -35,7 +37,8 @@ export class categoryService{
         if (!data.categoryName) throw new Error("Category name is required");
 
         Object.assign(category, data);
-        await DI.categoryRepository.flush();
+        // await DI.categoryRepository.flush();
+        await DI.em.flush();
         return category;
     }
 
@@ -47,7 +50,8 @@ export class categoryService{
         if (!category) throw new Error('Category not found');
 
         category.items.add(item);
-        await DI.categoryRepository.flush();
+        // await DI.categoryRepository.flush();
+        await DI.em.flush();
         return category;
     }
 
@@ -59,7 +63,8 @@ export class categoryService{
         if (!category) throw new Error('Category not found');
 
         category.items.remove(item);
-        await DI.categoryRepository.flush();
+        // await DI.categoryRepository.flush();
+        await DI.em.flush();
         return category;
     }
 }

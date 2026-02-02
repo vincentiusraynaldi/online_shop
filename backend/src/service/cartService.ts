@@ -51,7 +51,8 @@ export class cartService {
         
         user.cart.items.removeAll();
         user.cart.totalPrice -= totalPrice;
-        await DI.userRepository.flush();
+        // await DI.userRepository.flush();
+        await DI.em.flush();
         return ({message: "Checkout successful", totalPrice});
     }
 
@@ -87,7 +88,8 @@ export class cartService {
                 }
             });
         }
-        await DI.userRepository.flush();
+        // await DI.userRepository.flush();
+        await DI.em.flush();
         return user.cart;
     }
 
@@ -123,7 +125,8 @@ export class cartService {
             }
         });
         
-        await DI.userRepository.flush();
+        // await DI.userRepository.flush();
+        await DI.em.flush();
         return user.cart;
     }
 }

@@ -4,28 +4,64 @@ import { CreateItemSchema } from "../entity";
 import { itemMapper } from "../mapper";
 
 export class itemService{
-    static async getAllItems() {
-        return await DI.itemRepository.findAll();
+    static async getAllItems(query: any) {
+        console.log(query);
+
+        const where : any = {};
+
+        if(query.name){
+            where.itemName = { $ilike: `%${query.name}%` };
+        }
+
+        if(query.categories){
+            const categoryList = query.categories.split(',');
+            where.categories = { $some: {id: categoryList}};
+        }
+
+        // min price max price
+        if(query.minPrice || query.maxPrice){
+            where.itemPrice = {};
+            if(query.minPrice) where.itemPrice.$gte = parseFloat(query.minPrice as string);
+            if(query.maxPrice) where.itemPrice.$lte = parseFloat(query.maxPrice as string);
+        }
+
+        // in stock
+        if (query.inStock = "true"){
+            where.availableStock = { $gt : 0 };
+        }
+
+        // brand
+        if(query.brand){
+            where.itemBrand = { $ilike: `%${query.brand as string}$`};
+        }
+
+        // todo pagination, sort filter
+
+        return await DI.itemRepository.find(
+            where,
+        {
+            populate: ['categories']
+        });
     }
 
     static async getItemById(id: string) {
         return await DI.itemRepository.findOne(id);
     }
 
-    static async getItemsByName(name: string) {
-        // search for items with the given name
-        // it can be a partial search
-        const searchPattern = new RegExp(name, 'i'); // 'i' for case-insensitive search
-        return await DI.itemRepository.find({ itemName: searchPattern });
-    }
+    // static async getItemsByName(name: string) {
+    //     // search for items with the given name
+    //     // it can be a partial search
+    //     const searchPattern = new RegExp(name, 'i'); // 'i' for case-insensitive search
+    //     return await DI.itemRepository.find({ itemName: searchPattern });
+    // }
 
-    // todo: must check if the user wanted to show items from multiple categories
-    // !! check if query will be joined or seperated (items from all categories or items from each category)
-    static async getItemsByCategory(category: string) {
-        const categories = category.split(',');
-        const categoryEntity = await DI.categoryRepository.find({ categoryName: { $in: categories } });
-        return await DI.itemRepository.find(categoryEntity, { populate: ['categories'] });
-    }
+    // // todo: must check if the user wanted to show items from multiple categories
+    // // !! check if query will be joined or seperated (items from all categories or items from each category)
+    // static async getItemsByCategory(category: string) {
+    //     const categories = category.split(',');
+    //     const categoryEntity = await DI.categoryRepository.find({ categoryName: { $in: categories } });
+    //     return await DI.itemRepository.find(categoryEntity, { populate: ['categories'] });
+    // }
 
     static async addItem(data: any) {
         const validatedData = await CreateItemSchema.validate(data);
@@ -44,7 +80,8 @@ export class itemService{
         if (existingItem){ throw new Error("Item already exists");}
 
         const newItem = itemMapper.createItemFromDTO(CreateItemDTO);
-        await DI.itemRepository.persistAndFlush(newItem);
+        // await DI.itemRepository.persistAndFlush(newItem);
+        await DI.em.persistAndFlush(newItem);
         return newItem;
     }
 
@@ -53,7 +90,8 @@ export class itemService{
         if (!existingItem) throw new Error("Item not found");
 
         Object.assign(existingItem, data);
-        await DI.itemRepository.flush();
+        // await DI.itemRepository.flush();
+        await DI.em.flush();
         return existingItem;
     }
 
@@ -61,7 +99,8 @@ export class itemService{
         const item = await DI.itemRepository.findOne({ id });
         if (!item) throw new Error("Item not found");
 
-        await DI.itemRepository.removeAndFlush(item);
+        // await DI.itemRepository.removeAndFlush(item);
+        await DI.em.removeAndFlush(item);
         return item;
     }
 }

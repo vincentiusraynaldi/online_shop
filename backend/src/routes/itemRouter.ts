@@ -2,7 +2,6 @@ import { Router } from 'express';
 import { DI } from '..';
 import { itemController } from '../controller/itemController';
 
-//todo refactor the itemrouter itemcontroller and itemservice
 //todo test the items
 //todo test the wishlist
 //todo test user
@@ -24,10 +23,10 @@ router.get('/:id', itemController.getItemById);
 // delete item
 router.delete('/:id', itemController.deleteItem);
 
-// get items by name
-router.get('/name/:name', itemController.getItemsByName);
+// // get items by name
+// router.get('/name/:name', itemController.getItemsByName);
 
-// get items by category
-router.get('/category/:category', itemController.getItemsByCategory);
+// // get items by category
+// router.get('/category/:category', itemController.getItemsByCategory);
 
 export const itemRouter = router;

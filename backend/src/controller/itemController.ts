@@ -3,7 +3,7 @@ import { itemService } from '../service/itemService';
 
 export class itemController{
     static async getAllItems(req: Request, res: Response) {
-        const items = await itemService.getAllItems();
+        const items = await itemService.getAllItems(req.query);
         res.status(200).send(items);
     }
 
@@ -16,25 +16,25 @@ export class itemController{
         }
     }
 
-    static async getItemsByName(req: Request, res: Response) {
-        try {
-            const items = await itemService.getItemsByName(req.params.name);
-            res.status(200).send(items);
-        } catch (e: any) {
-            return res.status(400).send({ message: e.message });
-        }
-    }
+    // static async getItemsByName(req: Request, res: Response) {
+    //     try {
+    //         const items = await itemService.getItemsByName(req.params.name);
+    //         res.status(200).send(items);
+    //     } catch (e: any) {
+    //         return res.status(400).send({ message: e.message });
+    //     }
+    // }
 
-    // todo: must check if the user wanted to show items from multiple categories
-    // !! check if query will be joined or seperated (items from all categories or items from each category)
-    static async getItemsByCategory(req: Request, res: Response) {
-        try {
-            const items = await itemService.getItemsByCategory(req.params.category);
-            res.send(items);
-        } catch (e: any) {
-            return res.status(400).send({ message: e.message });
-        }
-    }
+    // // todo: must check if the user wanted to show items from multiple categories
+    // // !! check if query will be joined or seperated (items from all categories or items from each category)
+    // static async getItemsByCategory(req: Request, res: Response) {
+    //     try {
+    //         const items = await itemService.getItemsByCategory(req.params.category);
+    //         res.send(items);
+    //     } catch (e: any) {
+    //         return res.status(400).send({ message: e.message });
+    //     }
+    // }
 
     static async addItem(req: Request, res: Response) {
         try {

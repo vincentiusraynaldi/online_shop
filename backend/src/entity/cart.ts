@@ -6,7 +6,7 @@ import { BaseEntity } from "./baseEntity";
 @Entity()
 export class Cart extends BaseEntity{
 
-    @OneToOne({ entity: () => User, onDelete: 'cascade' })
+    @OneToOne({ entity: () => User, deleteRule: 'cascade' })
     user!: User;
 
     // Add properties here

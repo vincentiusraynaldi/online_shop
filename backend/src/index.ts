@@ -22,10 +22,11 @@ import {
 import {
     EntityManager,
     EntityRepository,
-    MikroORM,
+    // MikroORM,
     RequestContext,
-    } from "@mikro-orm/core";
-    
+} from "@mikro-orm/core";
+import config from './mikro-orm.config';
+import { MikroORM } from "@mikro-orm/postgresql";    
 import passport from "passport";
 import './passport-config';
 import Stripe from "stripe";
@@ -57,7 +58,7 @@ app.use(cors({
     origin: 'http://localhost:5173', // Update this to your frontend's origin
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type']
-  }));
+}));
 
 export const DI = {} as {
     server: http.Server;
@@ -76,7 +77,7 @@ export const DI = {} as {
 }
 
 export const initializeORM = async () => {
-    DI.orm = await MikroORM.init();
+    DI.orm = await MikroORM.init(config);
     DI.em = DI.orm.em;
     DI.itemRepository = DI.orm.em.getRepository(Item);
     DI.userRepository = DI.orm.em.getRepository(User);

@@ -9,20 +9,20 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "schema:fresh": "npx mikro-orm schema:fresh -r",
     "seed": "mikro-orm seeder:run",
-    "reset:seed": "mikro-orm schema:fresh -r --seed DataSeeder"
+    "reset:seed": "mikro-orm schema:fresh -r --seed DatabaseSeeder"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@mikro-orm/core": "^5.7.14",
-    "@mikro-orm/postgresql": "^5.7.14",
+    "@mikro-orm/core": "^6.6.6",
+    "@mikro-orm/postgresql": "^6.6.6",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "express-session": "^1.18.0",
     "google-auth-library": "^9.15.1",
     "jsonwebtoken": "^9.0.2",
-    "mikro-orm": "^5.7.14",
+    "mikro-orm": "^6.6.6",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
     "passport-jwt": "^4.0.1",
@@ -32,8 +32,9 @@
     "yup": "^1.2.0"
   },
   "devDependencies": {
-    "@mikro-orm/cli": "^5.7.14",
-    "@mikro-orm/seeder": "^5.7.14",
+    "@mikro-orm/cli": "^6.6.6",
+    "@mikro-orm/migrations": "^6.6.6",
+    "@mikro-orm/seeder": "^6.6.6",
     "@types/bcrypt": "^5.0.0",
     "@types/cors": "^2.8.13",
     "@types/express": "^4.17.17",
