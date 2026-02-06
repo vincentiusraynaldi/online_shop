@@ -6,7 +6,7 @@
         "itemWeight": 206,
         "itemBrand": "Apple",
         "availableStock": 50,
-        "category": ["Handphone", "Electronics"]
+        "category": ["Smartphone", "Electronics"]
     },
     {
         "itemName": "Samsung Galaxy S23",
@@ -15,7 +15,34 @@
         "itemWeight": 168,
         "itemBrand": "Samsung",
         "availableStock": 35,
-        "category": ["Handphone", "Electronics"]
+        "category": ["Smartphone", "Electronics"]
+    },
+    {
+        "itemName": "Google Pixel 7 Pro",
+        "itemDescription": "Google's flagship smartphone with Tensor G2 chip and advanced AI photography",
+        "itemPrice": 899.99,
+        "itemWeight": 212,
+        "itemBrand": "Google",
+        "availableStock": 40,
+        "category": ["Smartphone", "Electronics"]
+    },
+    {
+        "itemName": "OnePlus 11",
+        "itemDescription": "Flagship killer with Snapdragon 8 Gen 2 and Hasselblad camera system",
+        "itemPrice": 699.99,
+        "itemWeight": 205,
+        "itemBrand": "OnePlus",
+        "availableStock": 45,
+        "category": ["Smartphone", "Electronics"]
+    },
+    {
+        "itemName": "Xiaomi 13 Pro",
+        "itemDescription": "Premium smartphone with Leica optics and 120W fast charging",
+        "itemPrice": 749.99,
+        "itemWeight": 229,
+        "itemBrand": "Xiaomi",
+        "availableStock": 38,
+        "category": ["Smartphone", "Electronics"]
     },
     {
         "itemName": "Sony WH-1000XM4 Headphones",
@@ -27,12 +54,111 @@
         "category": ["Headphone", "Electronics"]
     },
     {
+        "itemName": "Bose QuietComfort 45",
+        "itemDescription": "Premium noise canceling headphones with balanced audio and all-day comfort",
+        "itemPrice": 329.99,
+        "itemWeight": 240,
+        "itemBrand": "Bose",
+        "availableStock": 30,
+        "category": ["Headphone", "Electronics"]
+    },
+    {
+        "itemName": "Apple AirPods Max",
+        "itemDescription": "Over-ear headphones with high-fidelity audio, Adaptive EQ, and spatial audio",
+        "itemPrice": 549.99,
+        "itemWeight": 385,
+        "itemBrand": "Apple",
+        "availableStock": 20,
+        "category": ["Headphone", "Electronics"]
+    },
+    {
+        "itemName": "Sennheiser Momentum 4",
+        "itemDescription": "Audiophile wireless headphones with 60-hour battery and exceptional sound quality",
+        "itemPrice": 379.99,
+        "itemWeight": 293,
+        "itemBrand": "Sennheiser",
+        "availableStock": 22,
+        "category": ["Headphone", "Electronics"]
+    },
+    {
+        "itemName": "JBL Tune 760NC",
+        "itemDescription": "Affordable noise canceling headphones with powerful bass and 35-hour battery",
+        "itemPrice": 129.99,
+        "itemWeight": 220,
+        "itemBrand": "JBL",
+        "availableStock": 55,
+        "category": ["Headphone", "Electronics"]
+    },
+    {
+        "itemName": "Beats Studio Pro",
+        "itemDescription": "Premium wireless headphones with lossless audio and personalized spatial audio",
+        "itemPrice": 349.99,
+        "itemWeight": 260,
+        "itemBrand": "Beats",
+        "availableStock": 28,
+        "category": ["Headphone", "Electronics"]
+    },
+    {
         "itemName": "MacBook Air M2", 
         "itemDescription": "Redesigned MacBook Air with M2 chip, 13.6-inch Liquid Retina display",
         "itemPrice": 1199.99,
         "itemWeight": 1240,
         "itemBrand": "Apple",
         "availableStock": 15,
+        "category": ["Laptop", "Electronics"]
+    },
+    {
+        "itemName": "MacBook Pro 14-inch M3",
+        "itemDescription": "Professional laptop with M3 Pro chip and stunning Liquid Retina XDR display",
+        "itemPrice": 1999.99,
+        "itemWeight": 1600,
+        "itemBrand": "Apple",
+        "availableStock": 12,
+        "category": ["Laptop", "Electronics"]
+    },
+    {
+        "itemName": "Dell XPS 13",
+        "itemDescription": "Ultra-portable laptop with 13th Gen Intel Core and InfinityEdge display",
+        "itemPrice": 1299.99,
+        "itemWeight": 1270,
+        "itemBrand": "Dell",
+        "availableStock": 18,
+        "category": ["Laptop", "Electronics"]
+    },
+    {
+        "itemName": "HP Spectre x360",
+        "itemDescription": "Convertible laptop with OLED display and gem-cut design",
+        "itemPrice": 1449.99,
+        "itemWeight": 1360,
+        "itemBrand": "HP",
+        "availableStock": 14,
+        "category": ["Laptop", "Electronics"]
+    },
+    {
+        "itemName": "Lenovo ThinkPad X1 Carbon",
+        "itemDescription": "Business ultrabook with legendary keyboard and military-grade durability",
+        "itemPrice": 1599.99,
+        "itemWeight": 1120,
+        "itemBrand": "Lenovo",
+        "availableStock": 16,
+        "category": ["Laptop", "Electronics"]
+    },
+    {
+        "itemName": "ASUS ROG Zephyrus G14",
+        "itemDescription": "Compact gaming laptop with AMD Ryzen 9 and RTX 4060 graphics",
+        "itemPrice": 1699.99,
+        "itemWeight": 1650,
+        "itemBrand": "ASUS",
+        "availableStock": 10,
+        "category": ["Laptop", "Electronics"]
+    },
+    {
+        "itemName": "Microsoft Surface Laptop 5",
+        "itemDescription": "Elegant laptop with PixelSense touchscreen and premium Alcantara keyboard",
+        "itemPrice": 1299.99,
+        "itemWeight": 1280,
+        "itemBrand": "Microsoft",
+        "availableStock": 13,
         "category": ["Laptop", "Electronics"]
     },
     {
@@ -52,5 +178,212 @@
         "itemBrand": "Adidas",
         "availableStock": 75,
         "category": ["Shoes", "Clothing"]
+    },
+    {
+        "itemName": "New Balance 990v5",
+        "itemDescription": "Premium running shoes with ENCAP midsole and pigskin/mesh upper",
+        "itemPrice": 184.99,
+        "itemWeight": 340,
+        "itemBrand": "New Balance",
+        "availableStock": 65,
+        "category": ["Shoes", "Clothing"]
+    },
+    {
+        "itemName": "Puma RS-X",
+        "itemDescription": "Retro-inspired sneakers with bold colors and chunky silhouette",
+        "itemPrice": 119.99,
+        "itemWeight": 295,
+        "itemBrand": "Puma",
+        "availableStock": 88,
+        "category": ["Shoes", "Clothing"]
+    },
+    {
+        "itemName": "Vans Old Skool",
+        "itemDescription": "Classic skate shoes with durable canvas and suede upper",
+        "itemPrice": 69.99,
+        "itemWeight": 280,
+        "itemBrand": "Vans",
+        "availableStock": 150,
+        "category": ["Shoes", "Clothing"]
+    },
+    {
+        "itemName": "Converse Chuck Taylor All Star",
+        "itemDescription": "Iconic canvas sneakers with timeless design and OrthoLite cushioning",
+        "itemPrice": 59.99,
+        "itemWeight": 260,
+        "itemBrand": "Converse",
+        "availableStock": 200,
+        "category": ["Shoes", "Clothing"]
+    },
+    {
+        "itemName": "iPad Pro 12.9-inch",
+        "itemDescription": "Powerful tablet with M2 chip, Liquid Retina XDR display, and Apple Pencil support",
+        "itemPrice": 1099.99,
+        "itemWeight": 682,
+        "itemBrand": "Apple",
+        "availableStock": 22,
+        "category": ["Tablet", "Electronics"]
+    },
+    {
+        "itemName": "Samsung Galaxy Tab S9",
+        "itemDescription": "Premium Android tablet with AMOLED display and S Pen included",
+        "itemPrice": 799.99,
+        "itemWeight": 498,
+        "itemBrand": "Samsung",
+        "availableStock": 28,
+        "category": ["Tablet", "Electronics"]
+    },
+    {
+        "itemName": "Microsoft Surface Pro 9",
+        "itemDescription": "Versatile 2-in-1 tablet with Intel Core processors and Windows 11",
+        "itemPrice": 999.99,
+        "itemWeight": 879,
+        "itemBrand": "Microsoft",
+        "availableStock": 18,
+        "category": ["Tablet", "Electronics"]
+    },
+    {
+        "itemName": "Amazon Kindle Paperwhite",
+        "itemDescription": "E-reader with 6.8-inch glare-free display and weeks of battery life",
+        "itemPrice": 139.99,
+        "itemWeight": 205,
+        "itemBrand": "Amazon",
+        "availableStock": 85,
+        "category": ["E-Reader", "Electronics"]
+    },
+    {
+        "itemName": "Apple Watch Series 9",
+        "itemDescription": "Advanced smartwatch with health tracking, fitness features, and always-on display",
+        "itemPrice": 429.99,
+        "itemWeight": 42,
+        "itemBrand": "Apple",
+        "availableStock": 45,
+        "category": ["Smartwatch", "Electronics"]
+    },
+    {
+        "itemName": "Samsung Galaxy Watch 6",
+        "itemDescription": "Sleek smartwatch with comprehensive health monitoring and long battery life",
+        "itemPrice": 299.99,
+        "itemWeight": 39,
+        "itemBrand": "Samsung",
+        "availableStock": 52,
+        "category": ["Smartwatch", "Electronics"]
+    },
+    {
+        "itemName": "Fitbit Charge 6",
+        "itemDescription": "Fitness tracker with built-in GPS, heart rate monitoring, and 7-day battery",
+        "itemPrice": 159.99,
+        "itemWeight": 29,
+        "itemBrand": "Fitbit",
+        "availableStock": 70,
+        "category": ["Smartwatch", "Electronics"]
+    },
+    {
+        "itemName": "Canon EOS R6 Mark II",
+        "itemDescription": "Full-frame mirrorless camera with 24.2MP sensor and 40fps continuous shooting",
+        "itemPrice": 2499.99,
+        "itemWeight": 588,
+        "itemBrand": "Canon",
+        "availableStock": 8,
+        "category": ["Camera", "Electronics"]
+    },
+    {
+        "itemName": "Sony A7 IV",
+        "itemDescription": "Versatile full-frame camera with 33MP sensor and advanced autofocus",
+        "itemPrice": 2498.99,
+        "itemWeight": 659,
+        "itemBrand": "Sony",
+        "availableStock": 10,
+        "category": ["Camera", "Electronics"]
+    },
+    {
+        "itemName": "Nikon Z6 III",
+        "itemDescription": "Hybrid mirrorless camera with 24.5MP sensor and 4K 60p video",
+        "itemPrice": 1996.99,
+        "itemWeight": 615,
+        "itemBrand": "Nikon",
+        "availableStock": 12,
+        "category": ["Camera", "Electronics"]
+    },
+    {
+        "itemName": "GoPro HERO 12 Black",
+        "itemDescription": "Action camera with 5.3K video, HyperSmooth stabilization, and waterproof design",
+        "itemPrice": 399.99,
+        "itemWeight": 153,
+        "itemBrand": "GoPro",
+        "availableStock": 35,
+        "category": ["Camera", "Electronics"]
+    },
+    {
+        "itemName": "DJI Mini 3 Pro",
+        "itemDescription": "Compact drone with 4K HDR video, 34-minute flight time, and obstacle avoidance",
+        "itemPrice": 759.99,
+        "itemWeight": 249,
+        "itemBrand": "DJI",
+        "availableStock": 15,
+        "category": ["Drone", "Electronics"]
+    },
+    {
+        "itemName": "LG C3 OLED 55-inch TV",
+        "itemDescription": "4K OLED TV with perfect blacks, AI processing, and gaming features",
+        "itemPrice": 1499.99,
+        "itemWeight": 18100,
+        "itemBrand": "LG",
+        "availableStock": 8,
+        "category": ["TV", "Electronics"]
+    },
+    {
+        "itemName": "Samsung Q80C 65-inch QLED",
+        "itemDescription": "4K QLED TV with Quantum HDR, Object Tracking Sound, and gaming hub",
+        "itemPrice": 1799.99,
+        "itemWeight": 24300,
+        "itemBrand": "Samsung",
+        "availableStock": 6,
+        "category": ["TV", "Electronics"]
+    },
+    {
+        "itemName": "PlayStation 5",
+        "itemDescription": "Next-gen gaming console with 4K graphics, ray tracing, and ultra-fast SSD",
+        "itemPrice": 499.99,
+        "itemWeight": 4500,
+        "itemBrand": "Sony",
+        "availableStock": 25,
+        "category": ["Gaming", "Electronics"]
+    },
+    {
+        "itemName": "Xbox Series X",
+        "itemDescription": "Powerful gaming console with 4K 120fps, quick resume, and Game Pass",
+        "itemPrice": 499.99,
+        "itemWeight": 4450,
+        "itemBrand": "Microsoft",
+        "availableStock": 28,
+        "category": ["Gaming", "Electronics"]
+    },
+    {
+        "itemName": "Nintendo Switch OLED",
+        "itemDescription": "Hybrid gaming console with vibrant OLED screen and versatile play modes",
+        "itemPrice": 349.99,
+        "itemWeight": 420,
+        "itemBrand": "Nintendo",
+        "availableStock": 42,
+        "category": ["Gaming", "Electronics"]
+    },
+    {
+        "itemName": "Logitech MX Master 3S",
+        "itemDescription": "Premium wireless mouse with MagSpeed scrolling and multi-device connectivity",
+        "itemPrice": 99.99,
+        "itemWeight": 141,
+        "itemBrand": "Logitech",
+        "availableStock": 65,
+        "category": ["Accessories", "Electronics"]
+    },
+    {
+        "itemName": "Razer BlackWidow V3",
+        "itemDescription": "Mechanical gaming keyboard with Razer Green switches and RGB lighting",
+        "itemPrice": 139.99,
+        "itemWeight": 1350,
+        "itemBrand": "Razer",
+        "availableStock": 40,
+        "category": ["Accessories", "Electronics"]
     }
 ]

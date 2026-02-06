@@ -11,6 +11,14 @@ export class CategorySeeder extends Seeder {
             { categoryName: 'Laptop', createdAt: now, updatedAt: now },
             { categoryName: 'Clothing', createdAt: now, updatedAt: now },
             { categoryName: 'Shoes', createdAt: now, updatedAt: now },
+            { categoryName: 'Tablets', createdAt: now, updatedAt: now },
+            { categoryName: 'E-Readers', createdAt: now, updatedAt: now },
+            { categoryName: 'Smartwatch', createdAt: now, updatedAt: now },
+            { categoryName: 'Camera', createdAt: now, updatedAt: now },
+            { categoryName: 'Drone', createdAt: now, updatedAt: now },
+            { categoryName: 'TV', createdAt: now, updatedAt: now },
+            { categoryName: 'Gaming Console', createdAt: now, updatedAt: now },
+            { categoryName: 'Accesory', createdAt: now, updatedAt: now },
         ];
 
         for (const categoryData of categories) {

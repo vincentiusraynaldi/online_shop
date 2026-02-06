@@ -37,11 +37,37 @@ export class itemService{
 
         // todo pagination, sort filter
 
-        return await DI.itemRepository.find(
+        // if (query.page || query.limit){
+        //     query.offset = (parseInt(query.page as string) - 1) * parseInt(query.limit as string);
+        // }
+
+        const offset = query.page && query.limit ?
+        (parseInt(query.page as string) - 1) * parseInt(query.limit as string)
+        : undefined;
+
+        // if (query.sortOrder || query.sortBy){
+
+        // }
+
+        // return await DI.itemRepository.findAndCount(
+        const [items, total] = await DI.itemRepository.findAndCount(
             where,
         {
-            populate: ['categories']
+            populate: ['categories'],
+            orderBy: { [query.sortBy|| 'itemName' ]: query.sortOrder || 'ASC' },
+            limit: query.limit,
+            offset: offset
         });
+
+        return {
+            data: items,
+            pagination: {
+                page: query.page,
+                limit: query.limit,
+                total: total,
+                totalPages: Math.ceil(total/query.limit)
+            }
+        }
     }
 
     static async getItemById(id: string) {
