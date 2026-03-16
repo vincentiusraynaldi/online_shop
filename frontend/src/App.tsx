@@ -13,7 +13,7 @@ function App() {
         <AuthProvider>
           <Navbar />
           <h1>Hello Vite + React!</h1>
-          <h1 className="text-3xl font-bold underline">
+          <h1>
             Hello world!
           </h1>
           <AppRoutes/>

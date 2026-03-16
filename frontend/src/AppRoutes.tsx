@@ -12,6 +12,7 @@ import {
 } from "./pages";
 
 import { AuthRequired } from "./AuthRequired";
+import ProductPage from "./pages/ProductPage";
 
 export type RouteConfig = RouteProps & { 
     path: string;
@@ -48,7 +49,12 @@ export const routes: RouteConfig[] = [
         path: "/test",
         isPrivate: true,
         element: <h1>test</h1>
-    }
+    },
+        {
+        path: "/product",
+        isPrivate: false,
+        element: <ProductPage/>
+    },
 ]
 
 export function renderRouteMap({

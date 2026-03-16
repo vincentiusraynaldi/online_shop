@@ -66,7 +66,7 @@ export type AuthProviderProps = {
 export const AuthProvider = ({children}: AuthProviderProps) => {
     const [user, setUser] = useLocalStorage<User | null>("user", null);
     const [token, setToken] = useLocalStorage<string | null>("token", null);
-    const [ searchParams, setSearchParams ] = useSearchParams();
+    // const [ searchParams, setSearchParams ] = useSearchParams();
     const toast = useToast();
     const navigate = useNavigate();
     const errorToast = (errors: string[]) => {
