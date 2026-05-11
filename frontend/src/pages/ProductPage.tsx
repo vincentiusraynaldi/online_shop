@@ -1,12 +1,20 @@
 //this is the main product page where all of the components of products combined
 import ProductFilter from "../components/product/ProductFilter";
 import ProductGrid from "../components/product/ProductGrid";
+import ProductSort from "../components/product/ProductSort";
 import { useProduct } from "../hooks/useProducts";
 import { Box, Flex } from "@chakra-ui/react";
+
+// todo: pagination
+// todo paging for pagination
 
 const ProductPage = () => {
     //get data from the hook useproducts
     // const {products, loading} = useProduct();
+    const {products, categories, brands} = useProduct();
+
+    console.log("products in page: ", products);
+
     return (
         <Box maxW="1400px" mx="auto" px={4} py={6}>
             <Flex
@@ -19,11 +27,13 @@ const ProductPage = () => {
                     w={{ base: '100%', md: '250px' }}
                     flexShrink={0}
                 >
-                    <ProductFilter />
+                    <ProductFilter categories={categories} brands={brands}/>
+                    {/* <ProductFilter/> */}
                 </Box>
                 
                 <Box as="main" flex="1" w="100%">
-                    <ProductGrid />
+                    <ProductSort></ProductSort>
+                    <ProductGrid products={products}/>
                 </Box>
             </Flex>
         </Box>

@@ -1,20 +1,10 @@
 import { useSearchParams } from "react-router-dom";
 import { 
     Card, 
-    CardBody, 
-    Text, 
+    CardBody,
     Checkbox, 
-    Button, 
-    VStack,
+    Button,
     Input,
-    RangeSlider,
-    RangeSliderTrack,
-    RangeSliderFilledTrack,
-    RangeSliderThumb,
-    HStack,
-    NumberInput,
-    NumberInputField,
-    ButtonGroup,
     Accordion,
     AccordionItem,
     AccordionButton,
@@ -25,15 +15,18 @@ import {
     InputLeftAddon
 } from "@chakra-ui/react";
 import { useState } from "react";
+import { Category } from "../../entity/Category";
 
-const ProductFilter = () => {
+type ProductFilterProps = {
+    categories: Category[];
+    brands: string[];
+};
+
+const ProductFilter = ({categories, brands} : ProductFilterProps) => {
+// const ProductFilter = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const [minPrice, setMinPrice] = useState("");
     const [maxPrice, setMaxPrice] = useState("");
-
-    const handleNameChange = () => {
-        setSearchParams()
-    }
 
     const handleStock = () => {
         console.log("handle stock");
@@ -43,45 +36,9 @@ const ProductFilter = () => {
         // setSearchParams(searchParams);
     }
 
-    // const minMaxPrice = (value : any) => {
-    //     // console.log("value ", value)
-    //     if (value){
-    //         setMinPrice(value[0])
-    //         setMaxPrice(value[1])
-    //     }
-    // }
-
-    const updateFilter = (key: string, value: string) => {
-        setSearchParams((prev) => {
-            const next = new URLSearchParams(prev);
-
-            if (value !== "") {
-                next.set(key, value);
-            } else {
-                next.delete(key);
-            }
-
-            return next;
-        });
-    }
-
-    const updateFilters = (updates: Record<string, string>) => {
-        setSearchParams((prev) => {
-            const next = new URLSearchParams(prev);
-
-            Object.entries(updates).forEach(([key, value]) => {
-                if (value !== "") {
-                    next.set(key, value);
-                } else {
-                    next.delete(key);
-                }
-            });
-
-            return next;
-        });
-    }
-
     const deleteFilter = () => {
+        setMinPrice("");
+        setMaxPrice("");
         setSearchParams({});
     }
 
@@ -89,35 +46,57 @@ const ProductFilter = () => {
         setMinPrice(value[0]);
         setMaxPrice(value[1]);
 
-        updateFilters({
-            minPrice: value[0],
-            maxPrice: value[1],
-        });
+        const params = new URLSearchParams(searchParams);
+        params.set("minPrice", value[0]);
+        params.set("maxPrice", value[1]);
+        setSearchParams(params);
     }
 
     const handleMinPrice = (event: React.ChangeEvent<HTMLInputElement>) => {
         const nextValue = event.target.value;
         setMinPrice(nextValue);
-        updateFilter("minPrice", nextValue);
-        // console.log("min price input:", nextValue);
-        // setSearchParams({ minPrice: {minPrice}})
     }
 
     const handleMaxPrice = (event: React.ChangeEvent<HTMLInputElement>) => {
         const nextValue = event.target.value;
         setMaxPrice(nextValue);
-        updateFilter("maxPrice", nextValue);
-        // console.log("max price input:", nextValue);
     }
+
+
+    const handleBrandClick = (value: string) => {
+        const params = new URLSearchParams(searchParams);
+
+        // params.set("brand", value);
+        if(params.getAll('brand').includes(value)){
+            params.delete('brand');
+        }else{
+            params.set('brand', value);
+        }
+        setSearchParams(params);
+    }
+
+    const handleCategoryClick = (value : Category) => {
+        const params = new URLSearchParams(searchParams);
+
+        const existing = params.getAll("categories");
+
+        if(existing.includes(value.categoryName)){
+            params.delete("categories");
+            existing.filter(name => name !== value.categoryName).forEach(name => params.append("categories", name));
+        }else{
+            params.append("categories", value.categoryName);
+        }
+
+        setSearchParams(params);
+    }
+
+    const selectedCategories = searchParams.getAll("categories");
+    const selectedBrand = searchParams.getAll("brand");
 
     return (
         <>
             <Card>
                 <CardBody>
-                    {/* <VStack> */}
-                        {/* <Text>View a summary of all your customers over the last month.</Text> */}
-                        {/* <Button defaultChecked onClick={() => handleStock()}>Search</Button> */}
-                    {/* </VStack> */}
                     <Accordion allowMultiple>
                         <AccordionItem>
                             <AccordionButton>
@@ -127,7 +106,24 @@ const ProductFilter = () => {
                                 <AccordionIcon/>
                             </AccordionButton>
                             <AccordionPanel>
-                                category panel
+                                {/* {categories.map(cat => (
+                                    <Button
+                                    key={cat.id}
+                                    onClick={() => handleCategoryClick(cat)}
+                                    >
+                                    {cat.categoryName}
+                                    </Button>
+                                ))} */}
+                                {categories.map(cat => (
+                                    <Button
+                                        key={cat.id}
+                                        onClick={() => handleCategoryClick(cat)}
+                                        colorScheme={selectedCategories.includes(cat.categoryName) ? "blue" : "gray"} // active state
+                                        variant={selectedCategories.includes(cat.categoryName) ? "solid" : "outline"}
+                                    >
+                                        {cat.categoryName}
+                                    </Button>
+                                ))}
                             </AccordionPanel>
                         </AccordionItem>
 
@@ -142,25 +138,19 @@ const ProductFilter = () => {
                             
                             <AccordionPanel>
                                     <InputGroup>
-                                        <InputLeftAddon>RP</InputLeftAddon>
+                                        <InputLeftAddon>EURO</InputLeftAddon>
                                         <Input type="number" placeholder="minimal price" onChange={handleMinPrice} value={minPrice}></Input>
-                                        {/* <NumberInput> */}
-                                        {/* <NumberInputField size={3} maxW={16} defaultValue={15} min={10} placeholder="min price"/> */}
-                                        {/* <NumberInputField placeholder="min price"/> */}
-                                        {/* </NumberInput> */}
                                     </InputGroup>
                                     
                                     <InputGroup>
-                                        <InputLeftAddon>RP</InputLeftAddon>
+                                        <InputLeftAddon>EURO</InputLeftAddon>
                                         <Input type="number" placeholder="maximal price" onChange={handleMaxPrice} value={maxPrice}></Input>
                                     </InputGroup>
-                                    {/* <NumberInput > */}
-                                        {/* <NumberInputField size={3} maxW={16} defaultValue={15} min={10} placeholder="max price"/> */}
-                                        {/* <NumberInputField size={3} defaultValue={15} min={10} placeholder="max price"/> */}
-                                    {/* </NumberInput> */}
                                 <Button onClick={() => handlePriceButton(["0", "50"])}>0 - 50</Button>
                                 <Button onClick={() => handlePriceButton(["50", "100"])}>50 - 100</Button>
                                 <Button onClick={() => handlePriceButton(["100", "200"])}>100 - 200</Button>
+                                <br></br>
+                                <Button onClick={() => handlePriceButton([minPrice, maxPrice])}>Submit</Button>
                             </AccordionPanel>
                         </AccordionItem>
 
@@ -173,11 +163,19 @@ const ProductFilter = () => {
                             </AccordionButton>
 
                             <AccordionPanel>
-                                brand panel
+                                {brands.map(b => (
+                                    <Button
+                                    onClick={() => handleBrandClick(b)}
+                                    colorScheme={selectedBrand.includes(b) ? "blue" : "gray"} // active state
+                                    variant={selectedBrand.includes(b) ? "solid" : "outline"}
+                                    >
+                                    {b}
+                                    </Button>
+                                ))}
                             </AccordionPanel>
                         </AccordionItem>
 
-                        <AccordionItem>
+                        {/* <AccordionItem>
                             <AccordionButton>
                                 <Box as='span' flex='1' textAlign='left' fontWeight={700}>
                                     Others
@@ -189,8 +187,9 @@ const ProductFilter = () => {
                                 <Checkbox defaultChecked onChange={() => handleStock()}>PreOrder</Checkbox>
                                 <Checkbox defaultChecked onChange={() => handleStock()}>Ready Stock</Checkbox>
                             </AccordionPanel>
-                        </AccordionItem>
+                        </AccordionItem> */}
                     </Accordion>
+                    <Button onClick={()=>deleteFilter()}>Delete Filter</Button>
                 </CardBody>
             </Card>
         </>

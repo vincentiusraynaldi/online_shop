@@ -4,7 +4,6 @@
 
 import { 
     Card, 
-    CardHeader, 
     CardBody, 
     CardFooter, 
     Button, 
@@ -12,8 +11,6 @@ import {
     Image, 
     Stack, 
     Heading, 
-    Divider, 
-    ButtonGroup, 
     Flex
 } from '@chakra-ui/react'
 

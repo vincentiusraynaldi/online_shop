@@ -16,10 +16,19 @@ router.get("/", authenticateJWT, cartController.getAllItemsInCart);
 router.post("/checkout", authenticateJWT, );
 
 // add item to cart
-router.post("/items/:itemId", authenticateJWT, cartController.addItemToCart);
+router.post("/items", authenticateJWT, cartController.addItemToCart);
+
+router.post("/test", authenticateJWT, async (req, res) => {
+    try {
+    res.status(200).send("test success");
+        
+    } catch (e: any) {
+        return res.status(400).send({message: e.message});
+    }
+});
 
 // delete item in cart
-router.delete("/items/:itemId", authenticateJWT, cartController.deleteItemFromCart); 
+router.delete("/items", authenticateJWT, cartController.deleteItemFromCart); 
 
 // test stripe
 router.post("/stripe", authenticateJWT, async (req, res) => {

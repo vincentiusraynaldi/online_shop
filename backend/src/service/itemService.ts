@@ -13,9 +13,29 @@ export class itemService{
             where.itemName = { $ilike: `%${query.name}%` };
         }
 
-        if(query.categories){
-            const categoryList = query.categories.split(',');
-            where.categories = { $some: {id: categoryList}};
+        // if(query.categories){
+        //     where.categories = { $some: {id: query.categories}};
+        // }
+
+        if (query.categories) {
+            // Normalize to always be an array
+            // const categoryIds = Array.isArray(query.categories) 
+            //     ? query.categories 
+            //     : [query.categories]; // this is to wrap the string of categories with [] so that it is now an array
+
+            // // Each $some is a separate condition → AND logic
+            // where.$and = categoryIds.map((id: string) => ({
+            //     categories: { $some: { id } }
+            // }));
+
+            const categoryNames = Array.isArray(query.categories) 
+                ? query.categories 
+                : [query.categories]; // this is to wrap the string of categories with [] so that it is now an array
+
+            // Each $some is a separate condition → AND logic
+            where.$and = categoryNames.map((name: string) => ({
+                categories: { $some: { category_name : name } }
+            }));
         }
 
         // min price max price
@@ -26,13 +46,13 @@ export class itemService{
         }
 
         // in stock
-        if (query.inStock = "true"){
+        if (query.inStock === "true"){
             where.availableStock = { $gt : 0 };
         }
 
         // brand
         if(query.brand){
-            where.itemBrand = { $ilike: `%${query.brand as string}$`};
+            where.itemBrand = { $ilike: `%${query.brand as string}%`};
         }
 
         // todo pagination, sort filter

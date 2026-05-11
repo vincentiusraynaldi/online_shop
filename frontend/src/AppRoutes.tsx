@@ -13,6 +13,8 @@ import {
 
 import { AuthRequired } from "./AuthRequired";
 import ProductPage from "./pages/ProductPage";
+import ProductDetailPage from "./pages/ProductDetailPage";
+import CartPage from "./pages/CartPage";
 
 export type RouteConfig = RouteProps & { 
     path: string;
@@ -28,7 +30,8 @@ export const routes: RouteConfig[] = [
     {
         path: "/home",
         isPrivate: false,
-        element: <h1>Home</h1>
+        // element: <h1>Home</h1>
+        element: <Navigate to="/home" replace /> 
     },
     {
         path: "/auth/login",
@@ -50,24 +53,34 @@ export const routes: RouteConfig[] = [
         isPrivate: true,
         element: <h1>test</h1>
     },
-        {
-        path: "/product",
+    {
+        path: "/search",
         isPrivate: false,
         element: <ProductPage/>
     },
+    {
+        path:"/productpage/:id",
+        isPrivate: false,
+        element: <ProductDetailPage/>
+    },
+    {
+        path:"/users/cart",
+        isPrivate: true,
+        element: <CartPage/>
+    }
 ]
 
 export function renderRouteMap({
     isPrivate,
     element,
     ...restRoute
-  }: RouteConfig) {
+}: RouteConfig) {
     const authRequiredElement = isPrivate ? (
         <AuthRequired>{element}</AuthRequired>
-      ) : (
+    ) : (
         element
-      );
-      return <Route key={restRoute.path} {...restRoute} element={authRequiredElement} />;
+    );
+    return <Route key={restRoute.path} {...restRoute} element={authRequiredElement} />;
 }
 
 const AppRoutes = () => {

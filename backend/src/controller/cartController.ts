@@ -13,7 +13,7 @@ export class cartController{
 
     static async addItemToCart(req: Request, res: Response){
         try {
-            const cart = await cartService.addItemToCart(req.user.id, req.params.itemId, req.body);
+            const cart = await cartService.addItemToCart(req.user.id, req.body);
             return res.status(200).send(cart);
         } catch(e:any){
             return res.status(400).send({ message: e.message });
@@ -22,7 +22,7 @@ export class cartController{
 
     static async deleteItemFromCart(req: Request, res: Response){
         try {
-            const cart = await cartService.deleteItemFromCart(req.user.id, req.params.itemId, req.body);
+            const cart = await cartService.deleteItemFromCart(req.user.id, req.body);
             return res.status(200).send(cart);
         } catch(e:any){
             return res.status(400).send({ message: e.message });

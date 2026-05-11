@@ -20,7 +20,7 @@ const Navbar = () => {
         <Searchbar />
       </Box>
       <Flex align="center" justify="space-between" wrap="wrap" px={4}>
-        <Link href="#" px={4}>Home</Link>
+        <Link href="/home" px={4}>Home</Link>
         <Link href="#" px={4}>About</Link>
         <Link href="#"px={4}>Contact</Link>
         { isLoggedIn ?

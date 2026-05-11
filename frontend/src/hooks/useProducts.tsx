@@ -1,28 +1,13 @@
 // hook for fetching the products while filtering the paramether and the searchquery
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import { URLSearchParams } from "url";
+import { Product } from "../entity/Product";
+import { Category } from "../entity/Category";
 
-// interface ProductFilter {
-    // name?: string;
-    // categories?: string;
-    // minPrice?: number;
-    // maxPrice?: number;
-    // inStock?: boolean;
-    // brand?: string;
-    // sortBy?: string;
-    // sortOrder?: 'ASC' | 'DESC';
-// }
-
-// interface Pagination {
-//     page: number;
-//     limit: number;
-//     offset: number;
-//     totalPages: number;
-// }
-
-export async function useProduct(){
-    const [products, setProducts] = useState();
+export function useProduct(){
+    const [products, setProducts] = useState<Product[]>([]);
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [brands, setBrands] = useState<string[]>([]);
     const [searchParams, setSearchParams] =  useSearchParams();
     // const [loading, setLoading] = useState(true); //!! for telling the client that the data is being fetched
     // const [pagination, setPagination] = useState<Pagination>({
@@ -32,47 +17,75 @@ export async function useProduct(){
     //     totalPages: 0
     // });
 
-    //todo buat filters, butuh urlbuildparameter
-    
-
-    const [filters, setFilters] = useState({
-        name: '',
-        categories: '',
-        minPrice: undefined,
-        maxPrice: undefined,
-        inStock: false,
-        brand: '',
-        sortBy: 'itemName',
-        sortOrder: 'DESC' as 'ASC' | 'DESC', 
-        page: 1,
-        limit: 20
-    })
-
-    // const handleNameChange = (name: string) => {
-    //     ...filter,
-    //     name: name,
-    //     page: 1;
-    // }
-
     useEffect(()=>{
-        //fetch backend to get all items
-        // const response =  await fetch(`/items?${filters}`);
         const fetchProducts = async () => {
             const params = new URLSearchParams();
-            const name = params.get('name');
-            const categories = params.get('categories');
-            const minPrice = params.get('minPrice');
-            const maxPrice = params.get('maxPrice');
-            const inStock = params.get('inStock');
-            const brand = params.get('brand');
-            const sortBy = params.get('sortBy');
-            const sortOrder = params.get('sortOrder');
+
+            const name = searchParams.get('name');
+            const categories = searchParams.getAll('categories');
+            const minPrice = searchParams.get('minPrice');
+            const maxPrice = searchParams.get('maxPrice');
+            const inStock = searchParams.get('inStock');
+            const brand = searchParams.get('brand');
+            const sortBy = searchParams.get('sortBy');
+            const sortOrder = searchParams.get('sortOrder');
+
+            if (name) params.set('name', name);
+            if (categories) categories.forEach(c => params.append('categories', c));
+            if (minPrice) params.set('minPrice', minPrice);
+            if (maxPrice) params.set('maxPrice', maxPrice);
+            if (inStock) params.set('inStock', inStock);
+            if (brand) params.set('brand', brand);
+            if (sortBy) params.set('sortBy', sortBy);
+            if (sortOrder) params.set('sortOrder', sortOrder);  
             
-            const response = await fetch(`/items?${params}`);
+            const url = `/items?${params}`;
+            
+            const response = await fetch(url);
+
+            console.log("fetch url: ", url);
+
+            if (!response.ok) {
+                console.error('Status:', response.status);
+                console.error('URL hit:', response.url);
+                const text = await response.text(); // read as text to see the HTML error
+                console.error('Response body:', text);
+                return;
+            }
+
+            const productResponse = await response.json();
+
+            const freshProducts: Product[] =  productResponse.data;
+
+            const categoriesMap = new Map<string, Category>();
+            const brandSet = new Set<string>();
+
+            freshProducts.forEach(p=> {
+                const productCategory = p.categories;
+                productCategory.forEach(c => categoriesMap.set(c.id, c));
+                brandSet.add(p.itemBrand);
+            })
+
+            setProducts(freshProducts);
+            setCategories([...categoriesMap.values()]);
+            setBrands([...brandSet]);
 
             setSearchParams(params);
+
+            // console.log("categories set: ", categoriesMap);
+            // console.log("categories set value: ", categoriesMap.values());
+            // console.log("categories products: ", categories);
         }
-    })
+
+        fetchProducts();
+    }, [searchParams]);
+
+    // useEffect(() =>
+    // {
+    //     console.log("categories : ", categories);
+    // },[categories])
+
+    return {products, categories, brands};
 }
 // butuh filter
 // butuh pagination

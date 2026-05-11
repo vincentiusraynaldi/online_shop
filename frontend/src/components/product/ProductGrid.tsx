@@ -2,10 +2,16 @@
 import { SimpleGrid } from "@chakra-ui/react";
 import ProductCard from "./ProductCard";
 import { mockProducts } from "../../models/Products";
+import { Product } from "../../entity/Product";
+import { Link } from "react-router-dom";
 
-const ProductGrid = () => {
-    // console.log("grid masuk");
-    // console.log(mockProducts[0]);
+
+interface ProductGridProps {
+    products: Product[]
+}
+
+const ProductGrid = ({products} : ProductGridProps ) => {
+// const ProductGrid = () => {
 
     return (
         // <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 4 }} spacing={6} maxWidth="6xl">
@@ -18,8 +24,17 @@ const ProductGrid = () => {
         mx="auto"
         // px={{ base: 4, md: 6 }}
         >
-            {mockProducts.map((mockProduct) => (
+            {/* {mockProducts.map((mockProduct) => (
                 <ProductCard key={mockProduct.id} product={mockProduct} />
+            ))} */}
+            {products.map((product) => (
+                // <ProductCard 
+                // key={product.id} 
+                // product={product} 
+                // />
+                <Link key={product.id} to={`/productpage/${product.id}`}>
+                    <ProductCard product={product} />
+                </Link>
             ))}
         </SimpleGrid>
     )

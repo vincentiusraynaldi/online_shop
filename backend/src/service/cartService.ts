@@ -56,8 +56,9 @@ export class cartService {
         return ({message: "Checkout successful", totalPrice});
     }
 
-    static async addItemToCart(userId: string, itemId: string, data: any) {
-        const existingItem = await DI.itemRepository.findOne(itemId);
+    static async addItemToCart(userId: string, data: any) {
+        const existingItem = await DI.itemRepository.findOne(data.itemId);
+        
         if (!existingItem) throw new Error( "Item not found" );
 
         const user = await DI.userRepository.findOne( userId, { populate: ["cart.items"] });
@@ -75,14 +76,14 @@ export class cartService {
         if (isNaN(existingItem.itemPrice)) throw new Error("Item price must be a number");
 
         // if the item is not in the cart, add the item
-        if (!items.getItems().find((cartItem: CartItem) => cartItem.item.id === itemId)) {
+        if (!items.getItems().find((cartItem: CartItem) => cartItem.item.id === data.itemId)) {
             const cartItem = new CartItem(existingItem, data.quantity);
             items.add(cartItem);
             cart.totalPrice = Number(cart.totalPrice) + Number(existingItem.itemPrice) * Number(data.quantity);
         } else {
             // if the item is in the cart, add the quantity
             items.getItems().forEach((cartItem: CartItem) => {
-                if (cartItem.item.id === itemId) {
+                if (cartItem.item.id === data.itemId) {
                     cartItem.quantity += Number(data.quantity);
                     cart.totalPrice = Number(cart.totalPrice) + Number(existingItem.itemPrice) * Number(data.quantity);
                 }
@@ -93,8 +94,8 @@ export class cartService {
         return user.cart;
     }
 
-    static async deleteItemFromCart(userId: string, itemId: string, data: any) {
-        const existingItem = await DI.itemRepository.findOne(itemId);
+    static async deleteItemFromCart(userId: string, data: any) {
+        const existingItem = await DI.itemRepository.findOne(data.itemId);
 
         if (!existingItem) throw new Error("Item not found");
 
@@ -114,12 +115,12 @@ export class cartService {
             console.log('cart item quantity ', cartItem.quantity);
             console.log('data quantity ', data.quantity);
             // if the item is in the cart and the quantity is greater than the quantity to be deleted, subtract the quantity
-            if (cartItem.item.id === itemId && cartItem.quantity > data.quantity) {
+            if (cartItem.item.id === data.itemId && cartItem.quantity > data.quantity) {
                 cartItem.quantity -= Number(data.quantity);
                 cart.totalPrice = Number(cart.totalPrice) - Number(cartItem.item.itemPrice) * Number(data.quantity);
 
             // if the item is in the cart and the quantity is less than the quantity to be deleted, remove the item
-            }else if (cartItem.item.id === itemId && cartItem.quantity <= data.quantity) {
+            }else if (cartItem.item.id === data.itemId && cartItem.quantity <= data.quantity) {
                 cart.items.remove(cartItem);
                 cart.totalPrice = Number(cart.totalPrice) - Number(cartItem.item.itemPrice) * Number(cartItem.quantity);
             }
