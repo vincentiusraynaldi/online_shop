@@ -15,6 +15,9 @@ import { AuthRequired } from "./AuthRequired";
 import ProductPage from "./pages/ProductPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import CartPage from "./pages/CartPage";
+import CheckoutPage from "./pages/CheckoutPage";
+import OrderListPage from "./pages/OrderListPage";
+import OrderDetailPage from "./pages/OrderDetailPage";
 
 export type RouteConfig = RouteProps & { 
     path: string;
@@ -67,7 +70,22 @@ export const routes: RouteConfig[] = [
         path:"/users/cart",
         isPrivate: true,
         element: <CartPage/>
-    }
+    },
+    {
+        path:"/users/checkout",
+        isPrivate: true,
+        element: <CheckoutPage/>
+    },
+    {
+        path:"/users/orders",
+        isPrivate: true,
+        element: <OrderListPage/>
+    },
+    {
+        path:"/users/orders/:id",
+        isPrivate: true,
+        element: <OrderDetailPage/>
+    },
 ]
 
 export function renderRouteMap({

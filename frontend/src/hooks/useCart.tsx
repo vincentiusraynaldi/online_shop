@@ -1,21 +1,26 @@
 import { useState, useEffect } from "react";
 import { Product } from "../entity/Product";
 import { useLocalStorage } from "../hooks/useLocalStorage";
-
-interface cartItem {
-    itemId : string;
-    quantity: string;
-}
-
+import { ResetButton } from "formik-chakra-ui";
+import { Cart } from "../entity/Cart";
+import { data } from "framer-motion/client";
 
 export function useCart(){
 // export function useCart(cartId: string){
-    const [cart, setCart] = useState<Product[]>([]);
+    // const [cart, setCart] = useState<Product[]>([]); //todo check whether the product[] is necesarry because it is a cart and theres are some products within
+    const [cart, setCart] = useState<Cart>();
     const [token, setToken] = useLocalStorage<string | null>("token", null);
+    const [isLoading, setIsLoading] = useState(true);
 
     // get data
     const fetchCart = async () => {
-        const response = await fetch("/users/carts");
+        console.log("token ", token);
+        const response = await fetch("http://localhost:4000/users/carts", {
+            method: 'GET',
+            headers: {"Authorization" : `Bearer ${token}`}
+        });
+        // const text = await response.text();
+        // console.log(text);
         
         if (!response.ok) {
             // setError("Failed to fetch product");
@@ -29,11 +34,39 @@ export function useCart(){
         }
 
         const data = await response.json();
-        setCart(data);
+
+        // console.log("raw item:", data.items[0]); 
+        // console.log("raw item1:", data.items); 
+        // console.log("raw item2:", data); 
+
+        const mappedCart: Cart = {
+        ...data,
+        items: data.items
+            .map((item: any) => ({
+                cartItemId: item.id,
+                item: item.item,
+                quantity: item.quantity,
+                createdAt: item.createdAt,
+            }))
+            .sort((a: any, b: any) =>     
+                a.cartItemId.localeCompare(b.cartItemId)
+            )
+        };
+        
+        setCart(mappedCart);
     }
 
     useEffect(()=>{
-        fetchCart();
+        const load = async () => {
+            try {
+                await fetchCart();
+            } catch(error) {
+                console.error("Network error: ", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        load();
     }, [])
 
     const addItem = async (itemId: string, quantity: string) => {
@@ -54,16 +87,12 @@ export function useCart(){
             await fetchCart();
         } catch (error) {
             // throw new Error("Failed to add item");
-            // console.error("Network error: ", error);
+            console.error("Network error: ", error);
         }
 
     }
 
     //todo check whether update item is necessary(like check if additem only is alr enough or not for special case)
-    // const updateItem =  async (cartItem: cartItem){
-    //     cosnt response = await fetch("")
-    //     await fetchCart();
-    // }
 
     const removeItem = async (itemId: string, quantity: string) => {
         try {
@@ -80,5 +109,26 @@ export function useCart(){
             console.error("Network error: ", error)
         }
     }
-    return {cart, addItem, removeItem}
+
+    const checkout = async (addressId : string) => {
+        try {
+            const response = await fetch("http://localhost:4000/users/carts/checkout", {
+                method: 'POST',
+                headers: {"Content-Type": "application/json", "Authorization": `Bearer ${token}`},
+                body: JSON.stringify({addressId}),
+            })
+            if (!response.json){
+                console.error("Failed to checkout")
+                return null;
+            }
+
+            const data =  await response.json();
+            return data;
+        } catch (error) {
+            console.error("Network error: ", error)
+            return null;
+        }
+    }
+
+    return {cart, isLoading, addItem, removeItem, checkout, fetchCart}
 }

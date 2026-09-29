@@ -4,6 +4,7 @@ import { AddressDTO } from '../dto/addressDTO';
 class AddressMapper {
   static createAddressFromDTO(dto: AddressDTO): Address {
     const address = new Address();
+    address.fullName = dto.fullName;
     address.street = dto.street;
     address.houseNumber = dto.houseNumber;
     address.city = dto.city;
@@ -13,6 +14,7 @@ class AddressMapper {
   }
 
   static updateAddressFromDTO(address: Address, dto: AddressDTO): Address {
+    address.fullName = dto.fullName;
     address.street = dto.street;
     address.houseNumber = dto.houseNumber;
     address.city = dto.city;

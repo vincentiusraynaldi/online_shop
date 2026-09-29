@@ -63,7 +63,7 @@ export function LoginPage() {
                 </VStack>
             </AuthCard>
         </Box>
-        )
+    )
 }
 
 export default LoginPage;

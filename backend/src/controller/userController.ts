@@ -17,7 +17,8 @@ export class userController{
             const loginResult = await userService.loginUser(req.body);
 
             if (loginResult) {
-                return res.status(200).json({ accessToken: loginResult.token, id: loginResult.id });
+                // return res.status(200).json({ accessToken: loginResult.token, id: loginResult.id });
+                return res.status(200).json(loginResult);
             } else {
                 return res.status(500).json({ error: "Internal Server Error"});
             }
@@ -26,22 +27,13 @@ export class userController{
         }
     }
 
-    static async googleCallback(req: Request, res: Response){
-        const token = userService.generateToken(req.user);
-        console.log("token: ",token);
-        console.log("req.user: ",req.user);
-        //TODO change the redirect to the home page of frontend
-        // have to send the user entity as well to the frontend
-        res.redirect(`http://localhost:5173/?token=${token}`);
-    }
-
     static async verifyGoogleToken(req: Request, res: Response) {
         try{
             // //get credential
             const {credential} = req.body;
             
             if (!credential){
-                res.status(400).json({message: "credential is required"})
+                return res.status(400).json({message: "credential is required"})
             }
             //check if the user is already registered or not
             //if not then create a new user
@@ -50,7 +42,8 @@ export class userController{
             if(result.isNewUser){
                 return res.status(201).send(result.user)
             }else{
-                return res.status(200).json({accessToken: result.token, id: result.user?.id})
+                // return res.status(200).json({accessToken: result.token, id: result.user?.id})
+                return res.status(200).json(result)
             }
         }catch{
             console.error("Google auth error:", error);
@@ -79,7 +72,16 @@ export class userController{
 
     static async changePassword(req: Request, res: Response){
         try{
-            const updatedUser = await userService.editProfile(req.body, req.user);
+            const updatedUser = await userService.changePassword(req.body, req.user);
+            return res.status(200).json(updatedUser);
+        }catch(e: any){
+            return res.status(400).send({ message: e.message });
+        }
+    }
+
+    static async changeEmail(req: Request, res: Response){
+        try{
+            const updatedUser = await userService.changeEmail(req.body, req.user);
             return res.status(200).json(updatedUser);
         }catch(e: any){
             return res.status(400).send({ message: e.message });

@@ -4,15 +4,16 @@ import { useToast, Text } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import invariant from 'tiny-invariant';
 import React from "react";
-import { useSearchParams } from "react-router-dom";
 import { GoogleOAuthProvider } from '@react-oauth/google';
-import { stringify } from "querystring";
+
+import { useEffect } from "react";
 
 export type User = {
     firstName: string;
     lastName: string;
     email: string;
     id: string;
+    isGoogle: boolean;
 }
 
 export type LoginData = {
@@ -42,6 +43,11 @@ export type changePasswordData = {
     confirmPassword: string;
 }
 
+export type changeEmailData = {
+    newEmail: string;
+    currentPassword: string;
+}
+
 export type AuthContext = {
     user?: User;
     token?: string;
@@ -54,6 +60,8 @@ export type AuthContext = {
         // getProfile: () => void;
         editProfile: (data: EditUserData) => void;
         changePassword: (data: changePasswordData) => void;
+        changeEmail: (data: changeEmailData) => void;
+        deleteAccount: () => void;
     }
 }
 
@@ -86,6 +94,10 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
         })
     }
 
+    useEffect(() => {
+    console.log("user updated:", user);
+}, [user]);
+
     const login = async (values: LoginData) => {
         //fetch post request using axios
         const res = await fetch ("http://localhost:4000/users/login", {
@@ -102,8 +114,10 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
                 duration: 9000,
                 isClosable: true,
             });
-            setToken(data.accessToken);
-            setUser(JSON.parse(atob(data.accessToken.split(".")[1])));
+            setToken(data.token);
+            console.log("token: ", token);
+            // setUser(JSON.parse(atob(data.accessToken.split(".")[1])));
+            setUser(data.user);
             navigate("/", {replace: true});
         } else if (res.status === 401) {
             toast({
@@ -116,12 +130,12 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
         } else if (res.status === 400) {
             toast({ 
                 title: "Error",
-                description: "Email not found",
+                description: "False credential",
                 status: "error",
                 duration: 9000,
                 isClosable: true });
         }
-        console.log(data);
+        // console.log("data :", data);
     }
 
     // const loginWithGoogleOauth = async () => {
@@ -141,8 +155,9 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
                 duration: 9000,
                 isClosable: true,
             });
-            setToken(data.accessToken);
-            setUser(JSON.parse(atob(data.accessToken.split(".")[1])));
+            setToken(data.token);
+            // setUser(JSON.parse(atob(data.accessToken.split(".")[1])));
+            setUser(data.user);
             navigate("/", {replace: true});
         }else{
             toast({
@@ -211,8 +226,38 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
     //     // const data
     // }
 
+    // const editProfile = async (values: EditUserData) => {
+    //     const res = await fetch("http://localhost:4000/users/editprofile",{
+    //         method: "PUT",
+    //         headers: {
+    //             "content-type": "application/json",
+    //             "Authorization": `Bearer ${token}`
+    //         },
+    //         body: JSON.stringify(values)
+    //     })
+
+    //     // const resBody = res.json;
+    //     if (res.status === 200){
+    //         toast({
+    //             title: "Edit account profile",
+    //             description: "Successfully edit user profile",
+    //             status: "success",
+    //             duration: 9000,
+    //             isClosable: true,
+    //         })
+    //     } else {
+    //         toast({
+    //             title: "Error",
+    //             description: "Edit profile failed",
+    //             status: "error",
+    //             duration: 9000,
+    //             isClosable: true,
+    //         });
+    //     }
+    // }
+
     const editProfile = async (values: EditUserData) => {
-        const res = await fetch("http://localhost:4000/users/profile",{
+        const res = await fetch("http://localhost:4000/users/editprofile",{
             method: "PUT",
             headers: {
                 "content-type": "application/json",
@@ -220,16 +265,20 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
             },
             body: JSON.stringify(values)
         })
-
-        // const resBody = res.json;
+ 
+        const resBody = await res.json();
+ 
         if (res.status === 200){
+            // keep local user state in sync so the UI reflects the change immediately
+            setUser((prev : User) => prev ? { ...prev, ...resBody } : resBody);
             toast({
                 title: "Edit account profile",
                 description: "Successfully edit user profile",
                 status: "success",
                 duration: 9000,
                 isClosable: true,
-            })
+            });
+            return { success: true as const };
         } else {
             toast({
                 title: "Error",
@@ -238,19 +287,51 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
                 duration: 9000,
                 isClosable: true,
             });
+            return { success: false as const, message: resBody?.message ?? "Edit profile failed" };
         }
     }
 
+    // const changePassword = async (values: changePasswordData) => {
+    //     const res = await fetch("http://localhost:4000/users/password",{
+    //         method: "PUT",
+    //         headers: {
+    //             "content-type": "application/json",
+    //             "Authorization": `Bearer ${token}`
+    //         },
+    //         body: JSON.stringify(values)
+    //     })
+
+    //     if(res.status == 200){
+    //         toast({
+    //             title: "Change Password",
+    //             description: "Successfully change user password",
+    //             status: "success",
+    //             duration: 9000,
+    //             isClosable: true,
+    //         })
+    //     }else{
+    //         toast({
+    //             title: "Error",
+    //             description: "Change password failed",
+    //             status: "error",
+    //             duration: 9000,
+    //             isClosable: true,
+    //         });
+    //     }
+    // }
+
     const changePassword = async (values: changePasswordData) => {
         const res = await fetch("http://localhost:4000/users/password",{
-            method: "put",
+            method: "PUT",
             headers: {
                 "content-type": "application/json",
                 "Authorization": `Bearer ${token}`
             },
             body: JSON.stringify(values)
         })
-
+ 
+        const resBody = await res.json();
+ 
         if(res.status == 200){
             toast({
                 title: "Change Password",
@@ -258,11 +339,107 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
                 status: "success",
                 duration: 9000,
                 isClosable: true,
-            })
+            });
+            return { success: true as const };
         }else{
             toast({
                 title: "Error",
                 description: "Change password failed",
+                status: "error",
+                duration: 9000,
+                isClosable: true,
+            });
+            return { success: false as const, message: resBody?.message ?? "Change password failed" };
+        }
+    }
+
+    // const changeEmail = async (values: changeEmailData) => {
+    //     const res = await fetch("http://localhost:4000/users/email",{
+    //         method: "PUT",
+    //         headers: {
+    //             "content-type": "application/json",
+    //             "Authorization": `Bearer ${token}`
+    //         },
+    //         body: JSON.stringify(values)
+    //     })
+
+    //     if(res.status == 200){
+    //         toast({
+    //             title: "Change Email",
+    //             description: "Successfully change email",
+    //             status: "success",
+    //             duration: 9000,
+    //             isClosable: true,
+    //         })
+    //     }else{
+    //         toast({
+    //             title: "Error",
+    //             description: "Change email failed",
+    //             status: "error",
+    //             duration: 9000,
+    //             isClosable: true,
+    //         });
+    //     }
+    // }
+
+    const changeEmail = async (values: changeEmailData) => {
+        const res = await fetch("http://localhost:4000/users/email",{
+            method: "PUT",
+            headers: {
+                "content-type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify(values)
+        })
+ 
+        const resBody = await res.json();
+ 
+        if(res.status == 200){
+            setUser((prev: User) => prev ? { ...prev, email: values.newEmail } : prev);
+            toast({
+                title: "Change Email",
+                description: "Successfully change email",
+                status: "success",
+                duration: 9000,
+                isClosable: true,
+            });
+            return { success: true as const };
+        }else{
+            toast({
+                title: "Error",
+                description: "Change email failed",
+                status: "error",
+                duration: 9000,
+                isClosable: true,
+            });
+            return { success: false as const, message: resBody?.message ?? "Change email failed" };
+        }
+    }
+
+    const deleteAccount = async () => {
+        const res = await fetch("http://localhost:4000/users/delete", {
+            method: "DELETE",  // Changed from POST
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`  // Add your bearer token
+            }
+        });
+
+        setToken(null);
+        setUser(null);
+
+        if(res.status == 200){
+            toast({
+                title: "Delete Account",
+                description: "Successfully delete user",
+                status: "success",
+                duration: 9000,
+                isClosable: true,
+            })
+        }else{
+            toast({
+                title: "Error",
+                description: "Delete Account failed",
                 status: "error",
                 duration: 9000,
                 isClosable: true,
@@ -283,7 +460,9 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
                     logout,
                     // getProfile,
                     editProfile,
-                    changePassword
+                    changePassword,
+                    changeEmail,
+                    deleteAccount
                 }
             }}
             >

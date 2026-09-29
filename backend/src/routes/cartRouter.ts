@@ -13,7 +13,7 @@ router.get("/", authenticateJWT, cartController.getAllItemsInCart);
 // select item in cart
 
 // checkout selected item in cart
-router.post("/checkout", authenticateJWT, );
+router.post("/checkout", authenticateJWT, cartController.checkout);
 
 // add item to cart
 router.post("/items", authenticateJWT, cartController.addItemToCart);

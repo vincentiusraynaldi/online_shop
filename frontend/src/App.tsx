@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import AppRoutes from './AppRoutes';
 import { ChakraProvider } from '@chakra-ui/react';
 import { AuthProvider } from './provider/AuthProvider';
+import { CartProvider } from './provider/CartProvider';
 
 function App() {
 
@@ -11,12 +12,10 @@ function App() {
     <ChakraProvider>
       <BrowserRouter>
         <AuthProvider>
-          <Navbar />
-          <h1>Hello Vite + React!</h1>
-          <h1>
-            Hello world!
-          </h1>
-          <AppRoutes/>
+          <CartProvider>
+            <Navbar />
+            <AppRoutes/>
+          </CartProvider>
         </AuthProvider>      
       </BrowserRouter>
     </ChakraProvider>

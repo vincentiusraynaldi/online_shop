@@ -1,30 +1,33 @@
-import { Entity, ManyToMany, Property, Collection } from "@mikro-orm/core";
+import { Entity, ManyToOne, Property } from "@mikro-orm/core";
 import { BaseEntity } from "./baseEntity";
 import { User } from ".";
 import { object, string } from "yup";
 
 @Entity()
 export class Address extends BaseEntity{
-    @ManyToMany({ entity: () => User, mappedBy: 'addresses' })
-    users = new Collection<User>(this);
+    @ManyToOne({ entity: () => User })
+    user!: User;
 
-    @Property({ nullable: true })
-    street?: string;
+    @Property({ nullable: false })
+    fullName!: string;
 
-    @Property({ nullable: true })
-    houseNumber?: string;
+    @Property({ nullable: false })
+    street!: string;
+
+    @Property({ nullable: false })
+    houseNumber!: string;
 
     //todo: more info string
     // @Property({ nullable: true })
 
-    @Property({ nullable: true })
-    city?: string;
+    @Property({ nullable: false })
+    city!: string;
 
-    @Property({ nullable: true })
-    country?: string;
+    @Property({ nullable: false })
+    country!: string;
 
-    @Property({ nullable:true })
-    postalCode?: string;
+    @Property({ nullable: false })
+    postalCode!: string;
 
     constructor(){
         super();

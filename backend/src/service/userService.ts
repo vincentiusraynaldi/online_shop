@@ -1,6 +1,6 @@
 import { DI } from "..";
 import { RegisterGoogleUserDTO, RegisterUserDTO } from "../dto";
-import { RegisterUserSchema, LoginUserSchema, User, RegisterGoogleUserSchema, changePasswordSchema } from "../entity";
+import { RegisterUserSchema, LoginUserSchema, User, RegisterGoogleUserSchema, ChangePasswordSchema, EditProfileSchema } from "../entity";
 import { Auth } from "../middleware/auth.middleware";
 import { UserMapper } from "../mapper/userMapper";
 import { envGoogleClientId, googleClient } from '..';
@@ -78,65 +78,83 @@ export class userService {
 
         const token = this.generateToken(existingUser);
 
-        return {token, id: existingUser.id};
+        return { token, id: existingUser.id, user: {
+                id: existingUser.id,
+                email: existingUser.email,
+                firstName: existingUser.firstName,
+                lastName: existingUser.lastName,
+                isGoogle: false
+            }};
     }
 
     static async editProfile(data: any, user: User) {
+        const validatedData = await EditProfileSchema.validate(data);
+        if (!validatedData) throw new Error("Data not valid");
+
         const existingUser = await this.getUserById(user.id);
         if (!existingUser) {
             throw new Error("User not found");
         }
 
-        if( user.email === existingUser.email){
-            data.password = await Auth.hashPassword(data.password);
-            Object.assign(existingUser, data);
-            // await DI.userRepository.flush();
-            await DI.em.flush();
-            return existingUser;
-        } else {
-            throw new Error("Unauthorized");
-        }
-    }
+        // Never touch password here — that's changePassword's job
+        const { password, email, ...safeData } = data;
 
-    static async changePassword (data:any, user: User){
-        
-        const validatedData = await changePasswordSchema.validate(data);
+        // Only the fields defined in editProfileSchema are ever assigned —
+        // no risk of extra fields (role, id, balance, etc) sneaking through
+        Object.assign(existingUser, validatedData);
+
+        await DI.em.flush();
+        return existingUser;
+    }
+    
+    static async changePassword(data: any, user: User) {
+        const validatedData = await ChangePasswordSchema.validate(data);
         if (!validatedData) throw new Error("Data not valid");
 
         const existingUser = await this.getUserById(user.id);
-        if (!existingUser){
+        if (!existingUser) {
             throw new Error("User not found");
         }
 
-        if(!existingUser.password){
-            throw new Error("Password not found")
+        if (!existingUser.password) {
+            throw new Error("Password not found");
         }
 
-        // compare current password from data with the password from the database
         const isPasswordValid = await Auth.comparePasswordwithHash(
             validatedData.currentPassword,
             existingUser.password
-        )
+        );
 
-        if(!isPasswordValid){
-            throw new Error("Current password is not the same")
+        if (!isPasswordValid) {
+            throw new Error("Current password is not the same");
         }
 
-        // compare current password with the new password so that it is not the same
-        if(validatedData.currentPassword === validatedData.newPassword){
-            throw new Error("Current and new password are the same")
+        if (validatedData.currentPassword === validatedData.newPassword) {
+            throw new Error("Current and new password are the same");
         }
 
-        // there should be a table where it saves the last passwords but it is for later 
-
-        // compare the newpassword and the current password
-        if (validatedData.newPassword !== validatedData.confirmPassword){
-            throw new Error("New Password and confirm password not the same")
+        if (validatedData.newPassword !== validatedData.confirmPassword) {
+            throw new Error("New Password and confirm password not the same");
         }
 
-        // save the new password
         existingUser.password = await Auth.hashPassword(validatedData.newPassword);
-        // await DI.userRepository.flush();
+        await DI.em.flush();
+        return existingUser;
+    }
+
+    static async changeEmail(data: any, user: User) {
+        const existingUser = await this.getUserById(user.id);
+        if (!existingUser) throw new Error("User not found");
+        if (!existingUser.password) throw new Error("Password not found");
+
+        const isPasswordValid = await Auth.comparePasswordwithHash(
+            data.currentPassword,
+            existingUser.password
+        );
+
+        if (!isPasswordValid) throw new Error("Current password is not correct");
+
+        existingUser.email = data.newEmail;
         await DI.em.flush();
         return existingUser;
     }
@@ -147,28 +165,20 @@ export class userService {
             throw new Error("User not found");
         }
 
-        if(user.email === existingUser.email){
-            return existingUser;
-        } else {
-            throw new Error("Unauthorized");
-        }
+        return existingUser;
     }
 
     static async deleteUser(user: User) {
-
-        const existingUser = await DI.userRepository.findOne(user.id, { populate: ["cart", "addresses", "orders", "wishlists"] });
+        const existingUser = await DI.userRepository.findOne(user.id, {
+            populate: ["cart", "addresses", "orders", "wishlists"],
+        });
 
         if (!existingUser) {
             throw new Error("User not found");
         }
 
-        if(user.email === existingUser.email){
-            // await DI.userRepository.removeAndFlush(existingUser);
-            await DI.em.removeAndFlush(existingUser);
-            return { message: "User deleted" };
-        } else {
-            throw new Error("Unauthorized");
-        }
+        await DI.em.removeAndFlush(existingUser);
+        return { message: "User deleted" };
     }
 
     static async verifyGoogleToken(credential : string){
@@ -203,11 +213,19 @@ export class userService {
                 isNewUser = true;
             }
 
-            console.log("user: ", user)
+            // console.log("user: ", user)
             // user = await this.getUserByEmail(payload.email.toLowerCase())
             const token = this.generateToken(user);
 
-            return {token, user, isNewUser};
+            // return {token, user, isNewUser};
+
+            return { token, id: user.id, isNewUser, user: {
+                        id: user.id,
+                        email: user.email,
+                        firstName: user.firstName,
+                        lastName: user.lastName,
+                        isGoogle: true
+                    }};
         }catch(error){
             console.error("Google token verification failed:", error);
             throw new Error("Google authentication failed");

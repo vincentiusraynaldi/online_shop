@@ -1,5 +1,6 @@
 import { DI } from "..";
 import { CartItem, Order, OrderItem, Address } from "../entity";
+import { addressService } from "./addressService";
 
 export class cartService {
 
@@ -16,7 +17,7 @@ export class cartService {
         return user?.cart;
     }
 
-    static async checkout(id: string) {
+    static async checkout(id: string, addressId: string) {
         const user = await DI.userRepository.findOne(id, { populate: ["cart.items.item"] });
 
         // Check if the user exists
@@ -30,12 +31,14 @@ export class cartService {
             totalPrice += cartItem.item.itemPrice * cartItem.quantity;
         });
 
-        const address = new Address();
-        address.street = "1234 Main St";
-        address.houseNumber = "123";
-        address.city = "Los Angeles";
-        address.country = "USA";
-        address.postalCode = "90007";
+        // const address = new Address();
+        // address.street = "1234 Main St";
+        // address.houseNumber = "123";
+        // address.city = "Los Angeles";
+        // address.country = "USA";
+        // address.postalCode = "90007";
+
+        const address = await addressService.getAddressById(addressId, user);
 
         // Create an order
         const order = new Order(totalPrice);
@@ -53,7 +56,8 @@ export class cartService {
         user.cart.totalPrice -= totalPrice;
         // await DI.userRepository.flush();
         await DI.em.flush();
-        return ({message: "Checkout successful", totalPrice});
+        // return ({message: "Checkout successful", totalPrice});
+        return (order.id);
     }
 
     static async addItemToCart(userId: string, data: any) {

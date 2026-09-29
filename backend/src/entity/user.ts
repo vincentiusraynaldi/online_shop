@@ -45,33 +45,14 @@ export class User extends BaseEntity {
     @OneToOne({ entity: () => Cart, owner: true, nullable: true, orphanRemoval: true })
     cart = new Cart(this);
 
-    @OneToMany({ entity: () => Order, mappedBy: 'user' })
+    @OneToMany({ entity: () => Order, mappedBy: 'user', orphanRemoval: true})
     orders = new Collection<Order>(this);
 
-    @ManyToMany({ entity: () => Address, owner: true, inversedBy: 'users'})
+    @OneToMany({ entity: () => Address, mappedBy: 'user', orphanRemoval: true})
     addresses = new Collection<Address>(this);
 
-    constructor(
-        // email: string,
-        // firstName: string,
-        // lastName: string,
-        // password?: string,
-        // address?: string,
-        // city?: string,
-        // country?: string,
-        // postalCode?: string,
-        // phoneNumber?: string
-    ) {
+    constructor() {
         super();
-        // this.email = email;
-        // this.firstName = firstName;
-        // this.lastName = lastName;
-        // this.password = password;
-        // this.address = address;
-        // this.city = city;
-        // this.country = country;
-        // this.postalCode = postalCode;
-        // this.phoneNumber = phoneNumber;
     }
 }
 
@@ -87,7 +68,13 @@ export const LoginUserSchema = object({
     email: string().required(),
 });
 
-export const changePasswordSchema = object({
+export const EditProfileSchema = object({
+    firstName: string().required(),
+    lastName: string().required(),
+    email: string().required()
+})
+
+export const ChangePasswordSchema = object({
     currentPassword: string().required(),
     newPassword: string().required(),
     confirmPassword: string().required()

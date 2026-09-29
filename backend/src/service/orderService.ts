@@ -10,7 +10,10 @@ export class orderService {
     }
 
     static async getOrder(userId: string, orderId: string) {
-        const user = await DI.userRepository.findOne({ id: userId }, { populate: ["orders.items", "orders.address"] });
+        const user = await DI.userRepository.findOne(
+            { id: userId },
+            { populate: ["orders.items.item", "orders.address"] } // add .item
+        );
 
         if (!user) throw new Error("User not found");
 

@@ -56,7 +56,7 @@ export const envGoogleClientId = process.env.GOOGLE_CLIENT_ID;
 // app.use(cors());
 app.use(cors({
     origin: 'http://localhost:5173', // Update this to your frontend's origin
-    methods: ['GET', 'POST'],
+    methods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH'],
     allowedHeaders: ["Content-Type", "Authorization"]   
 }));
 

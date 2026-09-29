@@ -1,3 +1,4 @@
+import { Order } from "../entity";
 import { cartService } from "../service/cartService";
 import { Request, Response } from "express";
 
@@ -31,8 +32,9 @@ export class cartController{
 
     static async checkout(req: Request, res: Response){
         try {
-            const totalPrice = await cartService.checkout(req.user.id);
-            return res.status(200).send(totalPrice);
+            const order = await cartService.checkout(req.user.id, req.body.addressId);
+            // return res.status(200).send(order);
+            return res.status(200).json(order);
         } catch(e:any){
             return res.status(400).send({ message: e.message });
         }
