@@ -1,9 +1,15 @@
-import { DI } from "..";
+import { DI } from "../di";
 import { RegisterGoogleUserDTO, RegisterUserDTO } from "../dto";
-import { RegisterUserSchema, LoginUserSchema, User, RegisterGoogleUserSchema, ChangePasswordSchema, EditProfileSchema } from "../entity";
+import { 
+    RegisterUserSchema, 
+    LoginUserSchema, 
+    User, 
+    RegisterGoogleUserSchema, 
+    ChangePasswordSchema, 
+    EditProfileSchema } from "../entity";
 import { Auth } from "../middleware/auth.middleware";
 import { UserMapper } from "../mapper/userMapper";
-import { envGoogleClientId, googleClient } from '..';
+import { envGoogleClientId, googleClient } from '../app';
 
 interface RegisterUserData {
     id: string;

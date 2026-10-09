@@ -1,4 +1,4 @@
-import { DI } from "..";
+import { DI } from "../di";
 
 export class orderService {
     static async getOrders(userId: string) {

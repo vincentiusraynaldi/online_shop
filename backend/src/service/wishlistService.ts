@@ -1,4 +1,4 @@
-import { DI } from "..";
+import { DI } from "../di";
 import { CreateWishlistSchema, User, Wishlist } from "../entity";
 
 export class wishlistService {

@@ -1,4 +1,4 @@
-import { DI } from "..";
+import { DI } from "../di";
 import { Category } from "../entity";  
 
 export class categoryService{

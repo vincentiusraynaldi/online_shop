@@ -1,4 +1,4 @@
-import { DI } from "./";
+import { DI } from "./di";
 import passport from "passport";
 import { Strategy as GoogleStrategy, Profile } from 'passport-google-oauth20';
 import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";

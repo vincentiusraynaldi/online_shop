@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { DI } from '..';
+import { DI } from '../di';
 import { itemController } from '../controller/itemController';
 
 //todo test the items

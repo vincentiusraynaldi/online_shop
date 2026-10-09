@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import jwt, { JwtPayload, SignOptions } from 'jsonwebtoken';
 import { NextFunction, Request, Response, RequestHandler } from "express";
 
-import { DI } from '../index';
+import { DI } from '../di';
 
 import dotenv from 'dotenv';
 import path from 'path';

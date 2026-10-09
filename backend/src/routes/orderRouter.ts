@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { DI } from "..";
+import { DI } from "../di";
 import passport from "passport";
 import { orderController } from "../controller/orderController";
 

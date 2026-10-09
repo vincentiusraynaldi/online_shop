@@ -1,4 +1,4 @@
-import { DI } from "..";
+import { DI } from "../di";
 import { Address, User } from "../entity";
 import { AddressMapper } from "../mapper";
 
@@ -35,7 +35,6 @@ export class addressService {
         
         AddressMapper.updateAddressFromDTO(address, data);
         
-        // await DI.userRepository.flush();
         await DI.em.flush();
 
         return address;

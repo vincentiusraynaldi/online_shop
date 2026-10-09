@@ -1,4 +1,4 @@
-import { DI } from "..";
+import { DI } from "../di";
 import { CartItem, Order, OrderItem, Address } from "../entity";
 import { addressService } from "./addressService";
 
@@ -54,9 +54,7 @@ export class cartService {
         
         user.cart.items.removeAll();
         user.cart.totalPrice -= totalPrice;
-        // await DI.userRepository.flush();
         await DI.em.flush();
-        // return ({message: "Checkout successful", totalPrice});
         return (order.id);
     }
 
@@ -67,10 +65,7 @@ export class cartService {
 
         const user = await DI.userRepository.findOne( userId, { populate: ["cart.items"] });
 
-        // check if item price is a number
         this.validateQuantity(data);
-
-        // const cart = await DI.cartRepository.findOne({ id: user.cart.id });
 
         if (!user) throw new Error ( "User not found" ); 
         const cart = user.cart;
