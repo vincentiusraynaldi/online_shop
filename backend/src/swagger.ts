@@ -85,6 +85,82 @@ const options: swaggerJSDoc.Options = {
                         message: { type: "string", example: "Something went wrong" },
                     },
                 },
+                Category: {
+                    type: "object",
+                    properties: {
+                        id: { type: "string", example: "c1a2b3c4-0000-4abc-9def-0123456789ab" },
+                        categoryName: { type: "string", example: "Shoes" },
+                    },
+                },
+                Item: {
+                    type: "object",
+                    properties: {
+                        id: { type: "string", example: "i1a2b3c4-0000-4abc-9def-0123456789ab" },
+                        itemName: { type: "string", example: "Running Shoe X" },
+                        itemPrice: { type: "number", example: 99.99 },
+                        itemBrand: { type: "string", example: "Nike" },
+                        availableStock: { type: "integer", example: 25 },
+                        categories: {
+                            type: "array",
+                            items: { $ref: "#/components/schemas/Category" },
+                        },
+                    },
+                },
+                CreateItemRequest: {
+                    type: "object",
+                    required: ["itemName", "itemPrice"], // match your CreateItemSchema
+                    properties: {
+                        itemName: { type: "string", example: "Running Shoe X" },
+                        itemPrice: { type: "number", example: 99.99 },
+                        itemBrand: { type: "string", example: "Nike" },
+                        availableStock: { type: "integer", example: 25 },
+                        categories: {
+                            type: "array",
+                            description: "Category identifiers, as your itemMapper expects them",
+                            items: { type: "string" },
+                        },
+                    },
+                },
+                EditItemRequest: {
+                    type: "object",
+                    properties: {
+                        itemName: { type: "string" },
+                        itemPrice: { type: "number" },
+                        itemBrand: { type: "string" },
+                        availableStock: { type: "integer" },
+                    },
+                },
+                PaginatedItems: {
+                    type: "object",
+                    properties: {
+                        data: {
+                            type: "array",
+                            items: { $ref: "#/components/schemas/Item" },
+                        },
+                        pagination: {
+                            type: "object",
+                            properties: {
+                                page: { type: "integer", example: 1 },
+                                limit: { type: "integer", example: 10 },
+                                total: { type: "integer", example: 57 },
+                                totalPages: { type: "integer", example: 6 },
+                            },
+                        },
+                    },
+                },
+                CategoryNameRequest: {
+                    type: "object",
+                    required: ["categoryName"],
+                    properties: {
+                        categoryName: { type: "string", example: "Shoes" },
+                    },
+                },
+                MessageResponse: {
+                    type: "object",
+                    properties: {
+                        message: { type: "string", example: "Done" },
+                    },
+                },
             },
         },
     },
